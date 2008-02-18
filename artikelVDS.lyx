@@ -1284,14 +1284,16 @@ missbraucht
 
  Sekunden dauert, bis ein Port wiederverwendet wird, bei 50 Requests pro
  Sekunde also knapp 10 Minuten.
+ Dies genügt, um in einem minutengenauen Zeitraster eine eindeutige Aufdeckung
+ von Verbindungen zu ermöglichen.
  Die Speicherung der Source-Ports stellt damit einen Kompromiss zwischen
  der Erzeugung langlebiger Kennungen und dem ausschließlichen Speichern
  von IP-Adressen dar.
 \end_layout
 
 \begin_layout Abstract
-Protokollabhängige Kennungen ermöglichen bei gleichzeitiger Datensparsamkeit
- eine eindeutige Aufdeckung von Verbindungen.
+Protokollabhängige Kennungen ermöglichen eine eindeutige Aufdeckung von
+ Verbindungen bei hoher Datensparsamkeit.
  Optimal wären Internetstandards für protokollspezifische Kennungen zum
  Zweck der Strafverfolgung.
  Zumindest bei TCP ist derzeit schon die Speicherung von Quell-Ports als
