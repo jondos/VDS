@@ -544,8 +544,8 @@ Implementierung für single-hop Anonymisierer
 \begin_layout Standard
 Ein single-hop Anonymisierer ändert die Benutzerkennung im Netzwerk, indem
  er die IP-Adresse des Benutzers durch eine andere ersetzt.
- Er muss daher Eingangs- Ausgangskennungen sowie den Zeitpunkt der Transformatio
-n speichern.
+ Er muss daher Eingangs- und Ausgangskennungen sowie den Zeitpunkt der Transform
+ation speichern.
 \end_layout
 
 \begin_layout Standard
@@ -608,7 +608,7 @@ reference "fig:Modell-eines-Single-Hop-Anonymisierers"
 
  eine Verbindung mit dem Dienst auf.
  Dann übermitteln sie eine oder mehrere Anfragen (
-\begin_inset Formula $t_{\mathrm{i}_{i}}$
+\begin_inset Formula $\mathrm{request}_{i}$
 \end_inset
 
 ).
@@ -730,7 +730,7 @@ B.
 
 ) zu speichern, wobei jeweils 4\InsetSpace ~
 Byte für die Zeitpunkte (32-Bit-UNIX-Timestamps)
- und jeweils nur noch 4\InsetSpace ~
+ und jeweils noch 4\InsetSpace ~
 Byte für IPv4-IP-Adressen abzuspeichern sind.
  Da sich die aktuelle Zeitzone nur selten ändert, muss sie nicht bei jeder
  Verbindung gespeichert werden.
@@ -762,7 +762,7 @@ Diese Form der Vorratsdatenspeicherung kann jedoch meist keine Rückverfolgung
 \begin_inset Formula $q$
 \end_inset
 
- nicht eindeutig beantworten, wenn zur angefragten Zeit, also um 9:43 Uhr
+ nicht eindeutig beantworten, wenn zur angefragten Zeit, also um 9:43 Uhr,
  mehr als eine eingehende Verbindung gespeichert wurde.
  Der Dienstanbieter müsste alle Eingangskennungen zurückliefern, die zu
  diesem Zeitpunkt mit dem Dienst verbunden waren.
@@ -781,18 +781,47 @@ Diese Form der Vorratsdatenspeicherung kann jedoch meist keine Rückverfolgung
 \end_inset
 
  vernachlässigt werden und die Uhren synchronisiert sind).
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+wieso 120 n_c? es müssten doch 60 n_c sein; die Timestamps sind ja durchaus
+ sekundengenau
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Beim mehreren Duzend oder gar mehreren Hundert Teilnehmern, die alle gleichzeiti
-g mit dem Dienst verbunden sind, kann mit dieser Methode keine einzelne
- Anfrage aufgedeckt werden.
- Die Unwirksamkeit einer Speicherung nach diesem Muster ist jedoch offensichtlic
-h und kann der Intention der Gesetze zur Vorratsdatenspeicherung deshalb
- in keinster Weise entsprechen.
+Bei mehreren Duzend oder gar mehreren Hundert Teilnehmern, die alle gleichzeitig
+ mit dem Dienst verbunden sind, kann mit dieser Methode allerdings keine
+ einzelne Anfrage aufgedeckt werden.
+ Die Unwirksamkeit 
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Formulierung 
+\end_layout
+
+\end_inset
+
+einer Speicherung nach diesem Muster ist jedoch offensichtlich und kann
+ der Intention der Gesetze zur Vorratsdatenspeicherung deshalb in keinster
+ Weise entsprechen.
  Es ist deshalb denkbar, dass die Speicherpflicht per amtlicher Verordnung
  auf einzelne Anfragen ausgedeht wird, auch wenn eine dauerhafte Verbindung
- zum Dienst besteht.
+ zum Dienst besteht (vgl.
+ Abschnitt 
+\begin_inset LatexCommand ref
+reference "sub:Eingangs-IP-Adressen-pro-Request"
+
+\end_inset
+
+).
  Dies ist gegebenenfalls leicht zu begründen, da die eigentliche 
 \begin_inset Quotes gld
 \end_inset
@@ -806,25 +835,43 @@ Transformationsleistung
  
 \end_layout
 
-\begin_layout Abstract
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
 Eine bloße Speicherung der Anmelde- und Abmeldeinformationen von Nutzern
- beim Anonymisierdienst führt zu keinen verwertbaren Informationen für Bedarfstr
-äger.
- Eine gesetzeskonforme Speicherpflicht hat deshalb die Speicherung einzelner
- Anfragen zur Folge und bleibt nicht auf die Speicherung von Verbindungen
- zum Anonymisierdienst beschränkt.
+ beim Anonymisierdienst führt zu keinen verwertbaren Informationen für die
+ Bedarfsträger, da die Rückverfolgbarkeit praktisch nie gewährleistet werden
+ kann.
+ Zur Gewährleistung des Gesetzeszwecks -- die Ermittlung des Urhebers einer
+ Verbindung -- reicht die (platzsparende) Speicherung von Verbindungen zum
+ Anonymisierdienst nicht aus.
 \end_layout
 
 \begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Eingangs-IP-Adressen-pro-Request"
+
+\end_inset
+
 Speicherung der Eingangs-IP-Adressen pro HTTP-Request
 \end_layout
 
 \begin_layout Standard
-Bei Diensten, die lediglich einen HTTP-Request über eine Verbindung entgegennehm
-en (z.\InsetSpace \thinspace{}
+Wie im vorigen Abschnitt gezeigt wurde, reicht die Speicherung von Verbindungsda
+ten nicht aus.
+ Im folgenden wird untersucht, inwiefern eine Protokollierung von einzelnen
+ Requests das Ziel der Rückverfolgbarkeit erreichen kann.
+ Bei Diensten, die lediglich einen HTTP-Request über eine Verbindung entgegenneh
+men (z.\InsetSpace \thinspace{}
 B.
- bei Anonymisierern, die auf Web-Formularen basieren), ist für jede einzelne
- Anfrage das Tupel 
+ bei Anonymisierern, die auf Web-Formularen basieren), müssen ohnehin die
+ einzelnen Zugriffe protokolliert werden.
+\end_layout
+
+\begin_layout Standard
+Für jeden HTTP-Request ist das Tupel 
 \begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}})$
 \end_inset
 
@@ -849,8 +896,8 @@ B.
 \end_inset
 
  Byte an.
- Ein formular-basierter Anonymisierer, der pro Sekunde 50 Requests erhält,
- muss also knapp 9 Gigabyte über einen Zeitraum von sechs Monaten aufbewahren.
+ Ein Anonymisierer, der pro Sekunde 50 Requests erhält, muss also knapp
+ 9 Gigabyte über einen Zeitraum von sechs Monaten aufbewahren.
 \end_layout
 
 \begin_layout Standard
@@ -860,7 +907,17 @@ Auch bei dieser Methode lässt sich keine eindeutige Zuordnung gewährleisten.
 \begin_inset Formula $120\cdot n_{r}$
 \end_inset
 
- mögliche HTTP-Requests, die in Frage kommen.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+120? 
+\end_layout
+
+\end_inset
+
+mögliche HTTP-Requests, die in Frage kommen.
  Allerdings ist zu beachten, dass diese Anfragen üblicherweise nicht von
  ebenso vielen unterschiedlichen Benutzern kommen, dementsprechend ist die
  Anzahl der in Frage kommenden Eingangskennungen geringer.
@@ -890,15 +947,30 @@ Der Speicheraufwand dieser Methode ist allerdings nicht unerheblich.
  der Datenübertragung.
 \end_layout
 
-\begin_layout Abstract
-Die Speicherung der Verbindungsdaten für jeden einzelnen Request erscheint
- gesetzeskonform, und ermöglicht tendenziell eine bessere Möglichkeit zur
- Aufdeckung von Verbindungen als die bloße Speicherung von Verbindungen
- zum Anonymisierdienst.
- Jedoch ist die Ergebnismenge der Anfragen, selbst bei schwach genutzten
- Anonymisierungsservern, im Normalfall aber deutlich größer als 1.
- Verbindungen können deshalb auch bei gesetzeskonformer Speicherung praktisch
- nie eindeutig auf einen Teilnehmer zurückverfolgt werden.
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Die Protokollierung der einzelnen HTTP-Requests ist zur Erfüllung der gesetzlich
+en Anforderungen besser geeignet als die bloße Speicherung der Verbindungsdaten.
+ Eine eindeutige Rückverfolgbarkeit lässt sich hierbei allerdings nicht
+ gewährleisten, da die Ergebnismenge bei Anfragen -- selbst bei schwach
+ genutzten Anonymisierungsservern -- in vielen Fällen größer als 1 ist.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Die HTTP-Requests können deshalb auch bei der gesetzeskonformer Speicherung
+ praktisch nie eindeutig auf einen Teilnehmer zurückverfolgt werden.
+ - ist es _sicher_ gesetzeskonform? das sollen lieber andere klären; würde
+ den Satz streichen.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -920,7 +992,7 @@ Das deutsche Gesetz macht allerdings keine Aussagen bezüglich der verlangten
  Genauigkeit bei der Abspeicherung der Transformationszeitpunkte.
  Zwar können heute verfügbare Proxy-Applikationen eingehende HTTP-Requests
  durchaus mit einer Auflösung im Millisekundenbereich protokollieren, eine
- Präzision von wenigen Millisekunden wäre jedoch nicht zielführend.
+ so hohe Präzision ist jedoch nicht zielführend.
  Denn selbst bei täglicher Synchronisierung ist die Uhren-Drift im Laufe
  eines Tages häufig nicht zu vernachlässigen (wir haben Abweichungen von
  etwa 1 Sekunde innerhalb von 24 Stunden beobachtet).
@@ -962,22 +1034,26 @@ um 09:43:10 Uhr
  Zusammen mit den Fehlern durch mangelhafte Uhrzeit-Synchronisation ergibt
  sich also auch bei extrem präzisen Anfragen ein Zeitfenster von einigen
  Sekunden für den Zeitpunkt 
-\begin_inset Formula $t_{transform}$
+\begin_inset Formula $t_{\mathrm{transform}}$
 \end_inset
 
 .
- Eine höhere zeitliche Auflösung von Anfragen nach Verbindugnsdaten als
- eine Minute ist also bereits aus physikalischen Gründen nicht zu empfehlen.
- 
+ Bei Anfragen zur Herausgabe von gespeicherten Verbindungsdaten bringt eine
+ höhere zeitliche Auflösung als eine Minute also aus physikalischen Gründen
+ nur einen geringen Genauigkeitsgewinn.
 \end_layout
 
-\begin_layout Abstract
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
 Wenn Anonymisierdienste, wie im Gesetz gefordert, ausschließlich Eingangskennung
 en, transformierte Ausgangskennungen und den Zeitpunkt der Transformation
- speichern müssen, ist bei lediglich einer einzigen Beobachtung eine Aufdeckung
- von Kommunikationsbeziehungen in den meisten Fällen nicht eindeutig möglich.
- Dies ist bedingt durch die Gleichzeitigkeit von Datenverbindungen und Uhrzeitab
-weichungen im Internet.
+ speichern müssen, ist -- bei lediglich einer einzigen Beobachtung -- eine
+ Aufdeckung von Kommunikationsbeziehungen in den meisten Fällen nicht möglich.
+ Dies ist bedingt durch die Gleichzeitigkeit von Datenverbindungen, indeterminis
+tische Übertragungszeiten und Uhrzeitabweichungen im Internet.
 \end_layout
 
 \begin_layout Subsection
@@ -1033,9 +1109,10 @@ Welche identische Nutzerkennung
 \end_layout
 
 \begin_layout Standard
-Wenn die Zugangskennung oder die IP-Adresse des aufzudeckenden Teilnehmers
- sich innerhalb dieser Zeit nicht geändert hat, erlauben single-hop-Anonymisiere
-r mit dieser Methode eine recht genaue Rückverfolgung der Zugriffe.
+Wenn sich die Zugangskennung oder die IP-Adresse des aufzudeckenden Teilnehmers
+ innerhalb dieser Zeit nicht geändert hat, ist bei Single-Hop-Anonymisierern
+ mit dieser Methode eine präzisere Rückverfolgung der Zugriffe möglich als
+ bei einzelnen Beobachtungen.
  Bei Diensten ohne Nutzerkennung, typisch für kostenlose Angebote, genügt
  es allerdings, sich von einem anderen Ort bzw.
  über einen anderen Provider einzuwählen, um eine andere IP zu erhalten
@@ -1056,19 +1133,23 @@ Der Betreiber eines kostenpflichtigen Dienstes kann seine Nutzer vor einer
  Dadurch wären die Anmeldeinformationen im Idealfall nur wenige Sekunden
  oder Minuten lang verkettbar.
  Die Absicherung, Geschwindigkeitsoptimierung und Einführung eines solchen
- Verfahrens ist jedoch recht komplex, und deshalb außerhalb des Themenbereichs
+ Verfahrens ist jedoch aufwändig, und deshalb außerhalb des Themenbereichs
  dieses Artikels.
  Auch ist es unwahrscheinlich, dass solche aufwendigen Verfahren in einfachen
- single-hop-Proxies integriert werden.
+ Single-Hop-Proxies integriert werden.
 \end_layout
 
-\begin_layout Abstract
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
 Sofern Straftäter mehr als einmal den gleichen Anonymisierdienstleister
  nutzen, und dabei jeweils von Bedarfsträgern wiedererkannt und zurückverfolgt
  werden, liefert die zeitlich versetzte Schnittmengenbildung eine deutlich
  höhere Wahrscheinlichkeit für eine eindeutige Aufdeckung als die einmalige
  Beobachtung.
- Gerade bei kostenpflichtigen single-hop-Anonymisierdiensten ermöglicht
+ Gerade bei kostenpflichtigen Single-Hop-Anonymisierdiensten ermöglicht
  diese Methode in vielen Fällen eine Deanonymisierung.
  Die gesetzlichen Vorgaben müssen dafür nicht angepasst werden, lediglich
  der Inhalt der behördlichen Anfragen ist leicht zu ergänzen.
@@ -1080,15 +1161,15 @@ Speicherung von Ziel-IP-Adressen oder URLs
 
 \begin_layout Standard
 Zur Verbesserung der Rückverfolgbarkeit bis zum Urheber der Verbindung könnte
- der Anonymisierer zusätzlich auch die IP-Adresse des Ziel-Servers oder
- sogar die gesamte URL speichern.
+ der Betreiber eines Anonymisierers verpflichtet werden, zusätzlich auch
+ die IP-Adresse des Ziel-Servers oder sogar die gesamte URL speichern.
  Er muss dazu für jeden HTTP-Request das Tupel 
 \begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}},a_{\mathrm{destination}})$
 \end_inset
 
  protokollieren.
- Pro Request fallen dann 16 Byte an, was bei einer durchschnittlichen Anzahl
- von 
+ Bei der Speicherung der Ziel-IP-Adresse fallen dann pro Request 16 Byte
+ an, was bei einer durchschnittlichen Anzahl von 
 \begin_inset Formula $n_{r}$
 \end_inset
 
@@ -1100,9 +1181,9 @@ Zur Verbesserung der Rückverfolgbarkeit bis zum Urheber der Verbindung könnte
 \end_layout
 
 \begin_layout Standard
-Allerdings ist die Speicherung von Zieladressen verboten, und die Strafverfolgun
-gsbehörden geben in ihren Anfragen derzeit die Ziel-IP-Adresse gar nicht
- an (vgl.
+Allerdings ist die Speicherung von Zieladressen derzeit verboten.
+ Zudem geben die Strafverfolgungsbehörden in ihren Anfragen derzeit die
+ Zieladresse gar nicht an (vgl.
  die eingangs präsentierte Anfrage 
 \begin_inset Formula $q$
 \end_inset
@@ -1114,9 +1195,9 @@ gsbehörden geben in ihren Anfragen derzeit die Ziel-IP-Adresse gar nicht
 \end_layout
 
 \begin_layout Standard
-Die Rückverfolgbarkeit kann auch bei dieser Methode nicht garantiert werden,
- da nicht ausgeschlossen ist, dass mehrere Benutzer die fragliche Webseite
- im zu durchsuchenden Zeitfenster abgerufen haben.
+Die eindeutige Rückverfolgbarkeit kann allerdings auch bei dieser Methode
+ nicht garantiert werden, da nicht ausgeschlossen ist, dass mehrere Benutzer
+ die fragliche Webseite im zu durchsuchenden Zeitfenster abgerufen haben.
  Zudem ist eine IP-Adresse nicht immer ein identifizierendes Merkmal für
  eine Webseite (etwa bei virtuellen Webservern, die mehrere Internet-Domains
  über eine IP-Adresse anbieten).
@@ -1133,13 +1214,15 @@ eit tatsächlich gewährleisten kann, ist daher die Speicherung der vollständig
 \end_inset
 
  Byte pro Tag entspricht.
- Bei einem Anonymisierer mit durchschnittlich 50 Requests pro Sekunde <Quellen>
- fallen im Zeitraum von 6 Monaten etwa 45 Gigabyte an Vorratsdaten an.
+ Bei einem Anonymisierer mit durchschnittlich 50 Requests pro Sekunde (z.\InsetSpace \thinspace{}
+B.
+ Anonymouse <Quellen>) fallen im Zeitraum von 6 Monaten etwa 45 Gigabyte
+ an Vorratsdaten an.
  Dieser Speicherbedarf lässt sich allerdings durch Kompression der URLs
- wieder reduzieren.
+ etwas reduzieren.
  Obwohl es immer noch passieren kann, dass zwei Benutzer im fraglichen Zeitfenst
-er exakt die gleiche URL abgerufen haben, wird im Normalfall bei dieser
- Methode eine eindeutige Zuordnung gelingen.
+er exakt die gleiche URL abgerufen haben, wird bei dieser Methode im Normalfall
+ eine eindeutige Zuordnung gelingen.
  Bei über HTTPS verschlüsselten Verbindungen ist die Speicherung allerdings
  ungenauer und kann nicht die im Einzelnen aufgerufenen Webseiten erfassen.
 \end_layout
@@ -1153,7 +1236,7 @@ B.
  Suchanfragen, Passwörter oder Sitzungsinformationen, die mit der GET-Methode
  übertragen werden).
  Datenschutzrechtlich wäre eine massenhafte Speicherung dieser Information
- daher sehr fragwürdig und schwer durchzusetzen.
+ daher äußerst problematisch und schwer durchzusetzen.
  Sofern eine Speicherung von URLs dennoch vorgeschrieben werden sollte müsste
  dies in Diensten, die nicht speziell zur Anonymisierung von HTTP entwickelt
  wurden (z.\InsetSpace \thinspace{}
@@ -1162,13 +1245,18 @@ B.
  
 \end_layout
 
-\begin_layout Abstract
-Die Speicherung Ziel-IPs und URLs ermöglicht meist eien sehr wirksame Aufdeckung
- von Verbindungen, ist aber datenschutzrechtlich als äußerst bedenklich
- einzustufen.
- Die zur Speicherung erforderliche Datenmenge ist etwa fünf Mal höher als
- bei bloßer Speicherung der Request-Zeitpunkte.
- 
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Die Speicherung von Ziel-IPs und URLs ermöglicht meist eien sehr wirksame
+ Aufdeckung von Verbindungen, ist aber im Hinblick auf die damit einhergehende
+ Speicherung personenbezogener Daten der Nutzer als bedenklich einzustufen.
+ Zudem ist die zur Speicherung erforderliche Datenmenge etwa fünf Mal höher
+ als bei bloßer Speicherung der Request-Zeitpunkte.
+ Die Vorhaltung solcher Datenmengen kann für Betreiber kleiner Server zum
+ Problem werden.
 \end_layout
 
 \begin_layout Subsection
@@ -1183,7 +1271,7 @@ Einführung protokollabhängiger Kennungen
 \begin_layout Standard
 Die im vorigen Abschnitt beschriebene Speicherung von URLs geht mit einer
  Reihe von Nachteilen einher.
- Im folgenden wird ein Verfahren vorgestellt, das zum Einen eine eindeutige
+ Im folgenden wird ein Verfahren vorgestellt, das zum einen eine eindeutige
  Verkettung der Ausgangskennung mit der Eingangskennung ermöglicht und zum
  Anderen die Privatsphäre der Nutzer besser schützt.
  Es muss jedoch für jedes Protokoll separat implementiert werden.
@@ -1193,7 +1281,8 @@ Die im vorigen Abschnitt beschriebene Speicherung von URLs geht mit einer
 \begin_layout Standard
 Der Anonymisierungsdienst fügt in die HTTP-Requests des Nutzers vor der
  Weiterleitung an die Ziel-Server eine eindeutige Kennung ein.
- Bei HTTP-Requests fügt er hierzu einen zusätzlichen HTTP-Header (etwa 
+ Bei HTTP-Requests bietet sich hierzu einen zusätzlicher HTTP-Header (etwa
+ 
 \emph on
 X-Data-Retention-Tag
 \emph default
@@ -1201,7 +1290,7 @@ X-Data-Retention-Tag
 \begin_inset Formula $\mathrm{tag}_{i}$
 \end_inset
 
-) ein.
+) an.
  Diese neue Kennung speichert der Anonymisierungsdienst im Tupel 
 \begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}},\mathrm{tag_{i}})$
 \end_inset
@@ -1242,9 +1331,9 @@ Zur eindeutigen Bestimmung der Eingangskennung müssten die Strafverfolgungsbeh�
 den jedoch das Data-Retention-Tag ermitteln und bei einer Anfrage angeben.
  Im Gegensatz zu IP-Adressen werden HTTP-Header jedoch von Webservern nicht
  protokolliert (wobei schon die Speicherung der IP-Adressen umstritten und
- in Deutschland sogar offiziell verboten ist - wenn sich auch kaum jemand
- an das Verbot hält), so dass das Data-Retention-Tag nicht im Nachhinein
- aus Webserver-Log-Dateien ermittelt werden kann.
+ in Deutschland sogar offiziell verboten ist -- wobei sich allerdings nur
+ sehr wenige Serverbetreiber an dieses Verbot halten), so dass das Data-Retentio
+n-Tag nicht im Nachhinein aus Webserver-Log-Dateien ermittelt werden kann.
  Bei einer Echtzeit-Protokollierung des Netzwerkverkehrs ließe es sich hingegen
  herausfiltern.
 \end_layout
@@ -1253,7 +1342,7 @@ den jedoch das Data-Retention-Tag ermitteln und bei einer Anfrage angeben.
 Diese Methode verlangt von den Betreibern von Anonymisierern, dass sie für
  die Vorratsdatenspeicherung zusätzliche Daten generieren -- was gemäß der
  Rechtslage nicht von ihnen verlangt werden kann.
- Demnach müssen lediglich Daten gespeichert werden, die bei der Übermittlung
+ Demzufolge müssen lediglich Daten gespeichert werden, die bei der Übermittlung
  ohnehin anfallen.
  Ferner macht es wenig Sinn, standardisierte Internetprotokolle alleine
  zum Zweck der Strafverfolgung zu ändern, sofern dies nicht durch internationale
@@ -1262,8 +1351,8 @@ Diese Methode verlangt von den Betreibern von Anonymisierern, dass sie für
 \end_layout
 
 \begin_layout Standard
-Momentan stehen kein Internet-Standards zur Verfügung stehen, die eine solcherar
-t vereinfachte strafrechtliche Verkettung erlauben.
+Die verbreiteten Kommunikationsprotokolle im Internet enthalten keine expliziten
+ Vorkehrungen für die strafrechtliche Rückverfolgung.
  Allerdings kann, zumindest bei TCP, die Portnummer dazu 
 \begin_inset Quotes gld
 \end_inset
@@ -1274,8 +1363,8 @@ missbraucht
 
  werden: Würde der Proxy-Server den Source-Port bei jeder ausgehenden Verbindung
  speichern wäre zum Zeitpunkt der Verbindungsaufnahme eine eindeutige Zuordnung
- möglich -- von einem Source-Port können nicht zwei Verbindungen gleichzeitig
- ausgehen.
+ möglich -- von einem Source-Port können zu einem gegebenen Zeitpunkt nicht
+ zwei Verbindungen gleichzeitig ausgehen.
  Der Source-Port ist auch für den Ziel-Server sichtbar.
  Allerdings stehen Source-Ports nach dem Beenden einer Verbindung unmittelbar
  wieder für neue Verbindungen zur Verfügung.
@@ -1292,7 +1381,7 @@ missbraucht
 \begin_inset Formula $\frac{28232}{n_{r}}$
 \end_inset
 
- Sekunden dauert, bis ein Port wiederverwendet wird, bei 50 Requests pro
+ Sekunden dauert, bis ein Port wiederverwendet wird -- bei 50 Requests pro
  Sekunde also knapp 10 Minuten.
  Dies genügt, um in einem minutengenauen Zeitraster eine eindeutige Aufdeckung
  von Verbindungen zu ermöglichen.
@@ -1301,9 +1390,13 @@ missbraucht
  von IP-Adressen dar.
 \end_layout
 
-\begin_layout Abstract
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
 Protokollabhängige Kennungen ermöglichen eine eindeutige Aufdeckung von
- Verbindungen bei hoher Datensparsamkeit.
+ Verbindungen bei gleichzeitiger Einhaltung des Gebots der Datensparsamkeit.
  Optimal wären Internetstandards für protokollspezifische Kennungen zum
  Zweck der Strafverfolgung.
  Zumindest bei TCP ist derzeit schon die Speicherung von Quell-Ports als
@@ -1410,18 +1503,17 @@ hinteren
  jeweilige Vorgänger ohnehin statisch festgelegt ist.
  Während bei Mix-Netzen zur Rückverfolgung die Vorratsdaten aller Knoten
  ausgewertet werden müssen, reicht es bei Mix-Kaskaden aus, nur beim ersten
- Mix anzufragen, wobei der Zeitpunkt, an dem der Request dort bearbeitet
- wurde, nicht genau bestimmt werden kann.
- Mixkaskaden sind daher im Hinblick auf eine simple Vorratsdatenspeicherung
- von Request-Zeitpunkten unsicherer als Mix-Netze.
- 
+ Mix anzufragen.
+ Bei Mixkaskaden erscheint die Rückverfolgung daher leichter als bei Mix-Netzen.
+ Allerdings ist der Zeitpunkt, an dem der Request am ersten Mix einer Kaskade
+ bearbeitet wurde, für Strafverfolger nicht genau bestimmbar.
 \end_layout
 
 \begin_layout Standard
-Die ausschließliche Speicherung der Eingangs-IPs plus Request-Zeitpunkt
+Die ausschließliche Speicherung der Eingangs-IPs und der Request-Zeitpunkte
  ist bei Multi-Hop-Anonymisierern allerdings zur Gewährleistung der Rückverfolgb
 arkeit grundsätzlich nicht ausreichend (vgl.
- die Erläuterungen in Abschnitt 
+ die Erläuterungen zu Single-Hop-Anonymisierern in Abschnitt 
 \begin_inset LatexCommand ref
 reference "sec:single-hop"
 
@@ -1429,8 +1521,8 @@ reference "sec:single-hop"
 
 ).
  Jeder weitere Knoten, über den die Nachricht weitergeleitet wird, erhöht
- dabei die Unschärfe noch zusätzlich im Vergleich zu single-hop-Anonymisierern:
- Beträgt die Unschärfe für 
+ dabei im Vergleich zu Single-Hop-Anonymisierern die Unschärfe: Beträgt
+ die Unschärfe für 
 \begin_inset Formula $t_{\mathrm{transform}}$
 \end_inset
 
@@ -1453,8 +1545,8 @@ reference "sec:single-hop"
 \begin_layout Standard
 Eine bessere Rückverfolgbarkeit erfordert die Speicherung weiterer Verbindungske
 nnungen, mit denen der Weg einer Nachricht durch den Anonymisierer bei Bedarf
- aufgedeckt werden kann, wenn die Betreiber aller Knoten ihre auf Vorrat
- gespeicherten Daten zusammenführen.
+ aufgedeckt werden kann -- und zwar wenn die Betreiber aller Knoten ihre
+ auf Vorrat gespeicherten Daten zusammenführen.
  Hierzu verwenden jeweils zwei benachbarte Knoten für jeden Request eine
  eindeutige Kennung.
  Die Vorgehensweise wird anhand des in Abbildung 
@@ -1507,8 +1599,8 @@ reference "sub:Schnittmengenbildung-über-mehrere"
 
 \end_inset
 
- beschriebene Schnittmengenbildung ist bei multi-hop-Anonymisierern trotz
- der eigneführten Kennungen wirkungslos: die Kennungen sind nur für einzelne
+ beschriebene Schnittmengenbildung ist bei Multi-Hop-Anonymisierern trotz
+ der eingeführten Kennungen wirkungslos: die Kennungen sind nur für einzelne
  Requests gültig, und können deshalb von den Mixen nicht verwendet werden,
  um die gleichen Teilnehmer bei späteren Requests wiederzuerkennen.
  Zur Gewährleistung der eindeutigen Zuordnung muss deshalb der letzte Knoten
@@ -1519,17 +1611,18 @@ reference "sec:single-hop"
 \end_inset
 
  beschriebene Single-Hop-Anonymisierer die Ziel-IP-Adresse oder die abgerufene
- URL für alle HTTP-Anfragen protokollieren, oder eine spezifische Kennung
- des übertragenen Protokolls speichern wie in Abschnitt 
+ URL für alle HTTP-Anfragen protokollieren, oder eine zusätzliche protokollabhän
+gige Kennung speichern (wie in Abschnitt 
 \begin_inset LatexCommand ref
 reference "sub:Einführung-protokollabhängiger-Kennungen"
 
 \end_inset
 
-vorgeschlagen.
- Auch eine Optimierung des Speicherverbrauchst ist, ähnlich den single-hop-Anony
-misierern, möglich: ein hinter die Kaskade geschalteter Burst-Proxy könnte
- abgerufene Webseiten parsen und eingebettete Objekte selbständig nachladen.
+ vorgeschlagen).
+ Auch eine Optimierung des Speicherverbrauchst ist, ähnlich wie bei Single-Hop-A
+nonymisierern, möglich: ein hinter die Kaskade geschalteter Burst-Proxy
+ könnte abgerufene Webseiten parsen und eingebettete Objekte selbständig
+ nachladen.
  Für die nachgeladenen Objekte ist dann kein separater Datensatz mehr nötigt,
  da klar ist, dass sie vom selben Teilnehmer stammen.
 \end_layout
@@ -1580,7 +1673,7 @@ Hops
  in einer Kette nicht im Einflussbereich des speicherpflichtigen Staates
  liegen, und deshalb keine Daten an ihn herausgeben bzw.
  erheben müssen.
- Ferner erlaubt die Benutzerkennung bei kommerziellen single-hop-Anonymisierern
+ Ferner erlaubt die Benutzerkennung bei kommerziellen Single-Hop-Anonymisierern
  sehr effektive Schnittmengenangriffe auf die Vorratsdaten, die bei Multi-Hop-An
 onymisierern so nicht möglich sind.
 \end_layout
@@ -1619,7 +1712,7 @@ Vorausgesetzt wird dabei ein loser Verbund von web-basierten Proxy-Servern,
  die ausschließlich über (von der Speicherungspflicht ausgeschlossene) URLs
  kommunizieren.
  Dabei kommen mehrfach verschlüsselte und verschachtelte URLs zum Einsatz,
- die in ähnlicher Form beim Rewebber-Dienst verwendet werden 
+ die in ähnlicher Form für den Rewebber-Dienst vorgeschlagen wurden 
 \begin_inset LatexCommand cite
 key "GoWa98"
 
