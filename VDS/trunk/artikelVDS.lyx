@@ -1095,15 +1095,17 @@ Zur Verbesserung der Rückverfolgbarkeit bis zum Urheber der Verbindung könnte
 \end_layout
 
 \begin_layout Standard
-Allerdings geben die Strafverfolgungsbehörden in ihren Anfragen derzeit
- die Ziel-IP-Adresse gar nicht an (vgl.
+Allerdings ist die Speicherung von Zieladressen verboten, und die Strafverfolgun
+gsbehörden geben in ihren Anfragen derzeit die Ziel-IP-Adresse gar nicht
+ an (vgl.
  die eingangs präsentierte Anfrage 
 \begin_inset Formula $q$
 \end_inset
 
 ).
  Zur Erhöhung der Genauigkeit müssten die Behörden diese zusätzlich in die
- Anfrage aufnehmen.
+ Anfrage aufnehmen, und die Speicherung der Zieladresse müsste vorgeschrieben
+ oder zumindest zulässig sein.
 \end_layout
 
 \begin_layout Standard
@@ -1126,31 +1128,42 @@ eit tatsächlich gewährleisten kann, ist daher die Speicherung der vollständig
 \end_inset
 
  Byte pro Tag entspricht.
- Bei einem Anonymisierer mit durchschnittlich 50 Requests pro Sekunde fallen
- im Zeitraum von 6 Monaten etwa 45 Gigabyte an Vorratsdaten an.
+ Bei einem Anonymisierer mit durchschnittlich 50 Requests pro Sekunde <Quellen>
+ fallen im Zeitraum von 6 Monaten etwa 45 Gigabyte an Vorratsdaten an.
  Dieser Speicherbedarf lässt sich allerdings durch Kompression der URLs
  wieder reduzieren.
  Obwohl es immer noch passieren kann, dass zwei Benutzer im fraglichen Zeitfenst
 er exakt die gleiche URL abgerufen haben, wird im Normalfall bei dieser
  Methode eine eindeutige Zuordnung gelingen.
+ Bei über HTTPS verschlüsselten Verbindungen ist die Speicherung allerdings
+ ungenauer und kann nicht die im Einzelnen aufgerufenen Webseiten erfassen.
 \end_layout
 
 \begin_layout Standard
-Es ist jedoch unklar, ob die Speicherung von IP-Adressen und URLs überhaupt
- in Einklang mit der aktuellen Rechtslage ist, da Inhalte der Kommunikation
- und Informationen über die abgerufenen Internetseiten auf Grund des Gesetzes
- nicht gespeichert werden dürfen (vgl.
- §\InsetSpace \thinspace{}
-113a Absatz 8).
+Inhalte der Kommunikation und Informationen über abgerufene Internetseiten
+ dürfen auf Grund des TKG bisher allerdings nicht gespeichert werden.
  Insbesondere URLs enthalten häufig personenbezogene Daten oder Inhalte
  der Kommunikation (z.\InsetSpace \thinspace{}
 B.
- Suchanfragen oder Sitzungsinformationen, die mit der GET-Methode übertragen
- werden).
- Ferner muss die Speicherung von URLs bei Diensten, die nicht speziell zur
- Anonymisierung von HTTP entwickelt wurden (z.\InsetSpace \thinspace{}
+ Suchanfragen, Passwörter oder Sitzungsinformationen, die mit der GET-Methode
+ übertragen werden).
+ Datenschutzrechtlich wäre eine massenhafte Speicherung dieser Information
+ daher sehr fragwürdig und schwer durchzusetzen.
+ Sofern eine Speicherung von URLs dennoch vorgeschrieben werden sollte müsste
+ dies in Diensten, die nicht speziell zur Anonymisierung von HTTP entwickelt
+ wurden (z.\InsetSpace \thinspace{}
 B.
- Tor oder VPNs) aufwändig implementiert werden.
+ Tor oder VPNs), aufwändig implementiert werden.
+ 
+\end_layout
+
+\begin_layout Abstract
+Die Speicherung Ziel-IPs und URLs ermöglicht meist eien sehr wirksame Aufdeckung
+ von Verbindungen, ist aber datenschutzrechtlich als äußerst bedenklich
+ einzustufen.
+ Die zur Speicherung erforderliche Datenmenge ist etwa fünf Mal höher als
+ bei bloßer Speicherung der Request-Zeitpunkte.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -1160,9 +1173,9 @@ Einführung protokollabhängiger Kennungen
 \begin_layout Standard
 Die im vorigen Abschnitt beschriebene Speicherung von URLs geht mit einer
  Reihe von Nachteilen einher.
- Im folgenden wird ein Verfahren vorgestellt, das zum einen eine eindeutige
+ Im folgenden wird ein Verfahren vorgestellt, das zum Einen eine eindeutige
  Verkettung der Ausgangskennung mit der Eingangskennung ermöglicht und zum
- anderen die Privatsphäre der Nutzer besser schützt.
+ Anderen die Privatsphäre der Nutzer besser schützt.
  Es muss jedoch für jedes Protokoll separat implementiert werden.
  Das Verfahren soll am Beispiel von HTTP erläutert werden.
 \end_layout
@@ -1218,9 +1231,10 @@ en verketten könnte bzw.
 Zur eindeutigen Bestimmung der Eingangskennung müssten die Strafverfolgungsbehör
 den jedoch das Data-Retention-Tag ermitteln und bei einer Anfrage angeben.
  Im Gegensatz zu IP-Adressen werden HTTP-Header jedoch von Webservern nicht
- protokolliert (wobei schon die Speicherung der IP-Adressen umstritten ist),
- so dass das Data-Retention-Tag nicht im Nachhinein aus Webserver-Log-Dateien
- ermittelt werden kann.
+ protokolliert (wobei schon die Speicherung der IP-Adressen umstritten und
+ in Deutschland sogar offiziell verboten ist - wenn sich auch kaum jemand
+ an das Verbot hält), so dass das Data-Retention-Tag nicht im Nachhinein
+ aus Webserver-Log-Dateien ermittelt werden kann.
  Bei einer Echtzeit-Protokollierung des Netzwerkverkehrs ließe es sich hingegen
  herausfiltern.
 \end_layout
@@ -1231,8 +1245,24 @@ Diese Methode verlangt von den Betreibern von Anonymisierern, dass sie für
  Rechtslage nicht von ihnen verlangt werden kann.
  Demnach müssen lediglich Daten gespeichert werden, die bei der Übermittlung
  ohnehin anfallen.
- Diese Beschreibung trifft allerdings auch auf TCP-Portnummern zu.
- Würde der Proxy-Server den Source-Port bei jeder ausgehenden Verbindung
+ Ferner macht es wenig Sinn, standardisierte Internetprotokolle alleine
+ zum Zweck der Strafverfolgung zu ändern, sofern dies nicht durch internationale
+ Standards geschieht.
+ 
+\end_layout
+
+\begin_layout Standard
+Momentan stehen kein Internet-Standards zur Verfügung stehen, die eine solcherar
+t vereinfachte strafrechtliche Verkettung erlauben.
+ Allerdings kann, zumindest bei TCP, die Portnummer dazu 
+\begin_inset Quotes gld
+\end_inset
+
+missbraucht
+\begin_inset Quotes grd
+\end_inset
+
+ werden: Würde der Proxy-Server den Source-Port bei jeder ausgehenden Verbindung
  speichern wäre zum Zeitpunkt der Verbindungsaufnahme eine eindeutige Zuordnung
  möglich -- von einem Source-Port können nicht zwei Verbindungen gleichzeitig
  ausgehen.
@@ -1252,11 +1282,20 @@ Diese Methode verlangt von den Betreibern von Anonymisierern, dass sie für
 \begin_inset Formula $\frac{28232}{n_{r}}$
 \end_inset
 
- Sekunden dauert, bis ein Port wiederverwendet wird (bei 50 Requests pro
- Sekunde knapp 10 Minuten).
+ Sekunden dauert, bis ein Port wiederverwendet wird, bei 50 Requests pro
+ Sekunde also knapp 10 Minuten.
  Die Speicherung der Source-Ports stellt damit einen Kompromiss zwischen
  der Erzeugung langlebiger Kennungen und dem ausschließlichen Speichern
  von IP-Adressen dar.
+\end_layout
+
+\begin_layout Abstract
+Protokollabhängige Kennungen ermöglichen bei gleichzeitiger Datensparsamkeit
+ eine eindeutige Aufdeckung von Verbindungen.
+ Optimal wären Internetstandards für protokollspezifische Kennungen zum
+ Zweck der Strafverfolgung.
+ Zumindest bei TCP ist derzeit schon die Speicherung von Quell-Ports als
+ Kompromisslösung möglich.
 \end_layout
 
 \begin_layout Section
@@ -1473,11 +1512,13 @@ g erforderlich sind, überhaupt gezwungen werden kann.
 \end_layout
 
 \begin_layout Standard
-!!! Schnitmengenangriff quasi wirkungslos !!!
+!!! oben beschriebener Schnittmengenangriff quasi wirkungslos !!!
 \end_layout
 
 \begin_layout Standard
-!!! Speicheroptimeirung über Burst-Proxy!!!
+!!! Speicheroptimierung über Burst-Proxy; eingebettete Objekte derselben
+ Webseite lösen keine erneute Speicherung aus, da sie automatisch vom Server
+ nachgeladen werden!!!
 \end_layout
 
 \begin_layout Section
