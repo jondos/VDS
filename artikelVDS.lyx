@@ -981,7 +981,12 @@ weichungen im Internet.
 \end_layout
 
 \begin_layout Subsection
-Anpassung der Behördenanfragen: Schnittmengenbildung über mehrere Beobachtungen
+\begin_inset LatexCommand label
+name "sub:Schnittmengenbildung-über-mehrere"
+
+\end_inset
+
+Schnittmengenbildung über mehrere Beobachtungen
 \end_layout
 
 \begin_layout Standard
@@ -1167,6 +1172,11 @@ Die Speicherung Ziel-IPs und URLs ermöglicht meist eien sehr wirksame Aufdeckun
 \end_layout
 
 \begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Einführung-protokollabhängiger-Kennungen"
+
+\end_inset
+
 Einführung protokollabhängiger Kennungen
 \end_layout
 
@@ -1310,8 +1320,8 @@ Implementierung für multi-hop Anonymisierer
 \end_layout
 
 \begin_layout Standard
-Im Rahmen dieses Beitrags werden Dienste, die die Daten zur Anonymisierung
- über mehrere Zwischenstationen weiterleiten als Multi-Hop-Anonymisierer
+Im Rahmen dieses Beitrags werden Dienste, welche die Daten zur Anonymisierung
+ über mehrere Zwischenstationen weiterleiten, als Multi-Hop-Anonymisierer
  bezeichnet.
  Hierzu zählen insbesondere Tor (Onion-Routing mit prinzipiell freier Wahl
  der Zwischenstationen) und JonDonym
@@ -1325,7 +1335,7 @@ vormals AN.ON bzw.
 
 \end_inset
 
- (statische Mix-Kaskaden).
+ (statische Mixkaskaden).
  In Abbildung 
 \begin_inset LatexCommand ref
 reference "fig:Modell-eines-Multi-Hop-Anonymisierers"
@@ -1382,8 +1392,9 @@ isierer -- das Tupel
 \end_inset
 
  speichern.
- Bei Mix-Kaskaden, wo immer die gleichen Knoten in derselben Reihenfolge
- verwendet werden, muss lediglich der erste Knoten 
+ Bei Mixkaskaden werden immer die gleichen Knoten in derselben Reihenfolge
+ verwendet.
+ Lediglich der erste Knoten muss 
 \begin_inset Formula $a_{in}$
 \end_inset
 
@@ -1397,25 +1408,19 @@ hinteren
 
  Knoten können auf die Speicherung der Eingangsadressen verzichten, da der
  jeweilige Vorgänger ohnehin statisch festgelegt ist.
- Mix-Kaskaden sind daher im Hinblick auf Vorratsdatenspeicherung 
-\begin_inset Quotes gld
-\end_inset
-
-unsicherer
-\begin_inset Quotes grd
-\end_inset
-
- als Mix-Netze.
  Während bei Mix-Netzen zur Rückverfolgung die Vorratsdaten aller Knoten
  ausgewertet werden müssen, reicht es bei Mix-Kaskaden aus, nur beim ersten
- Mix anzufragen (wobei der Zeitpunkt, an dem der Request dort bearbeitet
- wurde, nicht genau bestimmt werden kann).
+ Mix anzufragen, wobei der Zeitpunkt, an dem der Request dort bearbeitet
+ wurde, nicht genau bestimmt werden kann.
+ Mixkaskaden sind daher im Hinblick auf eine simple Vorratsdatenspeicherung
+ von Request-Zeitpunkten unsicherer als Mix-Netze.
+ 
 \end_layout
 
 \begin_layout Standard
-Die ausschließliche Speicherung der Eingangs-IPs ist bei Multi-Hop-Anonymisierer
-n allerdings zur Gewährleistung der Rückverfolgbarkeit nicht ausreichend
- (vgl.
+Die ausschließliche Speicherung der Eingangs-IPs plus Request-Zeitpunkt
+ ist bei Multi-Hop-Anonymisierern allerdings zur Gewährleistung der Rückverfolgb
+arkeit grundsätzlich nicht ausreichend (vgl.
  die Erläuterungen in Abschnitt 
 \begin_inset LatexCommand ref
 reference "sec:single-hop"
@@ -1424,7 +1429,8 @@ reference "sec:single-hop"
 
 ).
  Jeder weitere Knoten, über den die Nachricht weitergeleitet wird, erhöht
- dabei die Unschärfe noch zusätzlich: Beträgt die Unschärfe für 
+ dabei die Unschärfe noch zusätzlich im Vergleich zu single-hop-Anonymisierern:
+ Beträgt die Unschärfe für 
 \begin_inset Formula $t_{\mathrm{transform}}$
 \end_inset
 
@@ -1491,15 +1497,41 @@ reference "fig:Modell-eines-Multi-Hop-Anonymisierers"
 \end_inset
 
 .
- Zur Gewährleistung der eindeutigen Zuordnung muss der letzte Knoten wie
- der in Abschnitt 
+ 
+\end_layout
+
+\begin_layout Standard
+Die in Abschnitt 
+\begin_inset LatexCommand ref
+reference "sub:Schnittmengenbildung-über-mehrere"
+
+\end_inset
+
+ beschriebene Schnittmengenbildung ist bei multi-hop-Anonymisierern trotz
+ der eigneführten Kennungen wirkungslos: die Kennungen sind nur für einzelne
+ Requests gültig, und können deshalb von den Mixen nicht verwendet werden,
+ um die gleichen Teilnehmer bei späteren Requests wiederzuerkennen.
+ Zur Gewährleistung der eindeutigen Zuordnung muss deshalb der letzte Knoten
+ wie der in Abschnitt 
 \begin_inset LatexCommand ref
 reference "sec:single-hop"
 
 \end_inset
 
- beschriebene Single-Hop-Anonymisierer wieder die Ziel-IP-Adresse oder die
- abgerufene URL für alle HTTP-Anfragen protokollieren.
+ beschriebene Single-Hop-Anonymisierer die Ziel-IP-Adresse oder die abgerufene
+ URL für alle HTTP-Anfragen protokollieren, oder eine spezifische Kennung
+ des übertragenen Protokolls speichern wie in Abschnitt 
+\begin_inset LatexCommand ref
+reference "sub:Einführung-protokollabhängiger-Kennungen"
+
+\end_inset
+
+vorgeschlagen.
+ Auch eine Optimierung des Speicherverbrauchst ist, ähnlich den single-hop-Anony
+misierern, möglich: ein hinter die Kaskade geschalteter Burst-Proxy könnte
+ abgerufene Webseiten parsen und eingebettete Objekte selbständig nachladen.
+ Für die nachgeladenen Objekte ist dann kein separater Datensatz mehr nötigt,
+ da klar ist, dass sie vom selben Teilnehmer stammen.
 \end_layout
 
 \begin_layout Standard
@@ -1508,19 +1540,11 @@ Die erzeugten Verbindungskennungen ermöglichen eine eindeutige Rückverfolgung
 hert hat.
  Die am Beispiel erläuterte Vorgehensweise lässt sich sowohl bei Mix-Netzen
  und Mix-Kaskaden gleichermaßen implementieren.
- Es ist jedoch unklar, inwieweit ein Dienstanbieter durch das Gesetz zur
- Erzeugung solcher zusätzlicher Kennungen, die für eine eindeutige Rückverfolgun
-g erforderlich sind, überhaupt gezwungen werden kann.
-\end_layout
-
-\begin_layout Standard
-!!! oben beschriebener Schnittmengenangriff quasi wirkungslos !!!
-\end_layout
-
-\begin_layout Standard
-!!! Speicheroptimierung über Burst-Proxy; eingebettete Objekte derselben
- Webseite lösen keine erneute Speicherung aus, da sie automatisch vom Server
- nachgeladen werden!!!
+ Im Allgemeinen müssen diese Kennungen außerdem nicht neu in die Systeme
+ eingeführt werden, da sie implizit bereits vorhanden sein müssen, um die
+ Kommunikation der Teilnehmer mit den einzelnen Servern des Netzes bzw.
+ der Kaskade zu ermöglichen.
+ 
 \end_layout
 
 \begin_layout Section
@@ -1530,13 +1554,35 @@ URL-basierter Multi-Hop-Anonymisierer
 \begin_layout Standard
 Falls Multi-Hop-Anonymisierer gesetzlich verpflichtet werden, den Weg einer
  Verbindung durch ihr System mit eindeutigen Kennungen nachvollziehbar zu
- machen, bieten sie nur einen geringen Sicherheitsgewinn gegenüber einem
+ machen, bieten sie gegenüber einem 
+\begin_inset Quotes gld
+\end_inset
+
+staatlichen Angreifer
+\begin_inset Quotes grd
+\end_inset
+
+ nur einen geringen Sicherheitsgewinn verglichen mit einem nicht-kommerziellen
  Single-Hop-Anonymisierer.
  Die Unschärfe der Ergebnismenge bei einer Anfrage 
 \begin_inset Formula $q$
 \end_inset
 
  ist für beide Architekturen etwa gleich groß.
+ Ihre eigentliche Stärke liegt jedoch darin, dass einzelne 
+\begin_inset Quotes gld
+\end_inset
+
+Hops
+\begin_inset Quotes grd
+\end_inset
+
+ in einer Kette nicht im Einflussbereich des speicherpflichtigen Staates
+ liegen, und deshalb keine Daten an ihn herausgeben bzw.
+ erheben müssen.
+ Ferner erlaubt die Benutzerkennung bei kommerziellen single-hop-Anonymisierern
+ sehr effektive Schnittmengenangriffe auf die Vorratsdaten, die bei Multi-Hop-An
+onymisierern so nicht möglich sind.
 \end_layout
 
 \begin_layout Standard
