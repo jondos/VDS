@@ -1606,7 +1606,7 @@ reference "sec:single-hop"
 \end_inset
 
  wurde gezeigt, dass schon bei einem Single-Hop-Anonymisierer eine eindeutige
- Rückverfolger nicht gewährleistet ist, wenn ausschließlich Eingangs- und
+ Rückverfolgung nicht gewährleistet ist, wenn ausschließlich Eingangs- und
  Ausgangs-IP-Adressen, nicht jedoch URLs bzw.
  IP-Adressen der Ziel-Server gespeichert werden.
  Dieser Umstand lässt sich zur Konstruktion eines Multi-Hop-Anonymisierungsdiens
