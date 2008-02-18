@@ -14,7 +14,7 @@
 \font_sf_scale 100
 \font_tt_scale 100
 \graphics default
-\paperfontsize default
+\paperfontsize 11
 \spacing single
 \papersize a4paper
 \use_geometry false
@@ -131,7 +131,7 @@ risten bis zum 01.01.2009.
  unmöglich oder sogar illegal wird, und dass Anonymisierungsdienste keine
  Anonymität mehr gewährleisten, sobald bereits ein einziger Knoten in Deutschlan
 d bzw.
- in einem Mitgliedsland der EU steht
+ in einem Mitgliedsland der EU steht 
 \begin_inset LatexCommand cite
 key "Kairaven"
 
@@ -192,6 +192,40 @@ Speicherpflichten
 
 \begin_layout Subsection
 Vorschriften im Gesetz
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Grundthese hier: Gesetz wurde eigentlich für ISPs gemacht; in D wurden Anonymisi
+erer, die ja schon mal negativ aufgefallen waren <Quelle>, jedoch zusätzlich
+ explizit gewürdigt -> Abs.
+ 6.
+ Durch die allgemeine Formulierung versucht Gesetzgeber alle Varianten von
+ Anonymisiern zu erschlagen.
+ Die unscharfe Formulierung lässt jedoch Interpretationsspielraum für die
+ Implementierung, wobei der Zweck des Gesetzes -- die Rückverfolgbarkeit
+ -- nicht immer erfüllt wird.
+\end_layout
+
+\begin_layout Standard
+Wer muss speichern? Alle Anonymisierer, sowohl Single- als auch Multi-Hop
+\end_layout
+
+\begin_layout Standard
+Was speichern? Eingangs/Ausgangskennungen und Zeitpunkte
+\end_layout
+
+\begin_layout Standard
+Inhalte und Daten nicht Abs.
+ 8
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -288,7 +322,28 @@ Technische Interpretation der gesetzlichen Vorgaben
 \end_layout
 
 \begin_layout Standard
-Gemäß §96 Abs.
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Auch hier Aussage: Kennungen sind im Sinne des Gesetzes vordergründig User-Accou
+nts von ISPs -- und im Spezialfall Internet: IP-Adressen.
+ Problem: IPs sind nur temporär zugewiesen.
+\end_layout
+
+\begin_layout Standard
+Fokus war auf Providern, spezifische Probleme von Anonymisiern, darauf müsste
+ Rücksicht genommen werden.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Gemäß §\InsetSpace \thinspace{}
+96 Abs.
  1 Nr.
  1 TKG könnten als Kennungen 
 \begin_inset Quotes gld
@@ -368,7 +423,7 @@ Bei Anonymisierdiensten, die ohne vorheriges Anlegen eines Teilnehmerkontos
 status open
 
 \begin_layout Standard
-Dennoch wäre zukünftig die Forderung einer Nutzer-individuellen Kennung
+Dennoch wäre zukünftig die Forderung einer nutzer-individuellen Kennung
  auch für Anonymisierdienste denkbar.
  Müsste jeder einzelne Anonymisierserver jeweils eine solche Kennung erheben
  und speichern, könnte dies bei verteilten Diensten die Anonymisierungsleistung
@@ -528,8 +583,32 @@ atz und die Möglichkeit zur Aufdeckung von Verbindungen haben.
 
 \begin_layout Standard
 Im weiteren Verlauf werden -- unter Berücksichtigung verschiedener Interpretatio
-nen des Gesetzes -- Implementierungen für single- und multi-hop Anonymisierer
- vorgesellt.
+nen des Gesetzes -- Implementierungen für Single-Hop- und Multi-Hop-Anonymisiere
+r vorgesellt.
+\end_layout
+
+\begin_layout Subsection
+Anonymisierer sind keine klassischen Telekommunikationsdienste
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+Grund: Abbildung von a_in nach a_out ist surjektiv (gleiche Zielwerte für
+ unterschiedliche Eingabewerte), nicht bijektiv (eineindeutig).
+\end_layout
+
+\begin_layout Standard
+Natürlich könnte man gesetzlich verlangen, dass Anonymisierer eine bijektive
+ Abbildung durchführen, z.B.
+ bei IPv6, indem jedem Nurtzer/Request eine eigene IP-Adresse zugewiesen
+ wird.
+\end_layout
+
+\begin_layout Standard
+Die Anonymität/Sicherheit leidet darunter nicht wesentlich.
 \end_layout
 
 \begin_layout Section
@@ -538,14 +617,14 @@ name "sec:single-hop"
 
 \end_inset
 
-Implementierung für single-hop Anonymisierer
+Implementierung für Single-Hop-Anonymisierer
 \end_layout
 
 \begin_layout Standard
-Ein single-hop Anonymisierer ändert die Benutzerkennung im Netzwerk, indem
+Ein Single-Hop-Anonymisierer ändert die Benutzerkennung im Netzwerk, indem
  er die IP-Adresse des Benutzers durch eine andere ersetzt.
- Er muss daher Eingangs- und Ausgangskennungen sowie den Zeitpunkt der Transform
-ation speichern.
+ Er ist daher zur Vorratsdatenspeicherung verpflichtet und muss Eingangs-
+ und Ausgangskennungen sowie den Zeitpunkt der Transformation speichern.
 \end_layout
 
 \begin_layout Standard
@@ -649,7 +728,8 @@ Zu den single-hop Anonymisierern zählen formular-basierte Web-Anonymisierer
  (u.\InsetSpace \thinspace{}
 a.
  Anonymouse sowie alle Dienste, die auf CGI-Proxy oder PHProxy basieren),
- VPN-basierte Anonymisierer (u.a.
+ VPN-basierte Anonymisierer (u.\InsetSpace \thinspace{}
+a.
  Anonymizer.com, CyberGhost) sowie einfache HTTP-Proxy-Server.
 \end_layout
 
@@ -798,23 +878,15 @@ wieso 120 n_c? es müssten doch 60 n_c sein; die Timestamps sind ja durchaus
 \begin_layout Standard
 Bei mehreren Duzend oder gar mehreren Hundert Teilnehmern, die alle gleichzeitig
  mit dem Dienst verbunden sind, kann mit dieser Methode allerdings keine
- einzelne Anfrage aufgedeckt werden.
- Die Unwirksamkeit 
-\begin_inset Note Note
-status open
-
-\begin_layout Standard
-Formulierung 
-\end_layout
-
-\end_inset
-
-einer Speicherung nach diesem Muster ist jedoch offensichtlich und kann
- der Intention der Gesetze zur Vorratsdatenspeicherung deshalb in keinster
- Weise entsprechen.
- Es ist deshalb denkbar, dass die Speicherpflicht per amtlicher Verordnung
- auf einzelne Anfragen ausgedeht wird, auch wenn eine dauerhafte Verbindung
- zum Dienst besteht (vgl.
+ einzelner HTTP-Request zu seinem Sender zurückverfolgt werden.
+ Die Wirksamkeit einer Vorratsdatenspeicherung nach dieser Methode ist so
+ gering, dass der Zweck des Gesetzes zur Vorratsdatenspeicherung deshalb
+ nicht erfüllt werden.
+ Es ist deshalb zu erwarten, dass -- z.\InsetSpace \thinspace{}
+B.
+ per amtlicher Verordnung -- die Protokollierung einzelner HTTP-Requests
+ vorgeschrieben wird, auch wenn eine dauerhafte Verbindung zum Dienst besteht
+ (vgl.
  Abschnitt 
 \begin_inset LatexCommand ref
 reference "sub:Eingangs-IP-Adressen-pro-Request"
@@ -954,7 +1026,7 @@ Zusammenfassung
 \begin_layout Standard
 Die Protokollierung der einzelnen HTTP-Requests ist zur Erfüllung der gesetzlich
 en Anforderungen besser geeignet als die bloße Speicherung der Verbindungsdaten.
- Eine eindeutige Rückverfolgbarkeit lässt sich hierbei allerdings nicht
+ Eine eindeutige Rückverfolgbarkeit lässt sich hierbei allerdings auch nicht
  gewährleisten, da die Ergebnismenge bei Anfragen -- selbst bei schwach
  genutzten Anonymisierungsservern -- in vielen Fällen größer als 1 ist.
  
@@ -996,9 +1068,8 @@ Das deutsche Gesetz macht allerdings keine Aussagen bezüglich der verlangten
  Denn selbst bei täglicher Synchronisierung ist die Uhren-Drift im Laufe
  eines Tages häufig nicht zu vernachlässigen (wir haben Abweichungen von
  etwa 1 Sekunde innerhalb von 24 Stunden beobachtet).
- Strafverfolgungsbehörden können also auch unter idealen Bedingungen keine
- höhere Auflösung als 1 Sekunde in Ihren Anfragen verwenden.
- 
+ Strafverfolgungsbehörden ziehen also auch unter idealen Bedingungen keinerlei
+ Nutzen aus einer höheren Auflösung als 1 Sekunde.
 \end_layout
 
 \begin_layout Standard
@@ -1409,7 +1480,7 @@ name "sec:multi-hop"
 
 \end_inset
 
-Implementierung für multi-hop Anonymisierer
+Implementierung für Multi-Hop-Anonymisierer
 \end_layout
 
 \begin_layout Standard
@@ -1576,7 +1647,7 @@ reference "fig:Modell-eines-Multi-Hop-Anonymisierers"
 
  bezeichnet.
  Der zweite Knoten speichert das Tupel 
-\begin_inset Formula $(t_{\mathrm{transform}_{1}},x_{1},x_{2})$
+\begin_inset Formula $(t_{\mathrm{transform}_{2}},x_{1},x_{2})$
 \end_inset
 
  und übermittelt 
@@ -1585,7 +1656,7 @@ reference "fig:Modell-eines-Multi-Hop-Anonymisierers"
 
  an den dritten Knoten.
  Dieser speichert schließlich das Tupel 
-\begin_inset Formula $(t_{\mathrm{transform}_{1}},x_{2},a_{\mathrm{out}})$
+\begin_inset Formula $(t_{\mathrm{transform}_{3}},x_{2},a_{\mathrm{out}})$
 \end_inset
 
 .
@@ -1633,7 +1704,7 @@ Die erzeugten Verbindungskennungen ermöglichen eine eindeutige Rückverfolgung
 hert hat.
  Die am Beispiel erläuterte Vorgehensweise lässt sich sowohl bei Mix-Netzen
  und Mix-Kaskaden gleichermaßen implementieren.
- Im Allgemeinen müssen diese Kennungen außerdem nicht neu in die Systeme
+ Im allgemeinen müssen diese Kennungen außerdem nicht neu in die Systeme
  eingeführt werden, da sie implizit bereits vorhanden sein müssen, um die
  Kommunikation der Teilnehmer mit den einzelnen Servern des Netzes bzw.
  der Kaskade zu ermöglichen.
