@@ -871,7 +871,7 @@ reference "sub:Speicherung-pro-Verbindung"
 \end_layout
 
 \begin_layout Standard
-For this approach an anonymisation service stores the tupel 
+For this approach an anonymisation service stores the tuple 
 \begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}})$
 \end_inset
 
