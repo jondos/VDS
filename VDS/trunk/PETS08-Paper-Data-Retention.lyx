@@ -1633,89 +1633,79 @@ Compliant Anonymiser with no Traceability
 \end_layout
 
 \begin_layout Standard
-Falls Multi-Hop-Anonymisierer gesetzlich verpflichtet werden, den Weg einer
- Verbindung durch ihr System mit eindeutigen Kennungen nachvollziehbar zu
- machen, bieten sie gegenüber einem 
-\begin_inset Quotes gld
+If Multi-Hop-Anonymisers get legally obliged to make the way through their
+ system traceable by using IDs, they, at the first glance, provide only
+ a small security gain compared to Single-Hop-Anonymisers against 
+\begin_inset Quotes eld
 \end_inset
 
-staatlichen Angreifer
-\begin_inset Quotes grd
+state attackers
+\begin_inset Quotes erd
 \end_inset
 
- nur einen geringen Sicherheitsgewinn verglichen mit einem nicht-kommerziellen
- Single-Hop-Anonymisierer.
- Die Unschärfe der Ergebnismenge bei einer Anfrage 
+.
+ The fuzziness in the result set of a request, 
 \begin_inset Formula $q$
 \end_inset
 
- ist für beide Architekturen etwa gleich groß.
- Ihre eigentliche Stärke liegt jedoch darin, dass einzelne 
-\begin_inset Quotes gld
-\end_inset
-
-Hops
-\begin_inset Quotes grd
-\end_inset
-
- in einer Kette nicht im Einflussbereich des speicherpflichtigen Staates
- liegen, und deshalb keine Daten an ihn herausgeben bzw.
- erheben müssen.
- Ferner erlaubt die Benutzerkennung bei kommerziellen Single-Hop-Anonymisierern
- sehr effektive Schnittmengenangriffe auf die Vorratsdaten, die bei Multi-Hop-An
-onymisierern so nicht möglich sind.
+, is comparable for both architechtures.
+ But the true strength of these systems lies in their distribution, that
+ means that single hops in a chain may be outside the influence of a state
+ enforcing data retention.
+ They then do not have to create or provide any recorded data.
+ Moreover, the user ID in commercial Single-Hop-Anonymisers allows for very
+ effective intersection attacks on the stored data, which are, in this form
+ and comparable effectiveness, not possible in Multi-Hop-Anonymisation systems.
 \end_layout
 
 \begin_layout Standard
-§\InsetSpace \thinspace{}
+It is worth to mention that the german law excludes 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+Content and data about requested internet sites
+\begin_inset Quotes erd
+\end_inset
+
+ from retention (§\InsetSpace \thinspace{}
 113a Abs.
- 8 TKG schließt 
-\begin_inset Quotes gld
-\end_inset
-
-Inhalt und Daten über abgerufene Internetseiten
-\begin_inset Quotes grd
-\end_inset
-
- von der Vorratsdatenspeicherung aus.
- Hierzu zählen wie bereits erläutert insbesondere die URLs der abgerufenen
- Webseiten.
- In Abschnitt 
+ 8 TKG).
+ This specifically includes URLs of requested web sites.
+ In section 
 \begin_inset LatexCommand ref
 reference "sec:single-hop"
 
 \end_inset
 
- wurde gezeigt, dass schon bei einem Single-Hop-Anonymisierer eine eindeutige
- Rückverfolgung nicht gewährleistet ist, wenn ausschließlich Eingangs- und
- Ausgangs-IP-Adressen, nicht jedoch URLs bzw.
- IP-Adressen der Ziel-Server gespeichert werden.
- Dieser Umstand lässt sich zur Konstruktion eines Multi-Hop-Anonymisierungsdiens
-tes ausnutzen, der den Weg der Nachrichten durch sein System nicht mit eindeutig
-en Kennungen protokollieren muss.
+ we have shown that even with a Single-Hop-Anonymiser, an unambiguous tracing
+ is not possible, if only source and destination IP addresses, but not URLs
+ or IP addresses of destination servers, respective, are stored.
+ We now may 
+\begin_inset Quotes eld
+\end_inset
+
+abuse
+\begin_inset Quotes erd
+\end_inset
+
+ this fact to create a very special Multi-Hop-Anonymisation service based
+ on URLs that falls under the mentioned law, but anyhow does not need to
+ store connection IDs.
 \end_layout
 
 \begin_layout Standard
-Vorausgesetzt wird dabei ein loser Verbund von web-basierten Proxy-Servern,
- die ausschließlich über (von der Speicherungspflicht ausgeschlossene) URLs
- kommunizieren.
- Dabei kommen mehrfach verschlüsselte und verschachtelte URLs zum Einsatz,
- die in ähnlicher Form für den Rewebber-Dienst vorgeschlagen wurden 
-\begin_inset LatexCommand cite
-key "GoWa98"
-
-\end_inset
-
-.
- Ein Benutzer, der über drei Knoten anonymisiert zur Adresse 
-\begin_inset LatexCommand url
-target "http://www.url.com"
-
-\end_inset
-
- surfen will, bildet 
+Think about a loose network of web-form-based proxy servers that solely
+ react on HTTP requests, e.g.
+ Anonymouse.
+ Each of these servers may work all alone, but users may also call another
+ form-based proxy through them, and thereby build chains of form-based proxies
+ like this: 
 \begin_inset Formula \[
-\mathrm{URL=http://www.node1.com/}E_{1}(\mathrm{www.node2.com/}E_{2}(\mathrm{www.node3.com/}E_{3}(\mathrm{http://www.url.com})))\]
+\mathrm{URL=http://www.node1.com/}\mathrm{www.node2.com/}www.node3.com/http://www.url.com\]
 
 \end_inset
 
@@ -1723,40 +1713,24 @@ target "http://www.url.com"
 \end_layout
 
 \begin_layout Standard
-wobei 
-\begin_inset Formula $E_{i}$
+where 
+\begin_inset Formula $www.url.com$
 \end_inset
 
- eine Verschlüsselungsoperation ist, die lediglich von Knoten 
-\begin_inset Formula $i$
-\end_inset
-
- rückgängig gemacht werden kann.
- Ähnlich wie bei existierenden Muti-Hop-Anonymisierern kann ein lokaler
- Angreifer bzw.
- der Betreiber eines Knotens die Beziehung zwischen Benutzer und aufgerufener
- Webseite nicht aufdecken.
- 
+ is the web page requested by the user.
+ This method may lead to quite a high protection against data retention,
+ as, with the lack of ID chains, the proxy servers cannot uncover the way
+ through the network.
+ They cannot be forced to exchange connection IDs, as there are no implicit
+ IDs between the servers.
+ Unfortunately, the servers itself can log the whole user traffic if they
+ like to, and the first server can see request, response and the user IP.
+ However, the difficulty for law enforcement agencies is to uncover the
+ first server in the chain.
 \end_layout
 
 \begin_layout Standard
-<<Problem: Was ist mit der HTTP-Response? Die muss ja auch mehrfach verschlüssel
-t werden - hier bräichte man so etwas wie die Reply-Onions von Tor...>
-\end_layout
 
-\begin_layout Standard
-<<Argumenationsproblem: Da HTTP-Request und -Response hier aber in 
-\begin_inset Quotes gld
-\end_inset
-
-stehenden
-\begin_inset Quotes grd
-\end_inset
-
- TCP-Verbindung übertragen werden, wäre bei verpflichteter Abspeicherung
- von TCP-Port-Nummern zwischen den einzelnen Systemen eine relativ gute
- Zuordnung möglich (vgl.
- Abschnitt 3.5>>
 \end_layout
 
 \begin_layout Section
