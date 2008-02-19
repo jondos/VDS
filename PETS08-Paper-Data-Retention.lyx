@@ -74,16 +74,16 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-For the purpose of law enforcement Internet service providers may be required
+For the purpose of law enforcement Internet service providers may be obliged
  to uncover the identity of a user given an IP address and a timestamp.
  In an effort to regulate the obligations of ISPs data retention policies
  have been legislated.
  Anonymisation services undermine data retention efforts, as they provide
  users with a means to masquerade their IP address.
- With increasing awareness and usage of the anonymizers, their providers
+ With increasing awareness and usage of the anonymisers, their providers
  become a target for data retention regulation.
  During an investigation, law enforcement authorities may approach a provider
- of an anonymiser with a query 
+ of an anonymiser with a query. 
 \emph on
 q
 \emph default
@@ -103,8 +103,7 @@ am GMT
 
 .
  The anonymiser can only answer this query if the provider has stored detailed
- records of all served requests -- a duty which he will not carry out voluntaril
-y.
+ records of all served requests -- a duty which he will not carry out voluntary.
 \end_layout
 
 \begin_layout Standard
@@ -144,12 +143,11 @@ The implementation of the Directive regarding internet access can be postponed
  It is well worth studying its implications for anonymisation providers,
  which is the purpose of this paper.
  Although our findings are based on a German bill, they are of generic nature
- and may be applicable to countries with similar regulations throughout
- the world.
+ and may be applicable to countries throughout the world with similar regulations.
 \end_layout
 
 \begin_layout Standard
-In the interest of conciseness we limit our analysis to the anonymisation
+In the interest of conciousness we limit our analysis to the anonymisation
  of HTTP traffic.
  Our results can be applied to all kinds of anonymisation services, e.\InsetSpace \thinspace{}
 g.
@@ -165,8 +163,8 @@ g.
 status open
 
 \begin_layout Standard
-TODO: The introduction should give some background and summarize the contributio
-ns of the paper at a level appropriate for a non-specialist reader.
+TODO: The introduction should give some background and summarize the contributions 
+of the paper at a level appropriate for a non-specialist reader.
  Den nächsten Abschnitt umschreiben und die Outline separat schreiben.
 \end_layout
 
@@ -186,15 +184,15 @@ reference "sec:Data-Retention-Obligations"
  we will summarise the legal obligations specified by the German bill on
  data retention to ensure a common understanding.
  The main part of the paper presents various approaches and their implications
- for the implementation of data retention measures for anonymisation services.
- First, we will consider simple single-hop anonymizers in section 
+ on the implementation of data retention measures for anonymisation services.
+ First, we will consider simple single-hop anonymisers in section 
 \begin_inset LatexCommand ref
 reference "sec:single-hop"
 
 \end_inset
 
  in order to illustrate (1) which level of detail is required by law and
- (2) which level of detail would be required for guaranteed tracability
+ (2) which level of detail would be required for guaranteed traceability
  of users.
  We will then apply our findings to multi-hop anonymisers in section 
 \begin_inset LatexCommand ref
@@ -329,7 +327,7 @@ Legal basis for data retention
 \end_layout
 
 \begin_layout Standard
-From a legislator point of view, anonymisation services are some kind of
+From a legislator's point of view, anonymisation services are some kind of
  public telecommunication services, and, as such, have to implement legal
  obligations for data retention connection data.
  Although there are similarities to 
@@ -344,39 +342,39 @@ classical
 \end_layout
 
 \begin_layout Itemize
-anonymisation services hide the original user IP and replace it by their
- own IP
+anonymisation services hide the user's original IP address and replace it by their
+ own,
 \end_layout
 
 \begin_layout Itemize
 there is no physical data link which might identify users of such systems,
- only the users' original IP
+ only the users' original IP address,
 \end_layout
 
 \begin_layout Itemize
-there are usually no user databases, but anonymous users only
+there are usually no user databases, but anonymous users only,
 \end_layout
 
 \begin_layout Itemize
-free services can provide IPs as identifiers at maximum
+free services can provide IP addresses as identifiers at maximum,
 \end_layout
 
 \begin_layout Itemize
 only paid anonymisation services may provide user account numbers and further
- user information
+ user information.
 \end_layout
 
 \begin_layout Standard
 In Germany, the legislator tries to cover all those differences by abstracting
  proxies and anonymisation systems as IP transformation layer (§113 Telekommunik
 ationsgesetz/TKG).
- From his point of view these systems don't carry identifying information,
- which is usually hold by the providers only, but transformation information.
+ From his point of view these systems do not deliver identifying information,
+ which is usually held by the providers only, but transformation information.
  He therefore obliges them to store
 \end_layout
 
 \begin_layout Itemize
-the original ID of the user
+the original ID of the user,
 \end_layout
 
 \begin_layout Itemize
@@ -389,11 +387,11 @@ the timestamp of this transformation.
 
 \begin_layout Standard
 However, most anonymisation services provide a surjective transformation
- for IP adresses.
- This means, the users of such systems are sharing a few or even only one
+ for IP addresses.
+ This means, .
+ Unlike common telecommunication services, where each user obtains an individual IP address, 
+ the users of such anonymising services share a few or even only one
  common IP address.
- This is unlike common telecommunication services, where each user gets
- an individual IP address.
  For uncovering certain requests, it would therefore, in most cases, not
  suffice to store IP address and timestamp of the request.
  This is an issue that some legislators, like currently in Germany, might
@@ -401,33 +399,32 @@ However, most anonymisation services provide a surjective transformation
 \end_layout
 
 \begin_layout Standard
-Information about visited web sites is not allowed to be stored regarding
- the German law, neither by anonymisation systems nor by other telecommunication
- providers.
+ By German laws, it is not allowed to store informations about visited web sites, 
+ neither by anonymisation systems nor by other telecommunication providers.
  Furthermore, the law does not clearly state whether the data has to be
  stored for each session (connection to the anonymisation system) or for
  each request (connection to target server through the anonymisation system).
  These restrictions and unclarities, as described in the following sections,
  make it very difficult and almost impossible to implement data retention
- techniques that would allow to uncover connections unumbiguously.
+ techniques that would allow to uncover connections unambiguously.
 \end_layout
 
 \begin_layout Standard
 One may think about simply adapting the services to the intention of law:
- telecommunication services could be obliged to ensure unumbiguous IDs/IP
+ telecommunication services could be obliged to ensure unambiguous IDs/IP
  addresses for their users within a certain time frame.
  This would force anonymisation services to make bijective or injective
  transformations of IP addresses.
  If the transformations are injective and applied on each request, this
  might not harm user anonymity, as requests of the same users would not
- be linkable, whereas data retention of the request IP and the request timestamp
+ be linkable, whereas data retention of the request IP address and the request timestamp
  would enable the service to uncover this user - provided that there are
  enough IP addresses available for the services' users.
  However, the current IPv4 addresses are very scarce, and supplying proxies
  and anonymisation services with enough IPs would need millions and millions
  of them.
  This might therefore be a concept for the IPv6 address space, but not and
- the next years.
+ the next years. (This issue can be met by using the IPv6 address space, but this is not an appropriate solution for the next years)
  For now, other techniques have to be applied, as described in the following
  sections.
 \end_layout
@@ -1210,38 +1207,62 @@ An extension of the previouly mentioned concept is the recording of destination
 
 \begin_layout Standard
 URLs require considerable more space than IP addresses.
- With a conservative assumption of an average length of 50 characters per
- URL <Q>, storage requirements amount to 
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+Bei einer angenommenen Durchschnittslänge von 50 Zeichen pro URL <Quellen>
+ werden pro Request dann 62 Byte benötigt, was 
 \begin_inset Formula $5\,356\,800\cdot n_{r}$
 \end_inset
 
- bytes per day.
- The previously mentioned anonymisation service with 
-\begin_inset Formula $n_{r}=50$
-\end_inset
-
- requests per second has to provide a storage capacity of 45 gigabytes for
- the period of 26 weeks (without regarding savings by compression and optimisati
-ons).
+ Byte pro Tag entspricht.
+ Bei einem Anonymisierer mit durchschnittlich 50 Requests pro Sekunde (z.\InsetSpace \thinspace{}
+B.
+ Anonymouse <Quellen>) fallen im Zeitraum von 6 Monaten etwa 45 Gigabyte
+ an Vorratsdaten an.
+ Dieser Speicherbedarf lässt sich allerdings durch Kompression der URLs
+ etwas reduzieren.
+ Obwohl es immer noch passieren kann, dass zwei Benutzer im fraglichen Zeitfenst
+er exakt die gleiche URL abgerufen haben, wird bei dieser Methode im Normalfall
+ eine eindeutige Zuordnung gelingen.
+ Bei über HTTPS verschlüsselten Verbindungen ist die Speicherung allerdings
+ ungenauer und kann nicht die im Einzelnen aufgerufenen Webseiten erfassen.
 \end_layout
 
 \begin_layout Standard
-The result set will only contain IP addresses of users which have accessed
- the same web site within the query time window, which will allow for an
- exact match in most cases.
- Traceability is limited for encrpyted web sites (HTTPS), though, where
- only the host name and port is visible -- the chances of concurrent accesses
- increase again.
+Inhalte der Kommunikation und Informationen über abgerufene Internetseiten
+ dürfen auf Grund des TKG bisher allerdings nicht gespeichert werden.
+ Insbesondere URLs enthalten häufig personenbezogene Daten oder Inhalte
+ der Kommunikation (z.\InsetSpace \thinspace{}
+B.
+ Suchanfragen, Passwörter oder Sitzungsinformationen, die mit der GET-Methode
+ übertragen werden).
+ Datenschutzrechtlich wäre eine massenhafte Speicherung dieser Information
+ daher äußerst problematisch und schwer durchzusetzen.
+ Sofern eine Speicherung von URLs dennoch vorgeschrieben werden sollte müsste
+ dies in Diensten, die nicht speziell zur Anonymisierung von HTTP entwickelt
+ wurden (z.\InsetSpace \thinspace{}
+B.
+ Tor oder VPNs), aufwändig implementiert werden.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Zusammenfassung
 \end_layout
 
 \begin_layout Standard
-The effectiveness of this approach comes at a high cost.
- Many URLs contain personal information or sensitive contents (such as search
- engine queries, session IDs, unencrypted credentials).
- Storing information of this kind on the hosts of anonymisation services
- over a period of six months -- only for replying to potential law enforcement
- queries -- seems disproportionate and is therefore highly questionable
- from a privacy point of view.
+Die Speicherung von Ziel-IPs und URLs ermöglicht meist eien sehr wirksame
+ Aufdeckung von Verbindungen, ist aber im Hinblick auf die damit einhergehende
+ Speicherung personenbezogener Daten der Nutzer als bedenklich einzustufen.
+ Zudem ist die zur Speicherung erforderliche Datenmenge etwa fünf Mal höher
+ als bei bloßer Speicherung der Request-Zeitpunkte.
+ Die Vorhaltung solcher Datenmengen kann für Betreiber kleiner Server zum
+ Problem werden.
 \end_layout
 
 \begin_layout Subsection
@@ -1400,13 +1421,13 @@ Implementation for Multi-Hop-Anonymisers
 \begin_layout Standard
 Services which relay data for anonymisation over various intermediate nodes
  are called Multi-Hop-Anonymisers in the scope of this article.
- This especially includes Tor (onion routing with -- in principal -- free
+ This especially includes Tor (onion routing with - in principal - free
  choice of intermediate nodes) and JonDonym
 \begin_inset Foot
 status open
 
 \begin_layout Standard
-formerly AN.ON or JAP, respectively
+formerly AN.ON or JAP, respective
 \end_layout
 
 \end_inset
@@ -1431,7 +1452,7 @@ status open
 \begin_layout Standard
 \align center
 \begin_inset Graphics
-	filename figures/multi-hop-anonymizer.eps
+	filename C:/Users/jondos/Documents/Universitaet/an.on/VDS/trunk/figures/multi-hop-anonymizer.eps
 	width 80text%
 
 \end_inset
