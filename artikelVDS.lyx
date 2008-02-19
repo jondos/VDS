@@ -582,7 +582,7 @@ atz und die Möglichkeit zur Aufdeckung von Verbindungen haben.
 \end_layout
 
 \begin_layout Subsection
-Verpflichtung zu individuellen IPs für Anonymisierdienste?
+Pflicht individueller IPs für Anonymisierdienste?
 \end_layout
 
 \begin_layout Standard
@@ -643,19 +643,25 @@ Allerdings wäre die Einführung einer Pflicht zur bijektiven Abbildung denkbar:
 \begin_layout Standard
 Dies wird bei manchen Diensten, z.B.
  Anonymouse, bereits gemacht, allerdings ist die Zahl der verfügbaren IP-Adresse
-n um ein vielfaches kleiner als die Zahl der Benutzer - denn IP-Adressen
+n um ein Vielfaches kleiner als die Zahl der Benutzer - denn IP-Adressen
  sind derzeit ein knappes Gut und deshalb teuer.
  Das jetzige auf IPv4 basierende Internet verfügt nicht über ausreichend
  IP-Adressen, um mehr als eine homöopathische Anzahl von Proxies, VPNs und
  Anonymisierdiensten mit jeweils einigen Tausend IPs auszustatten.
  So eine hohe Zahl an IPs ist jedoch für den störungsfreien und performanten
- Betrieb dieser Dienste notwendig: die Ausgangs-IPs ersetzen quasi die ausgehend
-e Portnummer.
+ Betrieb dieser Dienste notwendig: die Ausgangs-IP ersetzt quasi die ausgehende
+ Portnummer.
  Dieses Verfahren lässt sich deshalb erst mit der Einführung von IPv6 und
- damit einer praktisch unbegrenzten Zahl verfügbarer IP-Adressen umsetzen.
+ damit einer praktisch unbegrenzten Zahl verfügbarer IP-Adressen flächendeckend
+ umsetzen.
  Und auch hier bleibt abzuwarten, ob IP-Adressen wirklich so preisgünstig
  zur Verfügung stehen werden, dass eine Ansammlung von so vielen IPs für
  Dienstanbieter bezahlbar ist.
+ Eine unzumutbare finanzielle Belastung dieser Art bedeutete zumindest bei
+ den heutigen Kosten für die Verwaltung von IP-Adressen das finanzielle
+ Aus für sämtliche Proxy- und VPN-Dienstleister.
+ Andererseits würden diese Dienstleister aufgrund der Knappheit nicht annähernd
+ ausreichend IPs zugewiesen bekommen.
 \end_layout
 
 \begin_layout Section
