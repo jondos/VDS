@@ -1210,62 +1210,38 @@ An extension of the previouly mentioned concept is the recording of destination
 
 \begin_layout Standard
 URLs require considerable more space than IP addresses.
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Standard
-Bei einer angenommenen Durchschnittslänge von 50 Zeichen pro URL <Quellen>
- werden pro Request dann 62 Byte benötigt, was 
+ With a conservative assumption of an average length of 50 characters per
+ URL <Q>, storage requirements amount to 
 \begin_inset Formula $5\,356\,800\cdot n_{r}$
 \end_inset
 
- Byte pro Tag entspricht.
- Bei einem Anonymisierer mit durchschnittlich 50 Requests pro Sekunde (z.\InsetSpace \thinspace{}
-B.
- Anonymouse <Quellen>) fallen im Zeitraum von 6 Monaten etwa 45 Gigabyte
- an Vorratsdaten an.
- Dieser Speicherbedarf lässt sich allerdings durch Kompression der URLs
- etwas reduzieren.
- Obwohl es immer noch passieren kann, dass zwei Benutzer im fraglichen Zeitfenst
-er exakt die gleiche URL abgerufen haben, wird bei dieser Methode im Normalfall
- eine eindeutige Zuordnung gelingen.
- Bei über HTTPS verschlüsselten Verbindungen ist die Speicherung allerdings
- ungenauer und kann nicht die im Einzelnen aufgerufenen Webseiten erfassen.
+ bytes per day.
+ The previously mentioned anonymisation service with 
+\begin_inset Formula $n_{r}=50$
+\end_inset
+
+ requests per second has to provide a storage capacity of 45 gigabytes for
+ the period of 26 weeks (without regarding savings by compression and optimisati
+ons).
 \end_layout
 
 \begin_layout Standard
-Inhalte der Kommunikation und Informationen über abgerufene Internetseiten
- dürfen auf Grund des TKG bisher allerdings nicht gespeichert werden.
- Insbesondere URLs enthalten häufig personenbezogene Daten oder Inhalte
- der Kommunikation (z.\InsetSpace \thinspace{}
-B.
- Suchanfragen, Passwörter oder Sitzungsinformationen, die mit der GET-Methode
- übertragen werden).
- Datenschutzrechtlich wäre eine massenhafte Speicherung dieser Information
- daher äußerst problematisch und schwer durchzusetzen.
- Sofern eine Speicherung von URLs dennoch vorgeschrieben werden sollte müsste
- dies in Diensten, die nicht speziell zur Anonymisierung von HTTP entwickelt
- wurden (z.\InsetSpace \thinspace{}
-B.
- Tor oder VPNs), aufwändig implementiert werden.
- 
-\end_layout
-
-\begin_layout Paragraph
-Zusammenfassung
+The result set will only contain IP addresses of users which have accessed
+ the same web site within the query time window, which will allow for an
+ exact match in most cases.
+ Traceability is limited for encrpyted web sites (HTTPS), though, where
+ only the host name and port is visible -- the chances of concurrent accesses
+ increase again.
 \end_layout
 
 \begin_layout Standard
-Die Speicherung von Ziel-IPs und URLs ermöglicht meist eien sehr wirksame
- Aufdeckung von Verbindungen, ist aber im Hinblick auf die damit einhergehende
- Speicherung personenbezogener Daten der Nutzer als bedenklich einzustufen.
- Zudem ist die zur Speicherung erforderliche Datenmenge etwa fünf Mal höher
- als bei bloßer Speicherung der Request-Zeitpunkte.
- Die Vorhaltung solcher Datenmengen kann für Betreiber kleiner Server zum
- Problem werden.
+The effectiveness of this approach comes at a high cost.
+ Many URLs contain personal information or sensitive contents (such as search
+ engine queries, session IDs, unencrypted credentials).
+ Storing information of this kind on the hosts of anonymisation services
+ over a period of six months -- only for replying to potential law enforcement
+ queries -- seems disproportionate and is therefore highly questionable
+ from a privacy point of view.
 \end_layout
 
 \begin_layout Subsection
@@ -1424,13 +1400,13 @@ Implementation for Multi-Hop-Anonymisers
 \begin_layout Standard
 Services which relay data for anonymisation over various intermediate nodes
  are called Multi-Hop-Anonymisers in the scope of this article.
- This especially includes Tor (onion routing with - in principal - free
+ This especially includes Tor (onion routing with -- in principal -- free
  choice of intermediate nodes) and JonDonym
 \begin_inset Foot
 status open
 
 \begin_layout Standard
-formerly AN.ON or JAP, respective
+formerly AN.ON or JAP, respectively
 \end_layout
 
 \end_inset
@@ -1455,7 +1431,7 @@ status open
 \begin_layout Standard
 \align center
 \begin_inset Graphics
-	filename C:/Users/jondos/Documents/Universitaet/an.on/VDS/trunk/figures/multi-hop-anonymizer.eps
+	filename figures/multi-hop-anonymizer.eps
 	width 80text%
 
 \end_inset
