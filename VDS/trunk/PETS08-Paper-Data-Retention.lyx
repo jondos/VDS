@@ -14,9 +14,9 @@
 \font_sf_scale 100
 \font_tt_scale 100
 \graphics default
-\paperfontsize 11
+\paperfontsize default
 \spacing single
-\papersize a4paper
+\papersize default
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
@@ -71,9 +71,9 @@ For the purpose of law enforcement Internet service providers may be required
  During an investigation, law enforcement authorities may approach a provider
  of an anonymiser with a query 
 \emph on
-q 
+q
 \emph default
-= 
+ = 
 \begin_inset Quotes eld
 \end_inset
 
@@ -144,6 +144,21 @@ g.
  For clarity we will consider single-hop systems (requests are relayed at
  a single node) and multi-hop systems (which relay traffic over multiple
  nodes) separately.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+TODO: The introduction should give some background and summarize the contributio
+ns of the paper at a level appropriate for a non-specialist reader.
+ Den nächsten Abschnitt umschreiben und die Outline separat schreiben.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
