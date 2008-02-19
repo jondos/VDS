@@ -40,7 +40,7 @@
 \begin_body
 
 \begin_layout Title
-Implementation of Data Retention Measures for Anonymisation Services
+Implications of Data Retention Measures for Anonymisation Services
 \end_layout
 
 \begin_layout Author
@@ -60,10 +60,16 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-What is the purpose of data retention? Internet service providers are supposed
+For the purpose of law enforcement Internet service providers may be required
  to uncover the identity of a user given an IP address and a timestamp.
- Providers of anonymisation services are also targeted.
- Typically, law enforcement authorities issue a query 
+ In an effort to regulate the obligations of ISPs data retention policies
+ have been legislated.
+ Anonymisation services undermine data retention efforts, as they provide
+ users with a means to masquerade their IP address.
+ With increasing awareness and usage of the anonymizers, their providers
+ become a target for data retention regulation.
+ During an investigation, law enforcement authorities may approach a provider
+ of an anonymiser with a query 
 \emph on
 q 
 \emph default
@@ -82,6 +88,9 @@ am GMT
 \end_inset
 
 .
+ The anonymiser can only answer this query if the provider has stored detailed
+ records of all served requests -- a duty which he will not carry out voluntaril
+y.
 \end_layout
 
 \begin_layout Standard
@@ -110,21 +119,82 @@ r or registered user.
 
 \begin_layout Standard
 The implementation of the Directive regarding internet access can be postponed
- by Member States until March 15th, 2009.
+ by member states until March 15th, 2009.
+ The Directive provides only a framework for data retention measures.
+ It is rather generic and does not mention anonymisation services at all.
+ Member states may concretise data retention obligations on a state level,
+ though.
+ The German implementation for Internet access, which is expected to go
+ into force on January 1st, 2009, was designed with anonymisation services
+ in mind.
+ It is well worth studying its implications for anonymisation providers,
+ which is the purpose of this paper.
+ Although our findings are based on a German bill, they are of generic nature
+ and may be applicable to countries with similar regulations throughout
+ the world.
+\end_layout
+
+\begin_layout Standard
+In the interest of conciseness we limit our analysis to the anonymisation
+ of HTTP traffic.
+ Our results can be applied to all kinds of anonymisation services, e.\InsetSpace \thinspace{}
+g.
+ CGI-Proxies based on HTML forms <Q Beispiel>, VPN solutions <Q>, Mix cascades
+ <Q Federrath Paper> and Onion Routing <Q Second Generation Onion Router>.
+ For clarity we will consider single-hop systems (requests are relayed at
+ a single node) and multi-hop systems (which relay traffic over multiple
+ nodes) separately.
+\end_layout
+
+\begin_layout Standard
+This paper is structed as follows.
+ In section 
+\begin_inset LatexCommand ref
+reference "sec:Data-Retention-Obligations"
+
+\end_inset
+
+ we will summarise the legal obligations specified by the German bill on
+ data retention to ensure a common understanding.
+ The main part of the paper presents various approaches and their implications
+ for the implementation of data retention measures for anonymisation services.
+ First, we will consider simple single-hop anonymizers in section 
+\begin_inset LatexCommand ref
+reference "sec:single-hop"
+
+\end_inset
+
+ in order to illustrate (1) which level of detail is required by law and
+ (2) which level of detail would be required for guaranteed tracability
+ of users.
+ We will then apply our findings to multi-hop anonymisers in section 
+\begin_inset LatexCommand ref
+reference "sec:multi-hop"
+
+\end_inset
+
+.
+ In section 
+\begin_inset LatexCommand ref
+reference "sec:URL-Anonymiser"
+
+\end_inset
+
+ we will show that it is possible to tailor an anonymiser which complies
+ with all legal obligations, but cannot be forced to trace its users based
+ on data retention measures.
+ We summarise our findings in section 
+\begin_inset LatexCommand ref
+reference "sec:Summary"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\end_inset
-
-
-\end_layout
+status collapsed
 
 \begin_layout Standard
 Die EU-Richtlinie liefert ein Rahmenwerk, das durch die Gesetzgebung der
@@ -160,7 +230,10 @@ key "Kairaven"
 \end_inset
 
 .
- Betroffen sind sowohl privat betriebene Anonymisierungsdienste, z.\InsetSpace \thinspace{}
+\end_layout
+
+\begin_layout Standard
+Betroffen sind sowohl privat betriebene Anonymisierungsdienste, z.\InsetSpace \thinspace{}
 B.
  Betreiber von Tor-Knoten 
 \begin_inset LatexCommand cite
@@ -208,8 +281,22 @@ Im Fokus dieses Beitrags stehen Anonymisierungsdienste für den Abruf von
 ung anderer Protokolle wird aus Gründen der Übersichtlichkeit nicht eingegangen.
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
 \begin_layout Section
-Speicherpflichten
+\begin_inset LatexCommand label
+name "sec:Data-Retention-Obligations"
+
+\end_inset
+
+Data Retention Obligations
 \end_layout
 
 \begin_layout Subsection
@@ -639,7 +726,7 @@ name "sec:single-hop"
 
 \end_inset
 
-Implementierung für Single-Hop-Anonymisierer
+Data Retention for Single-Hop Anonymisers
 \end_layout
 
 \begin_layout Standard
@@ -1502,7 +1589,7 @@ name "sec:multi-hop"
 
 \end_inset
 
-Implementierung für Multi-Hop-Anonymisierer
+Implementation for Multi-Hop-Anonymisers
 \end_layout
 
 \begin_layout Standard
@@ -1734,7 +1821,12 @@ hert hat.
 \end_layout
 
 \begin_layout Section
-URL-basierter Multi-Hop-Anonymisierer
+\begin_inset LatexCommand label
+name "sec:URL-Anonymiser"
+
+\end_inset
+
+Compliant Anonymiser with no Traceability
 \end_layout
 
 \begin_layout Standard
@@ -1865,7 +1957,12 @@ stehenden
 \end_layout
 
 \begin_layout Section
-Zusammenfassung
+\begin_inset LatexCommand label
+name "sec:Summary"
+
+\end_inset
+
+Summary
 \end_layout
 
 \begin_layout Standard
