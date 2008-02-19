@@ -14,7 +14,7 @@
 \font_sf_scale 100
 \font_tt_scale 100
 \graphics default
-\paperfontsize default
+\paperfontsize 11
 \spacing single
 \papersize default
 \use_geometry false
@@ -745,26 +745,21 @@ Data Retention for Single-Hop Anonymisers
 \end_layout
 
 \begin_layout Standard
-Single-hop anonymisers replace the IP addresses of their users by different
- ones -- their own IP addresses.
- Consequently, providers of anonymisation services have to record their
- usage according to data retention regulations.
- Concretely, they have to store an input and output ID together with the
- timestamp of the transformation of the ID.
-\end_layout
-
-\begin_layout Standard
-Ein Single-Hop-Anonymisierer ändert die Benutzerkennung im Netzwerk, indem
- er die IP-Adresse des Benutzers durch eine andere ersetzt.
- Er ist daher zur Vorratsdatenspeicherung verpflichtet und muss Eingangs-
- und Ausgangskennungen sowie den Zeitpunkt der Transformation speichern.
+Single-hop anonymisation services replace the IP addresses of their users
+ by different ones, i.\InsetSpace \thinspace{}
+e.
+ their own IP addresses.
+ Consequently, providers of such services have to record their usage according
+ to data retention regulations.
+ Concretely, they are obliged to store the input ID and the output ID together
+ with the timestamp of the transformation of the IDs.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Standard
 \align center
@@ -804,10 +799,66 @@ Modell eines Single-Hop-Anonymisierers
 \end_layout
 
 \begin_layout Standard
-Unterstellt sei ein Anonymisierungsdienst, der den Datenverkehr seiner Nutzer
- auf einem Host entgegennimmt und von dort aus direkt die Verbindungen zu
- den Ziel-Adressen aufbaut.
- Abbildung 
+For the purpose of our analysis we assume that a single-hop system receives
+ HTTP requests on one (or multiple) hosts which act as proxy servers, among
+ them are regular HTTP Proxies, CGI-Proxies (e.\InsetSpace \thinspace{}
+g.
+ PHProxy) and VPNs (e.\InsetSpace \thinspace{}
+g.
+ anonymizer.com or Cyberghost).
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset LatexCommand ref
+reference "fig:Modell-eines-Single-Hop-Anonymisierers"
+
+\end_inset
+
+ illustrates the single-hop setup.
+ From the viewpoint of the system there are 
+\begin_inset Formula $n$
+\end_inset
+
+ users with IP addresses 
+\begin_inset Formula $a_{\mathrm{in}_{i}}$
+\end_inset
+
+, which send their requests to the proxies.
+ The proxies transmit the requests to the destination servers and forward
+ the corresponding HTTP responses back to the users.
+ From the viewpoint of the destination server, the request originates from
+ an IP address 
+\begin_inset Formula $a_{out_{i}}$
+\end_inset
+
+.
+ Usually, the requests spend some (indeterministic) processing time 
+\begin_inset Formula $\tau_{\mathrm{process}}$
+\end_inset
+
+ within the proxy and on the wire towards their destination 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+.
+ Therefore, there is an unknown delay between the transformation at 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ and the logging of a request at the destination server at 
+\begin_inset Formula $t_{\mathrm{logged}_{i}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Abbildung 
 \begin_inset LatexCommand ref
 reference "fig:Modell-eines-Single-Hop-Anonymisierers"
 
@@ -857,22 +908,17 @@ reference "fig:Modell-eines-Single-Hop-Anonymisierers"
 \end_layout
 
 \begin_layout Standard
-Zu den single-hop Anonymisierern zählen formular-basierte Web-Anonymisierer
- (u.\InsetSpace \thinspace{}
-a.
- Anonymouse sowie alle Dienste, die auf CGI-Proxy oder PHProxy basieren),
- VPN-basierte Anonymisierer (u.\InsetSpace \thinspace{}
-a.
- Anonymizer.com, CyberGhost) sowie einfache HTTP-Proxy-Server.
-\end_layout
-
-\begin_layout Standard
 Im folgenden werden verschiedene Varianten der Vorratsdatenspeicherung vorgestel
 lt, wobei der dabei entstehende Aufwand abgeschätzt wird.
  Darüber hinaus wird untersucht, ob die Vorratsdatenspeicherung dann eine
  Rückverfolgung zum Urheber der Kommunikation ermöglicht.
  Dabei wird zwischen der Speicherung von einzelnen HTTP-Anfragen und TCP-Verbind
 ungen unterschieden.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
