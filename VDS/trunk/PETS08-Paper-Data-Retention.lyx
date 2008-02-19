@@ -833,7 +833,18 @@ reference "fig:Modell-eines-Single-Hop-Anonymisierers"
 \end_inset
 
 .
- Usually, the requests spend some (indeterministic) processing time 
+ Note that 
+\begin_inset Formula $A_{in}>A_{out}$
+\end_inset
+
+ in most cases, i.\InsetSpace \thinspace{}
+e.
+ the number of unique input addresses exceeds the number of IP addresses
+ of the proxy.
+\end_layout
+
+\begin_layout Standard
+Usually, the requests spend some (indeterministic) processing time 
 \begin_inset Formula $\tau_{\mathrm{process}}$
 \end_inset
 
@@ -927,8 +938,34 @@ name "sub:Speicherung-pro-Verbindung"
 
 \end_inset
 
-Speicherung der Eingangs-IP-Adressen pro Verbindung
+Recording Input Addresses on Session Level
 \end_layout
+
+\begin_layout Standard
+For session-oriented services like VPNs, there is a minimalistic and lightweight
+ data retention solution: just record the relevant session-level information.
+ If 
+\begin_inset Formula $t_{\mathrm{start}}$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{\mathrm{end}}$
+\end_inset
+
+ denote begin and end timestamps of a user session with the anonymisation
+ service, the service will store the tuple 
+\begin_inset Formula $(t_{\mathrm{start}},t_{\mathrm{end}},a_{\mathrm{in}},a_{\mathrm{out}}$
+\end_inset
+
+) for each session without considering individual HTTP requests in order
+ to comply with data retention obligations.
+ The applicable time zone information can be stored globally, outside of
+ the session log, as it doesn't change so frequently.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
 
 \begin_layout Standard
 Ist der Dienst ohne Anmeldung zu verwenden, steht außer der Eingangs-IP-Adresse
@@ -966,6 +1003,11 @@ Welche Nutzerkennung
 
 ?
 \begin_inset Quotes grd
+\end_inset
+
+
+\end_layout
+
 \end_inset
 
 
