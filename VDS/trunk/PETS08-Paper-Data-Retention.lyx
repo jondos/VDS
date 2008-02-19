@@ -59,6 +59,11 @@ TODO: Referenzen säubern
 Speicherzeitraum: 26 Wochen (in 2.x erwähnen)
 \end_layout
 
+\begin_layout Abstract
+traceability definieren = possibility to uniquely identify a user of an
+ anonymisation service based on a given query (in sec 2 rein)
+\end_layout
+
 \begin_layout Section
 \begin_inset LatexCommand label
 name "sec:Introduction"
@@ -307,6 +312,10 @@ ung anderer Protokolle wird aus Gründen der Übersichtlichkeit nicht eingegange
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 
@@ -729,8 +738,8 @@ Welche Nutzerkennung
 The storage requirements for this approach are pretty low.
  Assuming that each of the Unix timestamps and IP(v4) addresses consumes
  4\InsetSpace ~
-Bytes, each log entry requires 16\InsetSpace ~
-Bytes of storage.
+bytes, each log entry requires 16\InsetSpace ~
+bytes of storage.
  Given an average of 
 \begin_inset Formula $n_{s}$
 \end_inset
@@ -740,9 +749,9 @@ Bytes of storage.
 \begin_inset Formula $16\cdot3600\cdot24\cdot n_{s}=1\,382\,400\cdot n_{s}$
 \end_inset
 
- Bytes per day.
+ bytes per day.
  For a service with a daily total of 10.000 sessions this amounts to only
- 156 Kilobytes per day or 27 Megabytes in 26 weeks.
+ 156 kilobytes per day or 27 megabytes in 26 weeks.
 \end_layout
 
 \begin_layout Standard
@@ -785,7 +794,7 @@ of all sessions which were in established state at
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Standard
 Bei mehreren Duzend oder gar mehreren Hundert Teilnehmern, die alle gleichzeitig
@@ -837,83 +846,110 @@ name "sub:Eingangs-IP-Adressen-pro-Request"
 
 \end_inset
 
-Speicherung der Eingangs-IP-Adressen pro HTTP-Request
+Recording Input Addresses on Request Level
 \end_layout
 
 \begin_layout Standard
-Wie im vorigen Abschnitt gezeigt wurde, reicht die Speicherung von Verbindungsda
-ten nicht aus.
- Im folgenden wird untersucht, inwiefern eine Protokollierung von einzelnen
- Requests das Ziel der Rückverfolgbarkeit erreichen kann.
- Bei Diensten, die lediglich einen HTTP-Request über eine Verbindung entgegenneh
-men (z.\InsetSpace \thinspace{}
-B.
- bei Anonymisierern, die auf Web-Formularen basieren), müssen ohnehin die
- einzelnen Zugriffe protokolliert werden.
-\end_layout
-
-\begin_layout Standard
-Für jeden HTTP-Request ist das Tupel 
-\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}})$
-\end_inset
-
- zu speichern, wobei 
-\begin_inset Formula $t_{\mathrm{transform}}$
-\end_inset
-
- der Zeitpunkt der Kennungstransformation ist.
- Es ist davon auszugehen, dass die entstehende Datenmenge größer ist als
- bei der Speicherung von verbindungsorientierten Datensätzen, da üblicherweise
- gilt 
-\begin_inset Formula $n_{r}\gg n_{c}$
-\end_inset
-
-.
- Bei durchschnittlich 
-\begin_inset Formula $n_{r}$
-\end_inset
-
- Requests pro Sekunde fallen pro Tag 
-\begin_inset Formula $1\,036\,800\cdot n_{r}$
-\end_inset
-
- Byte an.
- Ein Anonymisierer, der pro Sekunde 50 Requests erhält, muss also knapp
- 9 Gigabyte über einen Zeitraum von sechs Monaten aufbewahren.
-\end_layout
-
-\begin_layout Standard
-Auch bei dieser Methode lässt sich keine eindeutige Zuordnung gewährleisten.
- Bei einer minutengenauen Anfrage der Strafverfolgungsbehörden gibt es im
- Durchschnitt 
-\begin_inset Formula $120\cdot n_{r}$
-\end_inset
-
+There are anonymisation services which operate on a request level by design,
+ e.\InsetSpace \thinspace{}
+g.
+ CGI-Proxies, where each address has to be entered in a web form.
+ Data retention on the session level (cf.
  
-\begin_inset Note Note
-status open
-
-\begin_layout Standard
-120? 
-\end_layout
-
-\end_inset
-
-mögliche HTTP-Requests, die in Frage kommen.
- Allerdings ist zu beachten, dass diese Anfragen üblicherweise nicht von
- ebenso vielen unterschiedlichen Benutzern kommen, dementsprechend ist die
- Anzahl der in Frage kommenden Eingangskennungen geringer.
- Im Vergleich zur Speicherung der Verbindungsaufbau- und Endezeiten (s.
- Abschnitt 
 \begin_inset LatexCommand ref
 reference "sub:Speicherung-pro-Verbindung"
 
 \end_inset
 
-) ermöglicht diese Methode also eine etwas genauere Zuordnung, da Teilnehmer,
- die zum angefragten Zeitpunkt zwar zum Dienst verbunden waren, jedoch gar
- keine HTTP-Requests gestellt haben, nicht in der Ergebnismenge vorkommen.
- 
+) is not an option for them for obvious reasons, instead they have to log
+ information on a request level.
+ As mentioned earlier, session-oriented services may also be required to
+ store records on a more detailed level.
+\end_layout
+
+\begin_layout Standard
+For this approach an anonymisation service stores the tupel 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}})$
+\end_inset
+
+, where 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ is the point in time when the input address is transformed into the output
+ address.
+ The storage requirements amount to 
+\begin_inset Formula $1\,036\,800\cdot n_{r}$
+\end_inset
+
+ bytes per day, with 
+\begin_inset Formula $n_{r}$
+\end_inset
+
+ denoting the number of requests per seconds.
+ In comparison to session-level data retention, the required amount of storage
+ is a lot higher as usually multiple requests are relayed during one sessions
+ (
+\begin_inset Formula $n_{r}\gg n_{s}$
+\end_inset
+
+).
+ An anonymisation service with an average of 50 requests per second has
+ to provide storage for 9 gigabytes of retained log files over a period
+ of six months.
+\end_layout
+
+\begin_layout Standard
+Again, this approach is not able to guarantee traceability of all requests.
+ Given the resolution of one minute in query 
+\begin_inset Formula $q$
+\end_inset
+
+ (which is standing operating procedure in Germany at the moment), there
+ is a set 
+\begin_inset Formula $R_{\mathrm{matching}}$
+\end_inset
+
+ of 
+\begin_inset Formula $120\cdot n_{r}$
+\end_inset
+
+ matching HTTP requests on average (the requests whose 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ is included within the two minute interval 
+\begin_inset Formula $[\textrm{09:42:30};\textrm{09:44:30}[$
+\end_inset
+
+).
+ The result 
+\begin_inset Formula $ $
+\end_inset
+
+set 
+\begin_inset Formula $A_{\mathrm{result,in}}$
+\end_inset
+
+ consists of all distinct addresses 
+\begin_inset Formula $a_{\mathrm{in}}$
+\end_inset
+
+ which were logged for those requests (where usually 
+\begin_inset Formula $|A_{\mathrm{result,in}}|<|R_{\mathrm{matching}}|$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+For session-oriented services this approach leads to smaller result sets
+ as inactive users who are connected to the service are not included in
+ the result.
+\end_layout
+
+\begin_layout Standard
+The storage requirements of this approach can be further optimised.
 \end_layout
 
 \begin_layout Standard
