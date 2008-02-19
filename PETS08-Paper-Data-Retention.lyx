@@ -310,438 +310,121 @@ ung anderer Protokolle wird aus Gründen der Übersichtlichkeit nicht eingegange
 
 \end_layout
 
-\begin_layout Standard
-
-\end_layout
-
 \begin_layout Section
 \begin_inset LatexCommand label
 name "sec:Data-Retention-Obligations"
 
 \end_inset
 
-Data Retention Obligations
-\end_layout
-
-\begin_layout Subsection
-Vorschriften im Gesetz
+Legal basis for data retention
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Standard
-Grundthese hier: Gesetz wurde eigentlich für ISPs gemacht; in D wurden Anonymisi
-erer, die ja schon mal negativ aufgefallen waren <Quelle>, jedoch zusätzlich
- explizit gewürdigt -> Abs.
- 6.
- Durch die allgemeine Formulierung versucht Gesetzgeber alle Varianten von
- Anonymisiern zu erschlagen.
- Die unscharfe Formulierung lässt jedoch Interpretationsspielraum für die
- Implementierung, wobei der Zweck des Gesetzes -- die Rückverfolgbarkeit
- -- nicht immer erfüllt wird.
-\end_layout
-
-\begin_layout Standard
-Wer muss speichern? Alle Anonymisierer, sowohl Single- als auch Multi-Hop
-\end_layout
-
-\begin_layout Standard
-Was speichern? Eingangs/Ausgangskennungen und Zeitpunkte
-\end_layout
-
-\begin_layout Standard
-Inhalte und Daten nicht Abs.
- 8
-\end_layout
-
+From a legislator point of view, anonymisation services are some kind of
+ public telecommunication services, and, as such, have to implement legal
+ obligations for data retention connection data.
+ Although there are similarities to 
+\begin_inset Quotes eld
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-Zunächst soll geklärt werden, weshalb Anonymisierungsdienste unter die Vorratsda
-tenspeicherung fallen.
- Die deutsche Implementierung der Vorratsdatenspeicherung im Telekommunikationsg
-esetz (TKG) betrifft Dienstanbieter, die 
-\emph on
-Telekommunikationsdienste
-\emph default
- 
-\emph on
-für die Öffentlichkeit 
-\emph default
-bereitstellen.
- Es gibt juristisch fundierte Meinungen, welche Anonymisierdienste wie AN.ON
- / JonDonym als reines Telemedium gemäß dem Telemediengesetz (TMG) auffassen
- 
-\begin_inset LatexCommand cite
-key "ULD07"
-
+classical
+\begin_inset Quotes erd
 \end_inset
 
-.
- Solcherart wären Sie von Regelungen im TKG überhaupt nicht betroffen, eine
- Vorratsdatenspeicherung wäre nach der jetzigen Gesetzeslage nicht zulässig.
-\end_layout
-
-\begin_layout Standard
-Nach Meinung anderer Juristen weisen Anonymisierdienste jedoch eine Doppelnatur
- auf und sind sowohl als Telemediendienste als auch als Telekommunikationsdienst
-e aufzufassen (vgl.
- 
-\begin_inset LatexCommand cite
-key "Raa03"
-
-\end_inset
-
-, Gesetzesbegründung zu §\InsetSpace \thinspace{}
-113a Abs.
- 6 TKG).
- Die folgende Argumentation zur Umsetzung der juristischen Vorgaben zur
- Vorratsdatenspeicherung wird unter der Annahme geführt, dass die entsprechenden
- Passagen des TKG auf Anonymisierdienste angewendet werden können, da ansonsten
- keine Maßnahmen zur Überwachung von Verbindungen notwendig bzw.
- zulässig wären.
- 
-\end_layout
-
-\begin_layout Standard
-Während §\InsetSpace \thinspace{}
-96 TKG den grundsätzlich Begriff der Verkehrsdaten definiert und
- ein Speicherverbot dieser Daten über das zur Diensterbringung erforderliche
- Maß hinaus angibt, ist in §\InsetSpace \thinspace{}
-113a TKG aufgeführt, für welche dieser Daten
- und welche Dienste eine Speicherpflicht besteht.
- Anonymisierungsdienste, welche die Benutzerkennungen transformieren, müssen
- im Rahmen der Vorratsdatenspeicherung Eingangs- und Ausgangskennungen sowie
- den Zeitpunkt (inkl.
- Zeitzone) der Veränderung protokollieren.
- Inhalte und Daten über die abgerufenen Internetseiten dürfen aufgrund des
- Gesetzes jedoch nicht gespeichert werden (§\InsetSpace \thinspace{}
-113a Abs.
- 8 TKG).
-\end_layout
-
-\begin_layout Standard
-Von der Speicherpflicht betroffen wären demnach öffentlich verfügbare Proxy-Serv
-er und formular-basierte Anonymisierer (CGI-Proxies, PHProxies) ebenso wie
- Tor-Knoten und JonDonym-Mixe.
- Sie ersetzen die von der Vorratsdatenspeicherung erfassten Benutzerkennungen
- (in der Regel die IP-Adressen der Nutzer), weshalb sie gemäß §\InsetSpace \thinspace{}
-113a Abs.
- 6 zur Vorratsdatenspeicherung verpflichtet sind.
- Dies gilt für die einzelnen Server und deren Betreiber auch dann, wenn
- diese nicht in einer direkten Beziehung zum Endkunden stehen sollten (vgl.
- Gesetzesbegründung zu §\InsetSpace \thinspace{}
-113a Abs.
- 6 TKG).
- In der Regel dürfte diese direkte Endkundenbeziehung jedoch auch bei verteilten
- Diensten wie Tor und JonDonym vorliegen, da die Zugangssoftware beim Endkunden
- Daten (kryptographische Schlüssel) mit jedem Server einer Anonymisierkette
- bzw.
- Anonymisierkaskade austauscht.
- Dabei ist es rechtlich gesehen irrelevant, ob dieser Datenaustausch über
- Zwischenstationen erfolgt, oder über eine direkte IP-Verbindung.
- Der Dienst JonDonym trägt dieser Tatsache seit kurzem Rechnung, indem die
- Endkunden jeweils AGB jedes einzelnen Betreibers einer Mixkaskade akzeptieren
- müssen, um den Dienst verwenden zu können.
-\end_layout
-
-\begin_layout Subsection
-Technische Interpretation der gesetzlichen Vorgaben
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Standard
-Auch hier Aussage: Kennungen sind im Sinne des Gesetzes vordergründig User-Accou
-nts von ISPs -- und im Spezialfall Internet: IP-Adressen.
- Problem: IPs sind nur temporär zugewiesen.
-\end_layout
-
-\begin_layout Standard
-Fokus war auf Providern, spezifische Probleme von Anonymisiern, darauf müsste
- Rücksicht genommen werden.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Gemäß §\InsetSpace \thinspace{}
-96 Abs.
- 1 Nr.
- 1 TKG könnten als Kennungen 
-\begin_inset Quotes gld
-\end_inset
-
-die Nummer (...) der beteiligten Anschlüsse oder der Endeinrichtung, personenbezoge
-ne Berechtigungskennungen, bei Verwendung von Kundenkarten auch die Kartennummer
-, bei mobilen Anschlüssen auch die Standortdaten
-\begin_inset Quotes grd
-\end_inset
-
- aufgefasst werden.
- Dieser Begriff der Kennung bezieht sich primär auf die Leistungen von Zugangspr
-ovidern und geht indirekt davon aus, dass den Betreibern langfristig identifizie
-rende Merkmale als Anschlusskennung vorliegen, welche unabhängig von einer
- konkreten Datenverbindung bestand haben.
- Ferner wird davon ausgegangen, dass auch Datenverbindungen Kennungen mit
- Bezug auf jeweils eine Anschlusskennung aufweisen, welche in der Regel
- länger als einige Minuten bestand haben.
- Im Internet ist die Kennung für Datenverbindungen die IP-Adresse.
- Die Anschlusskennung dagegen kann der Benutzername sein, über den sich
- der Teilnehmer beim Provider einwählt, oder dessen Telefonnummer (bei Call-by-C
-all-Einwahl).
- Beide Kennungen sind eindeutig, und lassen sich entweder über die Datenbank
- des Providers oder des Telefonunternehmens einer natürlichen oder juristischen
- Person zuordnen.
-\end_layout
-
-\begin_layout Standard
-Laut §\InsetSpace \thinspace{}
-113a Abs.\InsetSpace ~
-4 TKG haben Anbieter von 
-\begin_inset Quotes gld
-\end_inset
-
-Internetzugangsdiensten
-\begin_inset Quotes grd
-\end_inset
-
- deshalb folgendes zu speichern:
-\end_layout
-
-\begin_layout Enumerate
-\begin_inset Quotes gld
-\end_inset
-
-die dem Teilnehmer für eine Internetnutzung zugewiesene Internetprotokoll-Adress
-e, 
-\end_layout
-
-\begin_layout Enumerate
-eine eindeutige Kennung des Anschlusses, über den die Internetnutzung erfolgt,
- 
-\end_layout
-
-\begin_layout Enumerate
-den Beginn und das Ende der Internetnutzung unter der zugewiesenen Internetproto
-koll-Adresse nach Datum und Uhrzeit unter Angabe der zugrunde liegenden
- Zeitzone.
-\begin_inset Quotes grd
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Bei Anonymisierdiensten, die ohne vorheriges Anlegen eines Teilnehmerkontos
- genutzt werden können, ist die einzige Kennung, die ein Anonymisierungsdienst
- vom Nutzer erfährt, dessen IP-Adresse.
- Da diese Dienste nicht als Internetzugangsprovider eingestuft werden können
- (es handelt sich lediglich um Mehrwertdienste, die bereits einen Internetzugang
- vorausetzen), kann für diese nach §\InsetSpace \thinspace{}
-113a Abs.\InsetSpace ~
-4 TKG auch keine Pflicht abgeleitet
- werden, Anschlusskennungen einzuführen.
-\begin_inset Foot
-status open
-
-\begin_layout Standard
-Dennoch wäre zukünftig die Forderung einer nutzer-individuellen Kennung
- auch für Anonymisierdienste denkbar.
- Müsste jeder einzelne Anonymisierserver jeweils eine solche Kennung erheben
- und speichern, könnte dies bei verteilten Diensten die Anonymisierungsleistung
- deutlich verschlechtern, oder die verteilte Struktur sogar ganz unbrauchbar
- machen.
- Denn gerade letzte Server könnten eine solche Kennung dazu verwenden um
- alle Zugriffe jeweils eines Teilnehmers miteinander zu verketten und Nutzerprof
-ile zu erstellen.
- Eine solche Forderung würde es deshalb erforderlich machen, Kennungen zu
- erzeugen, die zwar verifizierbar und rückverfolgbar sind, sich jedoch bei
- jeder Anfrage ändern und nicht miteinander verkettbar sind.
- Ein Beispiel dafür sind Signaturen von Gruppenpseudonymen, vgl.
- 
-\begin_inset LatexCommand cite
-key "KoeWeFe06"
-
-\end_inset
-
-.
-\end_layout
-
-\end_inset
-
- Ferner haben bei Anonymisierdiensten, welche in Ketten/Kaskaden betrieben
- werden, mittlere Server und Ausgangsserver keinen Zugriff auf die Internetproto
-koll(IP)-Adresse der Teilnehmer, die sich jeweils nur mit dem ersten Server
- in der Kette direkt verbinden.
- Technisch gesehen wäre es deshalb unsinnig, von diesen die Speicherung
- der IP-Adresse von Teilnehmern zu fordern.
- Eine solche Verpflichtung wäre undurchführbar und damit unwirksam.
-\end_layout
-
-\begin_layout Standard
-Dieses Problem wurde vom Gesetzgeber erkannt, der in §\InsetSpace \thinspace{}
-113a Abs.\InsetSpace ~
-6 TKG deshalb
- verlangt, dass wer 
-\begin_inset Quotes gld
-\end_inset
-
-Telekommunikationsdienste erbringt und hierbei die nach Maßgabe dieser Vorschrif
-t zu speichernden Angaben verändert, [...] zur Speicherung der ursprünglichen
- und der neuen Angabe sowie des Zeitpunktes der Umschreibung dieser Angaben
- nach Datum und Uhrzeit unter Angabe der zugrunde liegenden Zeitzone verpflichte
-t [ist]
-\begin_inset Quotes grd
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Standard
-Die Anschlusskennung bezieht sich auf die Datenbanken beim jeweiligen Provider,
- liegt technisch gesehen 
-\begin_inset Quotes gld
-\end_inset
-
-außerhalb
-\begin_inset Quotes grd
-\end_inset
-
- des Internetprotokolls und kann vom Anonymisierer deshalb weder erfasst
- noch verändert werden.
- Sie ist von dieser Vorschrift also nicht betroffen.
- Die IP-Adresse des Teilnehmers dagegen wird vom Anonymisierer und vor Außensteh
-enden verborgen, indem sie jeweils durch eine IP-Adresse des Anonymisierers
- ersetzt wird.
- Bei wörtlicher Auslegung des Gesetzes wäre also beim Anonymisierer jeweils
- die Eingangs-IP-Adresse, welche die IP eines Teilnehmers oder einers vorhergehe
-nden Anonymisierservers sein kann, und die Ausgangs-IP-Adresse, also die
- IP-Adresse des Anonymisierservers, zu speichern, zusammen mit dem Zeitpunkt
- der Anonymisierung bzw.
- Umschreibung.
- Anonymisierserver, welche eine Nutzerkennung erzeugen oder zwecks Authentisieru
-ng abfragen, müssen zusätzlich auch diese bei der Umschreibung der IP-Adresse
- speichern.
-\end_layout
-
-\begin_layout Standard
-Deutlich präziser als das TKG ist die Telekommunikationsüberwachungsverordnung
- (TKÜV), welche in §\InsetSpace \thinspace{}
-2 Nr.\InsetSpace ~
-17 und 18 TKÜV folgende zu speichernde Kennungen
- bzw.
- Merkmale angibt:
+ providers, there are, however, some differences as well: 
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Quotes gld
-\end_inset
-
-zu überwachende Kennung: a) das in der Anordnung angegebene technische Merkmal,
- durch das die zu überwachende Telekommunikation in der Telekommunikationsanlage
- des Verpflichteten gekennzeichnet ist, oder b) im Falle von Übertragungswegen,
- die dem unmittelbaren teilnehmerbezogenen Zugang zum Internet dienen, oder
- im Falle des § 5 oder des § 8 des Artikel 10-Gesetzes die in der Anordnung
- angegebene Bezeichnung des Übertragungswegs;
+anonymisation services hide the original user IP and replace it by their
+ own IP
 \end_layout
 
 \begin_layout Itemize
-Zuordnungsnummer: in Fällen, in denen die Überwachungskopie aufgeteilt und
- die Teile zeitlich versetzt oder auf voneinander getrennten Wegen an die
- berechtigte Stelle übermittelt werden, das vom Verpflichteten zu vergebende
- eindeutige, auch nichtnumerische Zuordnungsmerkmal, auf Grund dessen diese
- Teile einander zweifelsfrei zugeordnet werden können.
-\begin_inset Quotes grd
-\end_inset
+there is no physical data link which might identify users of such systems,
+ only the users' original IP
+\end_layout
 
+\begin_layout Itemize
+there are usually no user databases, but anonymous users only
+\end_layout
 
+\begin_layout Itemize
+free services can provide IPs as identifiers at maximum
+\end_layout
+
+\begin_layout Itemize
+only paid anonymisation services may provide user account numbers and further
+ user information
 \end_layout
 
 \begin_layout Standard
-Die TKÜV ist nicht Teil des TKG, könnte aber heranzgezogen werden, um die
- Intention des §\InsetSpace \thinspace{}
-113a TKG auszulegen, da die mit den beiden Gesetzen verfolgten
- Ziele vergleichbar sind.
- Insofern wäre es denkbar, dass §\InsetSpace \thinspace{}
-113a TKG indirekt auch die Verpflichtung
- zur Speicherung einer Zurodnungsnummer vorsieht, wenn die Speicherung der
- IP-Adresse alleine nicht ausreicht, um Verbindungen aufdecken zu können.
- Dies könnten Portnummern sein oder auch dedizierte Kanalnummern anonymer
- Kommunikationskanäle.
+In Germany, the legislator tries to cover all those differences by abstracting
+ proxies and anonymisation systems as IP transformation layer (§113 Telekommunik
+ationsgesetz/TKG).
+ From his point of view these systems don't carry identifying information,
+ which is usually hold by the providers only, but transformation information.
+ He therefore obliges them to store
+\end_layout
+
+\begin_layout Itemize
+the original ID of the user
+\end_layout
+
+\begin_layout Itemize
+the transformed ID of the user and
+\end_layout
+
+\begin_layout Itemize
+the timestamp of this transformation.
 \end_layout
 
 \begin_layout Standard
-Weitere zu speichernde Kennungen und Merkmale als die genannten sind vom
- Gesetz nicht vorgesehen.
- Insbesondere dürfen laut §\InsetSpace \thinspace{}
-113a Abs.
- 8 TKG 
-\begin_inset Quotes gld
-\end_inset
-
-Inhalt und Daten über abgerufene Internetseiten
-\begin_inset Quotes grd
-\end_inset
-
- allein auf Grund von §\InsetSpace \thinspace{}
-113a TKG nicht gespeichert werden, und §\InsetSpace \thinspace{}
-96 TKG verbietet
- explizit die Speicherung aller weiteren Verbindungsdaten, sofern sie nicht
- zur Abrechnung benötigt werden oder die Teilnehmer nicht explizit der Speicheru
-ng zugestimmt haben.
- Deshalb dürfen beispielsweise auch URLs und IP-Adressen der Ziel-Server
- von Anonymisierern gegenwärtig nicht auf Vorrat gespeichert werden.
+However, most anonymisation services provide a surjective transformation
+ for IP adresses.
+ This means, the users of such systems are sharing a few or even only one
+ common IP address.
+ This is unlike common telecommunication services, where each user gets
+ an individual IP address.
+ For uncovering certain requests, it would therefore, in most cases, not
+ suffice to store IP address and timestamp of the request.
+ This is an issue that some legislators, like currently in Germany, might
+ not address correctly.
 \end_layout
 
 \begin_layout Standard
-Nicht explizit im Gesetz geregelt ist, ob die Transformation der Benutzerkennung
-en auf Basis von Verbindungen (durch Speicherung von Beginn und Ende der
- Sitzung) oder für jede übermittelte Anfrage (durch Speicherung der Zeitpunkte
- jeder einzelnen Anfrage) zu speichern ist.
- Diese Unterscheidung kann erhebliche Auswirkungen auf den benötigten Speicherpl
-atz und die Möglichkeit zur Aufdeckung von Verbindungen haben.
+Information about visited web sites is not allowed to be stored regarding
+ the German law, neither by anonymisation systems nor by other telecommunication
+ providers.
+ Furthermore, the law does not clearly state whether the data has to be
+ stored for each session (connection to the anonymisation system) or for
+ each request (connection to target server through the anonymisation system).
+ These restrictions and unclarities, as described in the following sections,
+ make it very difficult and almost impossible to implement data retention
+ techniques that would allow to uncover connections unumbiguously.
 \end_layout
 
 \begin_layout Standard
-Im weiteren Verlauf werden -- unter Berücksichtigung verschiedener Interpretatio
-nen des Gesetzes -- Implementierungen für Single-Hop- und Multi-Hop-Anonymisiere
-r vorgesellt.
-\end_layout
-
-\begin_layout Subsection
-Anonymisierer sind keine klassischen Telekommunikationsdienste
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Standard
-Grund: Abbildung von a_in nach a_out ist surjektiv (gleiche Zielwerte für
- unterschiedliche Eingabewerte), nicht bijektiv (eineindeutig).
-\end_layout
-
-\begin_layout Standard
-Natürlich könnte man gesetzlich verlangen, dass Anonymisierer eine bijektive
- Abbildung durchführen, z.B.
- bei IPv6, indem jedem Nurtzer/Request eine eigene IP-Adresse zugewiesen
- wird.
+One may think about simply adapting the services to the intention of law:
+ telecommunication services could be obliged to ensure unumbiguous IDs/IP
+ addresses for their users within a certain time frame.
+ This would force anonymisation services to make bijective or injective
+ transformations of IP addresses.
+ If the transformations are injective and applied on each request, this
+ might not harm user anonymity, as requests of the same users would not
+ be linkable, whereas data retention of the request IP and the request timestamp
+ would enable the service to uncover this user - provided that there are
+ enough IP addresses available for the services' users.
+ However, the current IPv4 addresses are very scarce, and supplying proxies
+ and anonymisation services with enough IPs would need millions and millions
+ of them.
+ This might therefore be a concept for the IPv6 address space, but not and
+ the next years.
+ For now, other techniques have to be applied, as described in the following
+ sections.
 \end_layout
 
 \begin_layout Standard
-Die Anonymität/Sicherheit leidet darunter nicht wesentlich.
+
 \end_layout
 
 \begin_layout Section
