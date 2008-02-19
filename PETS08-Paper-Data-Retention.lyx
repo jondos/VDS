@@ -55,7 +55,16 @@ Anonymous Institute
 TODO: Referenzen säubern
 \end_layout
 
+\begin_layout Abstract
+Speicherzeitraum: 26 Wochen (in 2.x erwähnen)
+\end_layout
+
 \begin_layout Section
+\begin_inset LatexCommand label
+name "sec:Introduction"
+
+\end_inset
+
 Introduction
 \end_layout
 
@@ -866,7 +875,7 @@ Usually, the requests spend some (indeterministic) processing time
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Standard
 Abbildung 
@@ -942,8 +951,14 @@ Recording Input Addresses on Session Level
 \end_layout
 
 \begin_layout Standard
-For session-oriented services like VPNs, there is a minimalistic and lightweight
- data retention solution: just record the relevant session-level information.
+For session-oriented services (e.\InsetSpace \thinspace{}
+g.
+ HTTP proxies which support request pipelining or VPN based anonymisation
+ services), there is a minimalistic and lightweight data retention solution:
+ just record the relevant session-level information.
+ A session may last anything from a few seconds (for HTTP proxies) up to
+ several hours (for VPNs), depending on the individual system setup and
+ user behaviour.
  If 
 \begin_inset Formula $t_{\mathrm{start}}$
 \end_inset
@@ -953,14 +968,28 @@ For session-oriented services like VPNs, there is a minimalistic and lightweight
 \end_inset
 
  denote begin and end timestamps of a user session with the anonymisation
- service, the service will store the tuple 
+ service, the provider will store the tuple 
 \begin_inset Formula $(t_{\mathrm{start}},t_{\mathrm{end}},a_{\mathrm{in}},a_{\mathrm{out}}$
 \end_inset
 
-) for each session without considering individual HTTP requests in order
- to comply with data retention obligations.
- The applicable time zone information can be stored globally, outside of
- the session log, as it doesn't change so frequently.
+)
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+The applicable time zone information can be stored globally, outside of
+ the session log, as it changes only seldomly.
+ 
+\end_layout
+
+\end_inset
+
+ for each session, meeting the legal data retention obligations (storing
+ input ID and corresponding output IDs together with timestamps).
+ In this scenario, the system does not have to consider the individual HTTP
+ requests, which are relayed during a session.
+ Note that this approach is very similar to the data retention carried out
+ by ISPs.
 \end_layout
 
 \begin_layout Standard
@@ -1014,87 +1043,66 @@ Welche Nutzerkennung
 \end_layout
 
 \begin_layout Standard
-Bei Diensten, die mehrere HTTP-Requests 
-\begin_inset Formula $r$
+The storage requirements for this approach are pretty low.
+ Assuming that each of the Unix timestamps and IP(v4) addresses consumes
+ 4\InsetSpace ~
+Bytes, each log entry requires 16\InsetSpace ~
+Bytes of storage.
+ Given an average of 
+\begin_inset Formula $n_{s}$
 \end_inset
 
- über eine TCP-Verbindung 
-\begin_inset Formula $c$
+ newly created sessions per second, the service has to provide storage capacity
+ of 
+\begin_inset Formula $16\cdot3600\cdot24\cdot n_{s}=1\,382\,400\cdot n_{s}$
 \end_inset
 
- entgegennehmen (z.\InsetSpace \thinspace{}
-B.
- VPNs, HTTP-Proxies) ist es denkbar, für jede eingehende Verbindung das
- Tupel 
-\begin_inset Formula $(t_{\mathrm{start}},t_{\mathrm{end}},a_{\mathrm{in}},a_{\mathrm{out}}$
-\end_inset
-
-) zu speichern, wobei jeweils 4\InsetSpace ~
-Byte für die Zeitpunkte (32-Bit-UNIX-Timestamps)
- und jeweils noch 4\InsetSpace ~
-Byte für IPv4-IP-Adressen abzuspeichern sind.
- Da sich die aktuelle Zeitzone nur selten ändert, muss sie nicht bei jeder
- Verbindung gespeichert werden.
- Der Speicheraufwand beträgt dann maximal 
-\begin_inset Formula $4\cdot4=16$
-\end_inset
-
- Byte pro Verbindung.
- Bei durchschnittlich 
-\begin_inset Formula $n_{c}$
-\end_inset
-
- Verbindungen pro Sekunde fallen dann pro Tag 
-\begin_inset Formula $16\cdot3600\cdot24\cdot n_{c}=1\,382\,400\cdot n_{c}$
-\end_inset
-
- Byte an, im vorgeschriebenen Aufbewahrungszeitraum von 6 Monaten (ca.
- 26 Wochen) sind das etwa 
-\begin_inset Formula $240\cdot n_{c}$
-\end_inset
-
- Megabyte.
+ Bytes per day.
+ For a service with a daily total of 10.000 sessions this amounts to only
+ 156 Kilobytes per day or 27 Megabytes in 26 weeks.
 \end_layout
 
 \begin_layout Standard
-Diese Form der Vorratsdatenspeicherung kann jedoch meist keine Rückverfolgung
- gewährleisten.
- Ein Dienstanbieter kann die eingangs präsentierte Anfrage 
-\begin_inset Formula $q$
+From a privacy point of view this solution is the most desirable form of
+ data retention: While this concept is adequate for ISPs, it ultimately
+ fails to meet the purpose of data retention: traceability of the users
+ of the anonymisation service.
+ Faced with the query 
+\begin_inset Formula $q=(t_{\mathrm{query}},a_{\mathrm{out,query}})=(\textrm{2008-10-10 9:43am GMT, a.b.c.d})$
 \end_inset
 
- nicht eindeutig beantworten, wenn zur angefragten Zeit, also um 9:43 Uhr,
- mehr als eine eingehende Verbindung gespeichert wurde.
- Der Dienstanbieter müsste alle Eingangskennungen zurückliefern, die zu
- diesem Zeitpunkt mit dem Dienst verbunden waren.
- Bei einer nur minutengenauen zeitlichen Auflösung kommen bei unterstellter
- Gleichverteilung 
-\begin_inset Formula $120\cdot n_{c}$
+ from section 
+\begin_inset LatexCommand ref
+reference "sec:Introduction"
+
 \end_inset
 
- Benutzerkennungen in Frage (alle Verbindungen, die zwischen 09:42:00 und
- 09:43:59 Uhr aufgezeichnet wurden, wenn 
-\begin_inset Formula $\tau_{\mathrm{process}}$
+, the service provider is not able to uniquely identify one of its users
+ as requested -- it can only provide a result of all sessions which match
+ the query.
+ The result set consists of the IP addresses 
+\begin_inset Formula $a_{\mathrm{in}_{i}}$
 \end_inset
 
- und 
-\begin_inset Formula $\tau_{\mathrm{transmission}}$
+of all sessions which were in established state at 
+\begin_inset Formula $t_{\mathrm{query}}$
 \end_inset
 
- vernachlässigt werden und die Uhren synchronisiert sind).
- 
+ and relayed over 
+\begin_inset Formula $a_{\mathrm{out,query}}$
+\end_inset
+
+ -- regardless of users' (in-)activity at point in time.
+ Alas, even inactive users contribute to the anonymity group.
+ For increased security, anonymisation services will make sure that outbound
+ traffic uses only a single IP address.
+ Consequently, tracing a request back to its originator is only possible
+ if the number of users at the queried point in time equals one.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Note Note
 status open
-
-\begin_layout Standard
-wieso 120 n_c? es müssten doch 60 n_c sein; die Timestamps sind ja durchaus
- sekundengenau
-\end_layout
-
-\end_inset
-
-
-\end_layout
 
 \begin_layout Standard
 Bei mehreren Duzend oder gar mehreren Hundert Teilnehmern, die alle gleichzeitig
@@ -1128,18 +1136,16 @@ Transformationsleistung
  
 \end_layout
 
-\begin_layout Paragraph
-Zusammenfassung
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Eine bloße Speicherung der Anmelde- und Abmeldeinformationen von Nutzern
- beim Anonymisierdienst führt zu keinen verwertbaren Informationen für die
- Bedarfsträger, da die Rückverfolgbarkeit praktisch nie gewährleistet werden
- kann.
- Zur Gewährleistung des Gesetzeszwecks -- die Ermittlung des Urhebers einer
- Verbindung -- reicht die (platzsparende) Speicherung von Verbindungen zum
- Anonymisierdienst nicht aus.
+Although this approach technically meets the legal obligations, its effectivity
+ is too low to satisfy the needs of law enforcement.
+ Consequently, it is expected that service providers will be forced to store
+ data on a more detailed level.
 \end_layout
 
 \begin_layout Subsection
