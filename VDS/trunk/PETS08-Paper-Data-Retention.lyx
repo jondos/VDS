@@ -756,9 +756,15 @@ bytes of storage.
 
 \begin_layout Standard
 From a privacy point of view this solution is the most desirable form of
- data retention: While this concept is adequate for ISPs, it ultimately
- fails to meet the purpose of data retention: traceability of the users
- of the anonymisation service.
+ data retention.
+ Only a bare minimum of information is recorded.
+ Personal information -- apart from the usage time -- is not stored.
+\end_layout
+
+\begin_layout Standard
+While a similar approach is adequate for ISPs, it ultimately fails to meet
+ the purpose of data retention: traceability of the users of the anonymisation
+ service.
  Faced with the query 
 \begin_inset Formula $q=(t_{\mathrm{query}},a_{\mathrm{out,query}})=(\textrm{2008-10-10 9:43am GMT, a.b.c.d})$
 \end_inset
@@ -900,8 +906,12 @@ For this approach an anonymisation service stores the tupel
 \end_layout
 
 \begin_layout Standard
-Again, this approach is not able to guarantee traceability of all requests.
- Given the resolution of one minute in query 
+For session-oriented services this approach leads to smaller and thus more
+ precise result sets, because inactive users who are still connected to
+ the service are not included in the result.
+ Nevertheless, this approach is not able to guarantee traceability of all
+ requests.
+ Given the resolution of one minute in a query 
 \begin_inset Formula $q$
 \end_inset
 
@@ -943,134 +953,101 @@ set
 \end_layout
 
 \begin_layout Standard
-For session-oriented services this approach leads to smaller result sets
- as inactive users who are connected to the service are not included in
- the result.
-\end_layout
-
-\begin_layout Standard
 The storage requirements of this approach can be further optimised.
-\end_layout
-
-\begin_layout Standard
-Der Speicheraufwand dieser Methode ist allerdings nicht unerheblich.
- Gerade bei Webseitenaufrufen mit vielen nachgeladenen Objekten ergibt sich
- einiges an Optimierungspotential.
- Sofern über dieselbe Verbindung bzw.
- über dieselbe Nutzerkennung abgerufene Objekte innerhalb der durch die
- Genauigkeit der Bedarfsträger-Anfrage tolerierten zeitlichen Aulösung von
- etwa einer Minute geladen werden, muss für diese kein gesonderter Datensatz
- angelegt werden.
- Stattdessen genügt ein einziger Datensatz mit dem Anfangs- und Endzeitpunkt
- der Datenübertragung.
-\end_layout
-
-\begin_layout Paragraph
-Zusammenfassung
-\end_layout
-
-\begin_layout Standard
-Die Protokollierung der einzelnen HTTP-Requests ist zur Erfüllung der gesetzlich
-en Anforderungen besser geeignet als die bloße Speicherung der Verbindungsdaten.
- Eine eindeutige Rückverfolgbarkeit lässt sich hierbei allerdings auch nicht
- gewährleisten, da die Ergebnismenge bei Anfragen -- selbst bei schwach
- genutzten Anonymisierungsservern -- in vielen Fällen größer als 1 ist.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Standard
-Die HTTP-Requests können deshalb auch bei der gesetzeskonformer Speicherung
- praktisch nie eindeutig auf einen Teilnehmer zurückverfolgt werden.
- - ist es _sicher_ gesetzeskonform? das sollen lieber andere klären; würde
- den Satz streichen.
-\end_layout
-
+ A typical web browser retrieves a large number of objects via individual
+ HTTP requests.
+ Given the expected time resolution 
+\begin_inset Formula $\delta$
 \end_inset
 
+ of queries it is enough to store one record for a given input address within
+ each time interval 
+\begin_inset Formula $\delta$
+\end_inset
 
+, i.\InsetSpace \thinspace{}
+e.
+ for each given minute only the first request originating from a given IP
+ address is stored.
+\end_layout
+
+\begin_layout Standard
+We have shown that data retention on the request level is feasible.
+ It comes with the cost of storing slightly more information about personal
+ habits of users, though.
+ As long as more than one client is using a single-hop anonymiser concurrently,
+ this approach is not able to trace back a request to its originator.
 \end_layout
 
 \begin_layout Subsection
-Verbesserung der zeitlichen Auflösung
+\begin_inset LatexCommand label
+name "sub:Increasing-Time-Resolution"
+
+\end_inset
+
+Increasing Time Resolution
 \end_layout
 
 \begin_layout Standard
-In den obigen Abschnitten wurde deutlich, dass die zeitliche Auflösung,
- die die Strafverfolgungsbehörden derzeit in Deutschland bei ihren Anfragen
- verwenden, erheblich zur Unschärfe und damit zur Größe der Ergebnismenge
- beiträgt.
- Es ist zu untersuchen, inwiefern eindeutige Ergebnismengen erzielt werden
- können, wenn die Anfragen der Strafverfolgungsbehörden präziser formuliert
- würden.
-\end_layout
-
-\begin_layout Standard
-Das deutsche Gesetz macht allerdings keine Aussagen bezüglich der verlangten
- Genauigkeit bei der Abspeicherung der Transformationszeitpunkte.
- Zwar können heute verfügbare Proxy-Applikationen eingehende HTTP-Requests
- durchaus mit einer Auflösung im Millisekundenbereich protokollieren, eine
- so hohe Präzision ist jedoch nicht zielführend.
- Denn selbst bei täglicher Synchronisierung ist die Uhren-Drift im Laufe
- eines Tages häufig nicht zu vernachlässigen (wir haben Abweichungen von
- etwa 1 Sekunde innerhalb von 24 Stunden beobachtet).
- Strafverfolgungsbehörden ziehen also auch unter idealen Bedingungen keinerlei
- Nutzen aus einer höheren Auflösung als 1 Sekunde.
-\end_layout
-
-\begin_layout Standard
-Geht man davon aus, dass alle Uhren regelmäßig synchronisiert werden (was
- im Gesetz nicht gefordert wird) und 
+Apparently, the described ineffectivity of data retention on the request
+ level is mainly due to the poor time resolution used by law enforcement
+ authorities.
+ We will now discuss the expected benefits incurred by increasing the time
+ resolution.
+ Note that the German bill doesn't mention explicit precision requirements
+ for the timestamps at the moment.
+ We have identified two influences on the precision of timestamps, namely
+ clock drift and varying transmission times 
 \begin_inset Formula $\tau_{\mathrm{transmission}}$
-\end_inset
-
- vernachlässigbar klein ist, kommen bei einer Anfrage 
-\begin_inset Quotes gld
-\end_inset
-
-um 09:43:10 Uhr
-\begin_inset Quotes grd
-\end_inset
-
- immer noch durchschnittlich 
-\begin_inset Formula $n_{r}$
-\end_inset
-
- Requests (und 
-\begin_inset Formula $n_{a_{\mathrm{in}}}\le n_{r}$
-\end_inset
-
- Eingangskennungen) als Urheber eines HTTP-Requests in Frage.
- Eine eindeutige Zuordnung ist also auch bei derart präziser Anfragen unter
- idealen Bedingungen nicht immer möglich.Darüber hinaus kann es zu erheblichen
- Schwankungen bei der Übertragungszeit 
-\begin_inset Formula $\tau_{\mathrm{transmission}}$
-\end_inset
-
- kommen, die ebenfalls im Bereich von einigen Sekunden liegen können.
- Zusammen mit den Fehlern durch mangelhafte Uhrzeit-Synchronisation ergibt
- sich also auch bei extrem präzisen Anfragen ein Zeitfenster von einigen
- Sekunden für den Zeitpunkt 
-\begin_inset Formula $t_{\mathrm{transform}}$
 \end_inset
 
 .
- Bei Anfragen zur Herausgabe von gespeicherten Verbindungsdaten bringt eine
- höhere zeitliche Auflösung als eine Minute also aus physikalischen Gründen
- nur einen geringen Genauigkeitsgewinn.
-\end_layout
-
-\begin_layout Paragraph
-Zusammenfassung
 \end_layout
 
 \begin_layout Standard
-Wenn Anonymisierdienste, wie im Gesetz gefordert, ausschließlich Eingangskennung
-en, transformierte Ausgangskennungen und den Zeitpunkt der Transformation
- speichern müssen, ist -- bei lediglich einer einzigen Beobachtung -- eine
- Aufdeckung von Kommunikationsbeziehungen in den meisten Fällen nicht möglich.
- Dies ist bedingt durch die Gleichzeitigkeit von Datenverbindungen, indeterminis
-tische Übertragungszeiten und Uhrzeitabweichungen im Internet.
+Currently deployed proxy servers are able to log individual requests with
+ sub-second precision.
+ For such high resolution the drift of the hardware clock becomes an issue.
+ We have observed deviations of up to 1 second within a 24 hour interval.
+ In case authorities investigated the IP address 
+\begin_inset Formula $a_{out}$
+\end_inset
+
+ of the proxy by analysing log files of the destination server, they have
+ either to make sure that the clock of this server is synchronised, too,
+ or they have to determine the deviation of its clock from the universal
+ time and correct the supplied value of 
+\begin_inset Formula $t_{\textrm{query}}$
+\end_inset
+
+.
+ Therefore, even with daily clock synchronisation on proxy servers (which
+ is currently not compulsory to the best of our knowledge), using timestamps
+ with sub-second precision does not make sense.
+\end_layout
+
+\begin_layout Standard
+Furthermore, the transmission time 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+ between the host of the anonymisation service and the destination server
+ may introduce indeterministic timing deviations.
+ For highly loaded anonymisation services or networks transmission times
+ may become non-negligible, i.\InsetSpace \thinspace{}
+e.
+ up to several seconds.
+\end_layout
+
+\begin_layout Standard
+Even if it was possible to provide a timestamp with a precision of one second,
+ there would still be 
+\begin_inset Formula $n_{r}$
+\end_inset
+
+ requests to consider on average.
+ Although increasing the resolution of timestamps helps to reduce the size
+ of the result set, it still cannot guarantee traceability.
 \end_layout
 
 \begin_layout Subsection
