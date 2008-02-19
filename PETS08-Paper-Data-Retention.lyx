@@ -1010,14 +1010,14 @@ Currently deployed proxy servers are able to log individual requests with
  For such high resolution the drift of the hardware clock becomes an issue.
  We have observed deviations of up to 1 second within a 24 hour interval.
  In case authorities investigated the IP address 
-\begin_inset Formula $a_{out}$
+\begin_inset Formula $a_{\mathrm{out}}$
 \end_inset
 
  of the proxy by analysing log files of the destination server, they have
  either to make sure that the clock of this server is synchronised, too,
  or they have to determine the deviation of its clock from the universal
  time and correct the supplied value of 
-\begin_inset Formula $t_{\textrm{query}}$
+\begin_inset Formula $t_{\mathrm{query}}$
 \end_inset
 
 .
@@ -1056,101 +1056,96 @@ name "sub:Schnittmengenbildung-über-mehrere"
 
 \end_inset
 
-Schnittmengenbildung über mehrere Beobachtungen
+Utilising Result Set Intersections 
 \end_layout
 
 \begin_layout Standard
-Um die Ergebnisqualität ihrer Anfragen zu verbessern, könnten sich Strafverfolgu
-ngsbehörden gängiger Techniken bedienen, die zum Angriff auf starke Anonymisieru
-ngsverfahren vorgeschlagen werden.
- Ausgehend von den genannten Vorratsdaten bietet sich die zeitliche Korrelation
- über einen sogenannten Schnittmengenangriff an:
+Law enforcement authorities can also make use of advanced techniques which
+ are considered 
+\begin_inset Quotes eld
+\end_inset
+
+attacks
+\begin_inset Quotes erd
+\end_inset
+
+ from the perspective of privacy researchers.
+ As an example of such an attack, we will describe how they can utilise
+ intersection attacks to reduce the result set.
 \end_layout
 
 \begin_layout Standard
-Sofern 
-\begin_inset Quotes gld
+This approach only works in case an offender visits a given page several
+ times using an anonymisation service.
+ Furthermore, multiple actions of the offender have to be identifiable at
+ the destination server (e.\InsetSpace \thinspace{}
+g.
+ because he uses pseudonym or account credentials several times).
+ Authorities could then issue an extended query 
+\emph on
+
+\begin_inset Formula $q_{\mathrm{intersect}}$
 \end_inset
 
-Wiederholungstäter
-\begin_inset Quotes grd
+
+\emph default
+ = 
+\begin_inset Quotes eld
 \end_inset
 
- mehrmals auf die gleiche Internetadresse zugreifen, und im Idealfall vom
- Bedarfsträger jeweils als dieselbe Person identifiziert werden können (etwa
- anhand eines bestimmten Benutzernamens), kann die behördliche Anfrage wie
- folgt erweitert werden:
+Please determine the identity of the user who used your anonymisation service
+ with IP address 
+\emph on
+a.b.c.d 
+\emph default
+on 2008-02-10 at 9:43\InsetSpace \thinspace{}
+am GMT, at 11:05\InsetSpace \thinspace{}
+am GMT and at 3:43\InsetSpace \thinspace{}
+pm GMT
+\begin_inset Quotes erd
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $q=$
+If the offender used the same IP address for multiple requests, the result
+ sets 
+\begin_inset Formula $A_{\mathrm{result,in}_{i}}$
 \end_inset
 
- 
-\begin_inset Quotes gld
+ for the provided timestamps 
+\begin_inset Formula $t_{query_{i}}$
 \end_inset
 
-Welche identische Nutzerkennung 
-\begin_inset Formula $a_{\mathrm{in}}$
-\end_inset
-
- verbarg sich am 08.02.2008 um 9:43 Uhr GMT, am 08.02.2008 um 9:50 Uhr GMT und
- am 09.02.2008 um 14:13 Uhr GMT hinter der IP-Adresse 
-\begin_inset Formula $a_{\mathrm{out}}$
-\end_inset
-
-?
+ can be intersected to obtain the final result, which contains only addresses,
+ which were active at all given points in time.
+ Users can prevent this attack by frequently changing their IP address,
+ which prevents linking the individual requests.
+ Anonymisation services which can only be accessed via invariant (pseudonymous)
+ user accounts may be forced to link individual actions using the account
+ IDs instead of IP addresses.
+ Therefore, intersection attacks are especially effective when used against
+ commercial single-hop anonymisation services.
+ Commercial providers can protect their users by accepting anonymous micropaymen
+ts (i.\InsetSpace \thinspace{}
+e.
+ anonymous e-cash).
 \end_layout
 
 \begin_layout Standard
-Wenn sich die Zugangskennung oder die IP-Adresse des aufzudeckenden Teilnehmers
- innerhalb dieser Zeit nicht geändert hat, ist bei Single-Hop-Anonymisierern
- mit dieser Methode eine präzisere Rückverfolgung der Zugriffe möglich als
- bei einzelnen Beobachtungen.
- Bei Diensten ohne Nutzerkennung, typisch für kostenlose Angebote, genügt
- es allerdings, sich von einem anderen Ort bzw.
- über einen anderen Provider einzuwählen, um eine andere IP zu erhalten
- und dadurch vom Anonymisierdienst nicht mehr als die gleiche Person erkannt
- zu werden.
- Aktuell verfügbare Dienste, die gegen Bezahlung genutzt werden, setzen
- aber immer eine Benutzerkennung voraus.
- Diese verbesserte Form des Aufdeckungsverfahrens ist deshalb besonders
- wirksam bei kostenpflichtigen single-hop-Diensten.
- 
-\end_layout
-
-\begin_layout Standard
-Der Betreiber eines kostenpflichtigen Dienstes kann seine Nutzer vor einer
- solchen Aufdeckung mittels Schnittmengenbildung weitestgehend schützen,
- indem er die Bezahlung über anonyme Micropayments, also digitale Münzen,
- ermöglicht.
- Dadurch wären die Anmeldeinformationen im Idealfall nur wenige Sekunden
- oder Minuten lang verkettbar.
- Die Absicherung, Geschwindigkeitsoptimierung und Einführung eines solchen
- Verfahrens ist jedoch aufwändig, und deshalb außerhalb des Themenbereichs
- dieses Artikels.
- Auch ist es unwahrscheinlich, dass solche aufwendigen Verfahren in einfachen
- Single-Hop-Proxies integriert werden.
-\end_layout
-
-\begin_layout Paragraph
-Zusammenfassung
-\end_layout
-
-\begin_layout Standard
-Sofern Straftäter mehr als einmal den gleichen Anonymisierdienstleister
- nutzen, und dabei jeweils von Bedarfsträgern wiedererkannt und zurückverfolgt
- werden, liefert die zeitlich versetzte Schnittmengenbildung eine deutlich
- höhere Wahrscheinlichkeit für eine eindeutige Aufdeckung als die einmalige
- Beobachtung.
- Gerade bei kostenpflichtigen Single-Hop-Anonymisierdiensten ermöglicht
- diese Methode in vielen Fällen eine Deanonymisierung.
- Die gesetzlichen Vorgaben müssen dafür nicht angepasst werden, lediglich
- der Inhalt der behördlichen Anfragen ist leicht zu ergänzen.
+We have shown that authorities can increase the chance of identifying the
+ originator of a request by linking various information sources.
+ Cautious users can guard themselves against this kind of attacks, though.
 \end_layout
 
 \begin_layout Subsection
-Speicherung von Ziel-IP-Adressen oder URLs
+\begin_inset LatexCommand label
+name "sub:Recording-Destination-Addresses"
+
+\end_inset
+
+Recording Destination Addresses and URLs
 \end_layout
 
 \begin_layout Standard
