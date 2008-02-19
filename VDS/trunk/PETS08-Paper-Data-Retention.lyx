@@ -52,7 +52,7 @@ Anonymous Institute
 \end_layout
 
 \begin_layout Abstract
-Abstract goes here
+TODO: Referenzen säubern
 \end_layout
 
 \begin_layout Section
@@ -727,6 +727,15 @@ name "sec:single-hop"
 \end_inset
 
 Data Retention for Single-Hop Anonymisers
+\end_layout
+
+\begin_layout Standard
+Single-hop anonymisers replace the IP addresses of their users by different
+ ones -- their own IP addresses.
+ Consequently, providers of anonymisation services have to record their
+ usage according to data retention regulations.
+ Concretely, they have to store an input and output ID together with the
+ timestamp of the transformation of the ID.
 \end_layout
 
 \begin_layout Standard
