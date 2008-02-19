@@ -902,7 +902,7 @@ For this approach an anonymisation service stores the tupel
 ).
  An anonymisation service with an average of 50 requests per second has
  to provide storage for 9 gigabytes of retained log files over a period
- of six months.
+ of 26 weeks.
 \end_layout
 
 \begin_layout Standard
@@ -1115,7 +1115,7 @@ If the offender used the same IP address for multiple requests, the result
 \end_inset
 
  for the provided timestamps 
-\begin_inset Formula $t_{query_{i}}$
+\begin_inset Formula $t_{\mathrm{query_{i}}}$
 \end_inset
 
  can be intersected to obtain the final result, which contains only addresses,
@@ -1149,55 +1149,75 @@ Recording Destination Addresses and URLs
 \end_layout
 
 \begin_layout Standard
-Zur Verbesserung der Rückverfolgbarkeit bis zum Urheber der Verbindung könnte
- der Betreiber eines Anonymisierers verpflichtet werden, zusätzlich auch
- die IP-Adresse des Ziel-Servers oder sogar die gesamte URL speichern.
- Er muss dazu für jeden HTTP-Request das Tupel 
+In the previous sections we have excluded destination addresses from data
+ retention.
+ In the following we will discuss the implications of recording them.
+\end_layout
+
+\begin_layout Subsubsection*
+Destination IP addresses
+\end_layout
+
+\begin_layout Standard
+For increased traceability, anonymisation services may be forced to store
+ the IP addresses of the destination servers.
+ Therefore, they store 
 \begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}},a_{\mathrm{destination}})$
 \end_inset
 
- protokollieren.
- Bei der Speicherung der Ziel-IP-Adresse fallen dann pro Request 16 Byte
- an, was bei einer durchschnittlichen Anzahl von 
-\begin_inset Formula $n_{r}$
-\end_inset
-
- Requests pro Sekunde eine Datenmenge von 
+ for each request, which requires 
 \begin_inset Formula $1\,382\,400\cdot n_{r}$
 \end_inset
 
- Byte pro Tag ergibt.
+ bytes of storage per day (without optimisation).
+ The earlier mentioned hypothetical anonymisation service with an average
+ of 50 requests per second has to provide storage for 12 gigabytes of retained
+ log files over a period of 26 weeks.
 \end_layout
 
 \begin_layout Standard
-Allerdings ist die Speicherung von Zieladressen derzeit verboten.
- Zudem geben die Strafverfolgungsbehörden in ihren Anfragen derzeit die
- Zieladresse gar nicht an (vgl.
- die eingangs präsentierte Anfrage 
-\begin_inset Formula $q$
+This approach has organisational and legal consequences: Currently, law
+ enforcement authorities do not provide the destination address in their
+ queries, though.
+ They will have to include this information in their queries.
+ Furthermore, recording destination addresses has been explicitly forbidden
+ in Germany's bill on data retention because of privacy concerns.
+\end_layout
+
+\begin_layout Standard
+This approach is able to considerably reduce the size of the result set.
+ Now, only IP addresses of users requesting a object from 
+\begin_inset Formula $a_{\mathrm{destination}}$
 \end_inset
 
-).
- Zur Erhöhung der Genauigkeit müssten die Behörden diese zusätzlich in die
- Anfrage aufnehmen, und die Speicherung der Zieladresse müsste vorgeschrieben
- oder zumindest zulässig sein.
+ are included.
+ It can be argued, though, that there is still a possibility that several
+ users are accessing different objects on the same destination server, which
+ may frequently happen when various sites are (virtually) hosted on the
+ same physical server.
+\end_layout
+
+\begin_layout Subsubsection*
+URLs of web sites
 \end_layout
 
 \begin_layout Standard
-Die eindeutige Rückverfolgbarkeit kann allerdings auch bei dieser Methode
- nicht garantiert werden, da nicht ausgeschlossen ist, dass mehrere Benutzer
- die fragliche Webseite im zu durchsuchenden Zeitfenster abgerufen haben.
- Zudem ist eine IP-Adresse nicht immer ein identifizierendes Merkmal für
- eine Webseite (etwa bei virtuellen Webservern, die mehrere Internet-Domains
- über eine IP-Adresse anbieten).
+An extension of the previouly mentioned concept is the recording of destination
+ URLs in order to further reduce the size of the result set.
+ Note again, that recording URLs is currently not allowed for data retention
+ purposes at the moment in Germany.
 \end_layout
 
 \begin_layout Standard
-Der nächste Schritt auf dem Weg zur Vorratsdatenspeicherung, die Rückverfolgbark
-eit tatsächlich gewährleisten kann, ist daher die Speicherung der vollständigen
- URLs, die die Benutzer über den Anonymisierer abgerufen haben (anstelle
- der Ziel-IP-Adresse).
- Bei einer angenommenen Durchschnittslänge von 50 Zeichen pro URL <Quellen>
+URLs require considerable more space than IP addresses.
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+Bei einer angenommenen Durchschnittslänge von 50 Zeichen pro URL <Quellen>
  werden pro Request dann 62 Byte benötigt, was 
 \begin_inset Formula $5\,356\,800\cdot n_{r}$
 \end_inset
