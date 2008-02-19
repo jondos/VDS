@@ -187,11 +187,11 @@ ung anderer Protokolle wird aus Gründen der Übersichtlichkeit nicht eingegange
 \end_layout
 
 \begin_layout Section
-Speicherpflichten
+Rechtliche Grundlagen der Vorratsdatenspeicherung
 \end_layout
 
 \begin_layout Subsection
-Vorschriften im Gesetz
+Speicherpflicht für Anonymisierdienste in Deutschland
 \end_layout
 
 \begin_layout Standard
@@ -318,7 +318,7 @@ er und formular-basierte Anonymisierer (CGI-Proxies, PHProxies) ebenso wie
 \end_layout
 
 \begin_layout Subsection
-Technische Interpretation der gesetzlichen Vorgaben
+Für Anonymisierdienste relevante gesetzliche Regelungen
 \end_layout
 
 \begin_layout Standard
@@ -581,34 +581,81 @@ en auf Basis von Verbindungen (durch Speicherung von Beginn und Ende der
 atz und die Möglichkeit zur Aufdeckung von Verbindungen haben.
 \end_layout
 
-\begin_layout Standard
-Im weiteren Verlauf werden -- unter Berücksichtigung verschiedener Interpretatio
-nen des Gesetzes -- Implementierungen für Single-Hop- und Multi-Hop-Anonymisiere
-r vorgesellt.
-\end_layout
-
 \begin_layout Subsection
-Anonymisierer sind keine klassischen Telekommunikationsdienste
+Verpflichtung zu individuellen IPs für Anonymisierdienste?
 \end_layout
 
 \begin_layout Standard
-TODO
+Die Gesetze zur Vorratsdatenspeicherung sind, wie beschrieben, mit Blick
+ auf Telekommunikationsdienste entworfen, in denen die einzelnen Teilnehmer
+ jeweils über eindeutige und unterscheidbare Kennungen und Adressen kommuniziere
+n.
+ Anonymisierungsdienste werden vom Gesetzgeber deshalb als Zwischenstationen
+ aufgefasst, die über eine temporäre bijektive Abbildung Kennungen einzelner
+ Nutzer in andere Kennungen umwandeln.
+ Eine Speicherung dieser Abbildung und des Zeitpunkts der Transformation
+ vorausgesetzt, ist durch die bijektive Eigenschaft der Kennungen dann jederzeit
+ die Aufdeckung der Originaldaten möglich.
 \end_layout
 
 \begin_layout Standard
-Grund: Abbildung von a_in nach a_out ist surjektiv (gleiche Zielwerte für
- unterschiedliche Eingabewerte), nicht bijektiv (eineindeutig).
+Diese Vorstellung mag auf einige VPN-Dienste zutreffen, allerdings deckt
+ 
+\size small
+sie 
+\size default
+sich nicht mit der Realität aktueller Anonymisierungssysteme.
+ Bei diesen Systemen teilen sich viele Teilnehmer jeweils dieselbe IP-Adresse,
+ damit keine Verkettung von Teilnehmerzugriffen möglich wird.
+ Die Abbildung der anonymisierten IP-Adresse ist also surjektiv und nicht
+ umkehrbar.
+ Speicher- und Korrelationsverfahren, welche aus den gesetzlichen Vorgaben
+ zur Vorratsdatenspeicehrung abgeleitet werden können, ermöglichen es zwar,
+ sich der bijektiven Abbildung zu nähern.
+ Sie können aber nur in Ausnahmefällen oder mit hohem technischen und organisato
+rischen Aufwand, welcher durch die gegenwärtige Gesetzgebung wie im Folgenden
+ zu sehen nicht abgedeckt ist, tatsächlich eine bijektive Abbildung erreichen.
 \end_layout
 
 \begin_layout Standard
-Natürlich könnte man gesetzlich verlangen, dass Anonymisierer eine bijektive
- Abbildung durchführen, z.B.
- bei IPv6, indem jedem Nurtzer/Request eine eigene IP-Adresse zugewiesen
- wird.
+Allerdings wäre die Einführung einer Pflicht zur bijektiven Abbildung denkbar:
+ Jeder Rechner im Internet könnte eine individuelle und unbegrenzt gültige
+ Adressen zugewiesen bekommen.
+ Eine gesetzliche Regelung könnte vorsehen, dass Verbindungen verschiedener
+ Teilnehmer bzw.
+ Rechner grundsätzlich über individuelle IP-Adressen aufgebaut werden müssen,
+ und dass unterschiedliche Teilnehmer/Rechner sich niemals dieselbe IP-Adresse
+ teilen dürfen.
+ Anonymisierdienste müssten dann eine bijektive oder injektive Abbildung
+ vornehmen, d.h.
+ jedem Teilnehmer entweder imemr die gleiche, oder bei jeder neue aufgebauten
+ Verbindung jeweils eine neue Ausgangs-IP-Adresse zuweisen, niemals jedoch
+ gleichzeitig die gleiche IP wie einem anderen Teilnehmer.
+ Dadurch dass die IP-Adresse laufend wechselt wäre immer noch sichergestellt,
+ dass Dritte keine Verkettung der Zugriffe eines Teilnehmers vornehmen können.
+ Stehen mehrere Tausend IP-Adressen pro Dienst zur Verteilung an die Teilnehmer
+ zur Verfügung, müssen sich die Adressen außerdem so selten wiederholen,
+ dass zusammen mit dem Zeitpunkt einer Anfrage eine eindeutige Rückverfolgung
+ durch den Dienstbetreiebr möglich wird, wenn Ausgangs-IP und Zeitpunkt
+ gespeichert wurden.
 \end_layout
 
 \begin_layout Standard
-Die Anonymität/Sicherheit leidet darunter nicht wesentlich.
+Dies wird bei manchen Diensten, z.B.
+ Anonymouse, bereits gemacht, allerdings ist die Zahl der verfügbaren IP-Adresse
+n um ein vielfaches kleiner als die Zahl der Benutzer - denn IP-Adressen
+ sind derzeit ein knappes Gut und deshalb teuer.
+ Das jetzige auf IPv4 basierende Internet verfügt nicht über ausreichend
+ IP-Adressen, um mehr als eine homöopathische Anzahl von Proxies, VPNs und
+ Anonymisierdiensten mit jeweils einigen Tausend IPs auszustatten.
+ So eine hohe Zahl an IPs ist jedoch für den störungsfreien und performanten
+ Betrieb dieser Dienste notwendig: die Ausgangs-IPs ersetzen quasi die ausgehend
+e Portnummer.
+ Dieses Verfahren lässt sich deshalb erst mit der Einführung von IPv6 und
+ damit einer praktisch unbegrenzten Zahl verfügbarer IP-Adressen umsetzen.
+ Und auch hier bleibt abzuwarten, ob IP-Adressen wirklich so preisgünstig
+ zur Verfügung stehen werden, dass eine Ansammlung von so vielen IPs für
+ Dienstanbieter bezahlbar ist.
 \end_layout
 
 \begin_layout Section
