@@ -1,0 +1,2281 @@
+#LyX 1.5.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
+\begin_document
+\begin_header
+\textclass llncs
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize 11
+\spacing single
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Implementation of Data Retention Measures for Anonymisation Services
+\end_layout
+
+\begin_layout Author
+Anonymous Author
+\end_layout
+
+\begin_layout Institute
+Anonymous Institute
+\end_layout
+
+\begin_layout Abstract
+Abstract goes here
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+What is the purpose of data retention? Internet service providers are supposed
+ to uncover the identity of a user given an IP address and a timestamp.
+ Providers of anonymisation services are also targeted.
+ Typically, law enforcement authorities issue a query 
+\emph on
+q 
+\emph default
+= 
+\begin_inset Quotes eld
+\end_inset
+
+Please determine the identity of the user who used your anonymisation service
+ with IP address 
+\emph on
+a.b.c.d 
+\emph default
+on 2008-02-10 at 9:43\InsetSpace \thinspace{}
+am GMT
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The basis for this paper are the ongoing data retention efforts in the European
+ Union.
+ in In 2006 the EU adopted a Directive on data retention (2006/24/EG).
+ Article 1 outlines its purpose as follows
+\end_layout
+
+\begin_layout Quote
+1.
+ This Directive aims to harmonise Member States' provisions concerning the
+ obligations of the providers of publicly available electronic communications
+ services or of public communications networks with respect to the retention
+ of certain data which are generated or processed by them, in order to ensure
+ that the data are available for the purpose of the investigation, detection
+ and prosecution of serious crime, as defined by each Member State in its
+ national law.
+ 2.
+ This Directive shall apply to traffic and location data on both legal entities
+ and natural persons and to the related data necessary to identify the subscribe
+r or registered user.
+ It shall not apply to the content of electronic communications, including
+ information consulted using an electronic communications network.
+\end_layout
+
+\begin_layout Standard
+The implementation of the Directive regarding internet access can be postponed
+ by Member States until March 15th, 2009.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die EU-Richtlinie liefert ein Rahmenwerk, das durch die Gesetzgebung der
+ einzelnen Mitgliedsstaaten implementiert und konkretisiert werden muss.
+ In Deutschland wird die Vorratsdatenspeicherung durch das 
+\begin_inset Quotes gld
+\end_inset
+
+Gesetz zur Neuregelung der Telekommunikationsüberwachung und anderer verdeckter
+ Ermittlungsmaßnahmen sowie zur Umsetzung der Richtlinie 2006/24/EG
+\begin_inset Quotes grd
+\end_inset
+
+ vom 21.12.2007 mittels Ergänzungen zum Telekommunikationsgesetz (TKG) legitimiert.
+ Das deutsche Gesetz geht stellenweise auch auf die Implementierung von
+ Vorratsdatenspeicherung bei Anonymisierungssystemen ein.
+\end_layout
+
+\begin_layout Standard
+Elektronische Telekommunikationsdienste müssen nach der aktuellen Rechtslage
+ ab dem 01.01.2008 Verbindungsdaten auf Vorrat speichern, vorbehaltlich Übergangsf
+risten bis zum 01.01.2009.
+ Derzeit herrscht eine gewisse Unsicherheit hinsichtlich des Betriebs von
+ Anonymisierungssystemen vor.
+ Es wird gemutmaßt, dass der Betrieb eines Anonymisierers wegen Haftungsrisiken
+ unmöglich oder sogar illegal wird, und dass Anonymisierungsdienste keine
+ Anonymität mehr gewährleisten, sobald bereits ein einziger Knoten in Deutschlan
+d bzw.
+ in einem Mitgliedsland der EU steht 
+\begin_inset LatexCommand cite
+key "Kairaven"
+
+\end_inset
+
+.
+ Betroffen sind sowohl privat betriebene Anonymisierungsdienste, z.\InsetSpace \thinspace{}
+B.
+ Betreiber von Tor-Knoten 
+\begin_inset LatexCommand cite
+key "Tor"
+
+\end_inset
+
+, als auch kommerzielle Systeme, z.\InsetSpace \thinspace{}
+B.
+ JonDonym 
+\begin_inset LatexCommand cite
+key "JonDonym"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
+Ziele dieses Beitrags
+\end_layout
+
+\begin_layout Standard
+In diesem Beitrag werden wir die Speicherpflichten, denen die Betreiber
+ von Anonymisierungsdiensten unterliegen, anhand der deutschen Gesetzgebung
+ erläutern.
+ Darüber hinaus werden wir verschiedene Implementierungsmöglichkeiten der
+ Vorratsdatenspeicherung für Single- und und Multi-Hop-Anonymisierungsdienste
+ diskutieren.
+ Zur Veranschaulichung schlagen wir -- unabhängig von der Rechtslage --
+ Konzepte für eine möglichst wirksame Vorratsdatenspeicherung bei Anonymisierdie
+nsten vor und gehen auf die dabei möglichen Implikationen für den Schutz
+ der Nutzerdaten ein.
+ Schließlich präsentieren wir die Architektur eines Multi-Hop-Anonymisierungsdie
+nstes, der zwar gesetzeskonform arbeitet, jedoch die Rückverfolgung praktisch
+ unmöglich macht.
+\end_layout
+
+\begin_layout Standard
+Im Fokus dieses Beitrags stehen Anonymisierungsdienste für den Abruf von
+ Internetseiten aus dem WWW, welche über Web-Formulare, VPNs oder HTTP-
+ bzw.
+ SOCKS-Proxy erreichbar sind.
+ Auf die Besonderheiten von Mail-Anonymisierern (Remailer) sowie die Anonymisier
+ung anderer Protokolle wird aus Gründen der Übersichtlichkeit nicht eingegangen.
+\end_layout
+
+\begin_layout Section
+Speicherpflichten
+\end_layout
+
+\begin_layout Subsection
+Vorschriften im Gesetz
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Grundthese hier: Gesetz wurde eigentlich für ISPs gemacht; in D wurden Anonymisi
+erer, die ja schon mal negativ aufgefallen waren <Quelle>, jedoch zusätzlich
+ explizit gewürdigt -> Abs.
+ 6.
+ Durch die allgemeine Formulierung versucht Gesetzgeber alle Varianten von
+ Anonymisiern zu erschlagen.
+ Die unscharfe Formulierung lässt jedoch Interpretationsspielraum für die
+ Implementierung, wobei der Zweck des Gesetzes -- die Rückverfolgbarkeit
+ -- nicht immer erfüllt wird.
+\end_layout
+
+\begin_layout Standard
+Wer muss speichern? Alle Anonymisierer, sowohl Single- als auch Multi-Hop
+\end_layout
+
+\begin_layout Standard
+Was speichern? Eingangs/Ausgangskennungen und Zeitpunkte
+\end_layout
+
+\begin_layout Standard
+Inhalte und Daten nicht Abs.
+ 8
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zunächst soll geklärt werden, weshalb Anonymisierungsdienste unter die Vorratsda
+tenspeicherung fallen.
+ Die deutsche Implementierung der Vorratsdatenspeicherung im Telekommunikationsg
+esetz (TKG) betrifft Dienstanbieter, die 
+\emph on
+Telekommunikationsdienste
+\emph default
+ 
+\emph on
+für die Öffentlichkeit 
+\emph default
+bereitstellen.
+ Es gibt juristisch fundierte Meinungen, welche Anonymisierdienste wie AN.ON
+ / JonDonym als reines Telemedium gemäß dem Telemediengesetz (TMG) auffassen
+ 
+\begin_inset LatexCommand cite
+key "ULD07"
+
+\end_inset
+
+.
+ Solcherart wären Sie von Regelungen im TKG überhaupt nicht betroffen, eine
+ Vorratsdatenspeicherung wäre nach der jetzigen Gesetzeslage nicht zulässig.
+\end_layout
+
+\begin_layout Standard
+Nach Meinung anderer Juristen weisen Anonymisierdienste jedoch eine Doppelnatur
+ auf und sind sowohl als Telemediendienste als auch als Telekommunikationsdienst
+e aufzufassen (vgl.
+ 
+\begin_inset LatexCommand cite
+key "Raa03"
+
+\end_inset
+
+, Gesetzesbegründung zu §\InsetSpace \thinspace{}
+113a Abs.
+ 6 TKG).
+ Die folgende Argumentation zur Umsetzung der juristischen Vorgaben zur
+ Vorratsdatenspeicherung wird unter der Annahme geführt, dass die entsprechenden
+ Passagen des TKG auf Anonymisierdienste angewendet werden können, da ansonsten
+ keine Maßnahmen zur Überwachung von Verbindungen notwendig bzw.
+ zulässig wären.
+ 
+\end_layout
+
+\begin_layout Standard
+Während §\InsetSpace \thinspace{}
+96 TKG den grundsätzlich Begriff der Verkehrsdaten definiert und
+ ein Speicherverbot dieser Daten über das zur Diensterbringung erforderliche
+ Maß hinaus angibt, ist in §\InsetSpace \thinspace{}
+113a TKG aufgeführt, für welche dieser Daten
+ und welche Dienste eine Speicherpflicht besteht.
+ Anonymisierungsdienste, welche die Benutzerkennungen transformieren, müssen
+ im Rahmen der Vorratsdatenspeicherung Eingangs- und Ausgangskennungen sowie
+ den Zeitpunkt (inkl.
+ Zeitzone) der Veränderung protokollieren.
+ Inhalte und Daten über die abgerufenen Internetseiten dürfen aufgrund des
+ Gesetzes jedoch nicht gespeichert werden (§\InsetSpace \thinspace{}
+113a Abs.
+ 8 TKG).
+\end_layout
+
+\begin_layout Standard
+Von der Speicherpflicht betroffen wären demnach öffentlich verfügbare Proxy-Serv
+er und formular-basierte Anonymisierer (CGI-Proxies, PHProxies) ebenso wie
+ Tor-Knoten und JonDonym-Mixe.
+ Sie ersetzen die von der Vorratsdatenspeicherung erfassten Benutzerkennungen
+ (in der Regel die IP-Adressen der Nutzer), weshalb sie gemäß §\InsetSpace \thinspace{}
+113a Abs.
+ 6 zur Vorratsdatenspeicherung verpflichtet sind.
+ Dies gilt für die einzelnen Server und deren Betreiber auch dann, wenn
+ diese nicht in einer direkten Beziehung zum Endkunden stehen sollten (vgl.
+ Gesetzesbegründung zu §\InsetSpace \thinspace{}
+113a Abs.
+ 6 TKG).
+ In der Regel dürfte diese direkte Endkundenbeziehung jedoch auch bei verteilten
+ Diensten wie Tor und JonDonym vorliegen, da die Zugangssoftware beim Endkunden
+ Daten (kryptographische Schlüssel) mit jedem Server einer Anonymisierkette
+ bzw.
+ Anonymisierkaskade austauscht.
+ Dabei ist es rechtlich gesehen irrelevant, ob dieser Datenaustausch über
+ Zwischenstationen erfolgt, oder über eine direkte IP-Verbindung.
+ Der Dienst JonDonym trägt dieser Tatsache seit kurzem Rechnung, indem die
+ Endkunden jeweils AGB jedes einzelnen Betreibers einer Mixkaskade akzeptieren
+ müssen, um den Dienst verwenden zu können.
+\end_layout
+
+\begin_layout Subsection
+Technische Interpretation der gesetzlichen Vorgaben
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Auch hier Aussage: Kennungen sind im Sinne des Gesetzes vordergründig User-Accou
+nts von ISPs -- und im Spezialfall Internet: IP-Adressen.
+ Problem: IPs sind nur temporär zugewiesen.
+\end_layout
+
+\begin_layout Standard
+Fokus war auf Providern, spezifische Probleme von Anonymisiern, darauf müsste
+ Rücksicht genommen werden.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Gemäß §\InsetSpace \thinspace{}
+96 Abs.
+ 1 Nr.
+ 1 TKG könnten als Kennungen 
+\begin_inset Quotes gld
+\end_inset
+
+die Nummer (...) der beteiligten Anschlüsse oder der Endeinrichtung, personenbezoge
+ne Berechtigungskennungen, bei Verwendung von Kundenkarten auch die Kartennummer
+, bei mobilen Anschlüssen auch die Standortdaten
+\begin_inset Quotes grd
+\end_inset
+
+ aufgefasst werden.
+ Dieser Begriff der Kennung bezieht sich primär auf die Leistungen von Zugangspr
+ovidern und geht indirekt davon aus, dass den Betreibern langfristig identifizie
+rende Merkmale als Anschlusskennung vorliegen, welche unabhängig von einer
+ konkreten Datenverbindung bestand haben.
+ Ferner wird davon ausgegangen, dass auch Datenverbindungen Kennungen mit
+ Bezug auf jeweils eine Anschlusskennung aufweisen, welche in der Regel
+ länger als einige Minuten bestand haben.
+ Im Internet ist die Kennung für Datenverbindungen die IP-Adresse.
+ Die Anschlusskennung dagegen kann der Benutzername sein, über den sich
+ der Teilnehmer beim Provider einwählt, oder dessen Telefonnummer (bei Call-by-C
+all-Einwahl).
+ Beide Kennungen sind eindeutig, und lassen sich entweder über die Datenbank
+ des Providers oder des Telefonunternehmens einer natürlichen oder juristischen
+ Person zuordnen.
+\end_layout
+
+\begin_layout Standard
+Laut §\InsetSpace \thinspace{}
+113a Abs.\InsetSpace ~
+4 TKG haben Anbieter von 
+\begin_inset Quotes gld
+\end_inset
+
+Internetzugangsdiensten
+\begin_inset Quotes grd
+\end_inset
+
+ deshalb folgendes zu speichern:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Quotes gld
+\end_inset
+
+die dem Teilnehmer für eine Internetnutzung zugewiesene Internetprotokoll-Adress
+e, 
+\end_layout
+
+\begin_layout Enumerate
+eine eindeutige Kennung des Anschlusses, über den die Internetnutzung erfolgt,
+ 
+\end_layout
+
+\begin_layout Enumerate
+den Beginn und das Ende der Internetnutzung unter der zugewiesenen Internetproto
+koll-Adresse nach Datum und Uhrzeit unter Angabe der zugrunde liegenden
+ Zeitzone.
+\begin_inset Quotes grd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bei Anonymisierdiensten, die ohne vorheriges Anlegen eines Teilnehmerkontos
+ genutzt werden können, ist die einzige Kennung, die ein Anonymisierungsdienst
+ vom Nutzer erfährt, dessen IP-Adresse.
+ Da diese Dienste nicht als Internetzugangsprovider eingestuft werden können
+ (es handelt sich lediglich um Mehrwertdienste, die bereits einen Internetzugang
+ vorausetzen), kann für diese nach §\InsetSpace \thinspace{}
+113a Abs.\InsetSpace ~
+4 TKG auch keine Pflicht abgeleitet
+ werden, Anschlusskennungen einzuführen.
+\begin_inset Foot
+status open
+
+\begin_layout Standard
+Dennoch wäre zukünftig die Forderung einer nutzer-individuellen Kennung
+ auch für Anonymisierdienste denkbar.
+ Müsste jeder einzelne Anonymisierserver jeweils eine solche Kennung erheben
+ und speichern, könnte dies bei verteilten Diensten die Anonymisierungsleistung
+ deutlich verschlechtern, oder die verteilte Struktur sogar ganz unbrauchbar
+ machen.
+ Denn gerade letzte Server könnten eine solche Kennung dazu verwenden um
+ alle Zugriffe jeweils eines Teilnehmers miteinander zu verketten und Nutzerprof
+ile zu erstellen.
+ Eine solche Forderung würde es deshalb erforderlich machen, Kennungen zu
+ erzeugen, die zwar verifizierbar und rückverfolgbar sind, sich jedoch bei
+ jeder Anfrage ändern und nicht miteinander verkettbar sind.
+ Ein Beispiel dafür sind Signaturen von Gruppenpseudonymen, vgl.
+ 
+\begin_inset LatexCommand cite
+key "KoeWeFe06"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+ Ferner haben bei Anonymisierdiensten, welche in Ketten/Kaskaden betrieben
+ werden, mittlere Server und Ausgangsserver keinen Zugriff auf die Internetproto
+koll(IP)-Adresse der Teilnehmer, die sich jeweils nur mit dem ersten Server
+ in der Kette direkt verbinden.
+ Technisch gesehen wäre es deshalb unsinnig, von diesen die Speicherung
+ der IP-Adresse von Teilnehmern zu fordern.
+ Eine solche Verpflichtung wäre undurchführbar und damit unwirksam.
+\end_layout
+
+\begin_layout Standard
+Dieses Problem wurde vom Gesetzgeber erkannt, der in §\InsetSpace \thinspace{}
+113a Abs.\InsetSpace ~
+6 TKG deshalb
+ verlangt, dass wer 
+\begin_inset Quotes gld
+\end_inset
+
+Telekommunikationsdienste erbringt und hierbei die nach Maßgabe dieser Vorschrif
+t zu speichernden Angaben verändert, [...] zur Speicherung der ursprünglichen
+ und der neuen Angabe sowie des Zeitpunktes der Umschreibung dieser Angaben
+ nach Datum und Uhrzeit unter Angabe der zugrunde liegenden Zeitzone verpflichte
+t [ist]
+\begin_inset Quotes grd
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Die Anschlusskennung bezieht sich auf die Datenbanken beim jeweiligen Provider,
+ liegt technisch gesehen 
+\begin_inset Quotes gld
+\end_inset
+
+außerhalb
+\begin_inset Quotes grd
+\end_inset
+
+ des Internetprotokolls und kann vom Anonymisierer deshalb weder erfasst
+ noch verändert werden.
+ Sie ist von dieser Vorschrift also nicht betroffen.
+ Die IP-Adresse des Teilnehmers dagegen wird vom Anonymisierer und vor Außensteh
+enden verborgen, indem sie jeweils durch eine IP-Adresse des Anonymisierers
+ ersetzt wird.
+ Bei wörtlicher Auslegung des Gesetzes wäre also beim Anonymisierer jeweils
+ die Eingangs-IP-Adresse, welche die IP eines Teilnehmers oder einers vorhergehe
+nden Anonymisierservers sein kann, und die Ausgangs-IP-Adresse, also die
+ IP-Adresse des Anonymisierservers, zu speichern, zusammen mit dem Zeitpunkt
+ der Anonymisierung bzw.
+ Umschreibung.
+ Anonymisierserver, welche eine Nutzerkennung erzeugen oder zwecks Authentisieru
+ng abfragen, müssen zusätzlich auch diese bei der Umschreibung der IP-Adresse
+ speichern.
+\end_layout
+
+\begin_layout Standard
+Deutlich präziser als das TKG ist die Telekommunikationsüberwachungsverordnung
+ (TKÜV), welche in §\InsetSpace \thinspace{}
+2 Nr.\InsetSpace ~
+17 und 18 TKÜV folgende zu speichernde Kennungen
+ bzw.
+ Merkmale angibt:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes gld
+\end_inset
+
+zu überwachende Kennung: a) das in der Anordnung angegebene technische Merkmal,
+ durch das die zu überwachende Telekommunikation in der Telekommunikationsanlage
+ des Verpflichteten gekennzeichnet ist, oder b) im Falle von Übertragungswegen,
+ die dem unmittelbaren teilnehmerbezogenen Zugang zum Internet dienen, oder
+ im Falle des § 5 oder des § 8 des Artikel 10-Gesetzes die in der Anordnung
+ angegebene Bezeichnung des Übertragungswegs;
+\end_layout
+
+\begin_layout Itemize
+Zuordnungsnummer: in Fällen, in denen die Überwachungskopie aufgeteilt und
+ die Teile zeitlich versetzt oder auf voneinander getrennten Wegen an die
+ berechtigte Stelle übermittelt werden, das vom Verpflichteten zu vergebende
+ eindeutige, auch nichtnumerische Zuordnungsmerkmal, auf Grund dessen diese
+ Teile einander zweifelsfrei zugeordnet werden können.
+\begin_inset Quotes grd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die TKÜV ist nicht Teil des TKG, könnte aber heranzgezogen werden, um die
+ Intention des §\InsetSpace \thinspace{}
+113a TKG auszulegen, da die mit den beiden Gesetzen verfolgten
+ Ziele vergleichbar sind.
+ Insofern wäre es denkbar, dass §\InsetSpace \thinspace{}
+113a TKG indirekt auch die Verpflichtung
+ zur Speicherung einer Zurodnungsnummer vorsieht, wenn die Speicherung der
+ IP-Adresse alleine nicht ausreicht, um Verbindungen aufdecken zu können.
+ Dies könnten Portnummern sein oder auch dedizierte Kanalnummern anonymer
+ Kommunikationskanäle.
+\end_layout
+
+\begin_layout Standard
+Weitere zu speichernde Kennungen und Merkmale als die genannten sind vom
+ Gesetz nicht vorgesehen.
+ Insbesondere dürfen laut §\InsetSpace \thinspace{}
+113a Abs.
+ 8 TKG 
+\begin_inset Quotes gld
+\end_inset
+
+Inhalt und Daten über abgerufene Internetseiten
+\begin_inset Quotes grd
+\end_inset
+
+ allein auf Grund von §\InsetSpace \thinspace{}
+113a TKG nicht gespeichert werden, und §\InsetSpace \thinspace{}
+96 TKG verbietet
+ explizit die Speicherung aller weiteren Verbindungsdaten, sofern sie nicht
+ zur Abrechnung benötigt werden oder die Teilnehmer nicht explizit der Speicheru
+ng zugestimmt haben.
+ Deshalb dürfen beispielsweise auch URLs und IP-Adressen der Ziel-Server
+ von Anonymisierern gegenwärtig nicht auf Vorrat gespeichert werden.
+\end_layout
+
+\begin_layout Standard
+Nicht explizit im Gesetz geregelt ist, ob die Transformation der Benutzerkennung
+en auf Basis von Verbindungen (durch Speicherung von Beginn und Ende der
+ Sitzung) oder für jede übermittelte Anfrage (durch Speicherung der Zeitpunkte
+ jeder einzelnen Anfrage) zu speichern ist.
+ Diese Unterscheidung kann erhebliche Auswirkungen auf den benötigten Speicherpl
+atz und die Möglichkeit zur Aufdeckung von Verbindungen haben.
+\end_layout
+
+\begin_layout Standard
+Im weiteren Verlauf werden -- unter Berücksichtigung verschiedener Interpretatio
+nen des Gesetzes -- Implementierungen für Single-Hop- und Multi-Hop-Anonymisiere
+r vorgesellt.
+\end_layout
+
+\begin_layout Subsection
+Anonymisierer sind keine klassischen Telekommunikationsdienste
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Standard
+Grund: Abbildung von a_in nach a_out ist surjektiv (gleiche Zielwerte für
+ unterschiedliche Eingabewerte), nicht bijektiv (eineindeutig).
+\end_layout
+
+\begin_layout Standard
+Natürlich könnte man gesetzlich verlangen, dass Anonymisierer eine bijektive
+ Abbildung durchführen, z.B.
+ bei IPv6, indem jedem Nurtzer/Request eine eigene IP-Adresse zugewiesen
+ wird.
+\end_layout
+
+\begin_layout Standard
+Die Anonymität/Sicherheit leidet darunter nicht wesentlich.
+\end_layout
+
+\begin_layout Section
+\begin_inset LatexCommand label
+name "sec:single-hop"
+
+\end_inset
+
+Implementierung für Single-Hop-Anonymisierer
+\end_layout
+
+\begin_layout Standard
+Ein Single-Hop-Anonymisierer ändert die Benutzerkennung im Netzwerk, indem
+ er die IP-Adresse des Benutzers durch eine andere ersetzt.
+ Er ist daher zur Vorratsdatenspeicherung verpflichtet und muss Eingangs-
+ und Ausgangskennungen sowie den Zeitpunkt der Transformation speichern.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename figures/single-hop-anonymizer.eps
+	width 80text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+\begin_inset LatexCommand label
+name "fig:Modell-eines-Single-Hop-Anonymisierers"
+
+\end_inset
+
+Modell eines Single-Hop-Anonymisierers
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Unterstellt sei ein Anonymisierungsdienst, der den Datenverkehr seiner Nutzer
+ auf einem Host entgegennimmt und von dort aus direkt die Verbindungen zu
+ den Ziel-Adressen aufbaut.
+ Abbildung 
+\begin_inset LatexCommand ref
+reference "fig:Modell-eines-Single-Hop-Anonymisierers"
+
+\end_inset
+
+ zeigt ein Modell dieser Architektur.
+ Nutzer bauen zum Zeitpunkt 
+\begin_inset Formula $t_{\mathrm{start}}$
+\end_inset
+
+ eine Verbindung mit dem Dienst auf.
+ Dann übermitteln sie eine oder mehrere Anfragen (
+\begin_inset Formula $\mathrm{request}_{i}$
+\end_inset
+
+).
+ Der Anonymisierer benötigt die (möglicherweise indeterministische) Zeit
+ 
+\begin_inset Formula $\tau_{\mathrm{process}}$
+\end_inset
+
+ zur Verarbeitung der HTTP-Anfragen und sendet sie an die Ziel-Server (
+\begin_inset Formula $t_{\mathrm{out}_{i}}$
+\end_inset
+
+).
+ Bei den Ziel-Servern werden die HTTP-Anfragen des Anonymisierers kurze
+ Zeit später (
+\begin_inset Formula $ $
+\end_inset
+
+
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+) empfangen bzw.
+ aufgezeichnet (
+\begin_inset Formula $t_{\mathrm{logged}_{i}}$
+\end_inset
+
+).
+ Der Client beendet die Verbindung mit dem Anonymisierer zum Zeitpunkt 
+\begin_inset Formula $t_{\mathrm{end}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Zu den single-hop Anonymisierern zählen formular-basierte Web-Anonymisierer
+ (u.\InsetSpace \thinspace{}
+a.
+ Anonymouse sowie alle Dienste, die auf CGI-Proxy oder PHProxy basieren),
+ VPN-basierte Anonymisierer (u.\InsetSpace \thinspace{}
+a.
+ Anonymizer.com, CyberGhost) sowie einfache HTTP-Proxy-Server.
+\end_layout
+
+\begin_layout Standard
+Im folgenden werden verschiedene Varianten der Vorratsdatenspeicherung vorgestel
+lt, wobei der dabei entstehende Aufwand abgeschätzt wird.
+ Darüber hinaus wird untersucht, ob die Vorratsdatenspeicherung dann eine
+ Rückverfolgung zum Urheber der Kommunikation ermöglicht.
+ Dabei wird zwischen der Speicherung von einzelnen HTTP-Anfragen und TCP-Verbind
+ungen unterschieden.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Speicherung-pro-Verbindung"
+
+\end_inset
+
+Speicherung der Eingangs-IP-Adressen pro Verbindung
+\end_layout
+
+\begin_layout Standard
+Ist der Dienst ohne Anmeldung zu verwenden, steht außer der Eingangs-IP-Adresse
+ eines Nutzers keine weitere Kennung zur Speicherung zur Verfügung.
+ Der Dienst muss die eingehende IP-Adresse 
+\begin_inset Formula $a_{\mathrm{in}}$
+\end_inset
+
+ zusammen mit der IP-Adresse 
+\begin_inset Formula $a_{\mathrm{out}}$
+\end_inset
+
+ des Netzwerk-Interfaces, das zur Weitervermittlung der Verbindung genutzt
+ wurde, speichern.
+ Verfügt der Dienst lediglich über eine einzige Ausgangs-IP-Adresse kann
+ die Speicherung der Ausgangs-IP-Adresse unter Umständen entfallen, wenn
+ sichergestellt ist, dass die Ausgangskennung für jede Verbindung eindeutig
+ ermittelbar ist.
+ Die IP-Adressen der Ziel-Server werden nicht gespeichert.
+ Die Anfrage der Strafverfolger lautet formal also: 
+\begin_inset Formula $q=$
+\end_inset
+
+ 
+\begin_inset Quotes gld
+\end_inset
+
+Welche Nutzerkennung 
+\begin_inset Formula $a_{\mathrm{in}}$
+\end_inset
+
+ verbarg sich am 08.02.2008 um 9:43 Uhr GMT hinter der IP-Adresse 
+\begin_inset Formula $a_{\mathrm{out}}$
+\end_inset
+
+?
+\begin_inset Quotes grd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bei Diensten, die mehrere HTTP-Requests 
+\begin_inset Formula $r$
+\end_inset
+
+ über eine TCP-Verbindung 
+\begin_inset Formula $c$
+\end_inset
+
+ entgegennehmen (z.\InsetSpace \thinspace{}
+B.
+ VPNs, HTTP-Proxies) ist es denkbar, für jede eingehende Verbindung das
+ Tupel 
+\begin_inset Formula $(t_{\mathrm{start}},t_{\mathrm{end}},a_{\mathrm{in}},a_{\mathrm{out}}$
+\end_inset
+
+) zu speichern, wobei jeweils 4\InsetSpace ~
+Byte für die Zeitpunkte (32-Bit-UNIX-Timestamps)
+ und jeweils noch 4\InsetSpace ~
+Byte für IPv4-IP-Adressen abzuspeichern sind.
+ Da sich die aktuelle Zeitzone nur selten ändert, muss sie nicht bei jeder
+ Verbindung gespeichert werden.
+ Der Speicheraufwand beträgt dann maximal 
+\begin_inset Formula $4\cdot4=16$
+\end_inset
+
+ Byte pro Verbindung.
+ Bei durchschnittlich 
+\begin_inset Formula $n_{c}$
+\end_inset
+
+ Verbindungen pro Sekunde fallen dann pro Tag 
+\begin_inset Formula $16\cdot3600\cdot24\cdot n_{c}=1\,382\,400\cdot n_{c}$
+\end_inset
+
+ Byte an, im vorgeschriebenen Aufbewahrungszeitraum von 6 Monaten (ca.
+ 26 Wochen) sind das etwa 
+\begin_inset Formula $240\cdot n_{c}$
+\end_inset
+
+ Megabyte.
+\end_layout
+
+\begin_layout Standard
+Diese Form der Vorratsdatenspeicherung kann jedoch meist keine Rückverfolgung
+ gewährleisten.
+ Ein Dienstanbieter kann die eingangs präsentierte Anfrage 
+\begin_inset Formula $q$
+\end_inset
+
+ nicht eindeutig beantworten, wenn zur angefragten Zeit, also um 9:43 Uhr,
+ mehr als eine eingehende Verbindung gespeichert wurde.
+ Der Dienstanbieter müsste alle Eingangskennungen zurückliefern, die zu
+ diesem Zeitpunkt mit dem Dienst verbunden waren.
+ Bei einer nur minutengenauen zeitlichen Auflösung kommen bei unterstellter
+ Gleichverteilung 
+\begin_inset Formula $120\cdot n_{c}$
+\end_inset
+
+ Benutzerkennungen in Frage (alle Verbindungen, die zwischen 09:42:00 und
+ 09:43:59 Uhr aufgezeichnet wurden, wenn 
+\begin_inset Formula $\tau_{\mathrm{process}}$
+\end_inset
+
+ und 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+ vernachlässigt werden und die Uhren synchronisiert sind).
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+wieso 120 n_c? es müssten doch 60 n_c sein; die Timestamps sind ja durchaus
+ sekundengenau
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bei mehreren Duzend oder gar mehreren Hundert Teilnehmern, die alle gleichzeitig
+ mit dem Dienst verbunden sind, kann mit dieser Methode allerdings keine
+ einzelner HTTP-Request zu seinem Sender zurückverfolgt werden.
+ Die Wirksamkeit einer Vorratsdatenspeicherung nach dieser Methode ist so
+ gering, dass der Zweck des Gesetzes zur Vorratsdatenspeicherung deshalb
+ nicht erfüllt werden.
+ Es ist deshalb zu erwarten, dass -- z.\InsetSpace \thinspace{}
+B.
+ per amtlicher Verordnung -- die Protokollierung einzelner HTTP-Requests
+ vorgeschrieben wird, auch wenn eine dauerhafte Verbindung zum Dienst besteht
+ (vgl.
+ Abschnitt 
+\begin_inset LatexCommand ref
+reference "sub:Eingangs-IP-Adressen-pro-Request"
+
+\end_inset
+
+).
+ Dies ist gegebenenfalls leicht zu begründen, da die eigentliche 
+\begin_inset Quotes gld
+\end_inset
+
+Transformationsleistung
+\begin_inset Quotes grd
+\end_inset
+
+ jeweils in dem Moment stattfindet, in dem der Teilnehmer über den Anonymisierer
+ mit Dritten kommuniziert.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Eine bloße Speicherung der Anmelde- und Abmeldeinformationen von Nutzern
+ beim Anonymisierdienst führt zu keinen verwertbaren Informationen für die
+ Bedarfsträger, da die Rückverfolgbarkeit praktisch nie gewährleistet werden
+ kann.
+ Zur Gewährleistung des Gesetzeszwecks -- die Ermittlung des Urhebers einer
+ Verbindung -- reicht die (platzsparende) Speicherung von Verbindungen zum
+ Anonymisierdienst nicht aus.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Eingangs-IP-Adressen-pro-Request"
+
+\end_inset
+
+Speicherung der Eingangs-IP-Adressen pro HTTP-Request
+\end_layout
+
+\begin_layout Standard
+Wie im vorigen Abschnitt gezeigt wurde, reicht die Speicherung von Verbindungsda
+ten nicht aus.
+ Im folgenden wird untersucht, inwiefern eine Protokollierung von einzelnen
+ Requests das Ziel der Rückverfolgbarkeit erreichen kann.
+ Bei Diensten, die lediglich einen HTTP-Request über eine Verbindung entgegenneh
+men (z.\InsetSpace \thinspace{}
+B.
+ bei Anonymisierern, die auf Web-Formularen basieren), müssen ohnehin die
+ einzelnen Zugriffe protokolliert werden.
+\end_layout
+
+\begin_layout Standard
+Für jeden HTTP-Request ist das Tupel 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}})$
+\end_inset
+
+ zu speichern, wobei 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ der Zeitpunkt der Kennungstransformation ist.
+ Es ist davon auszugehen, dass die entstehende Datenmenge größer ist als
+ bei der Speicherung von verbindungsorientierten Datensätzen, da üblicherweise
+ gilt 
+\begin_inset Formula $n_{r}\gg n_{c}$
+\end_inset
+
+.
+ Bei durchschnittlich 
+\begin_inset Formula $n_{r}$
+\end_inset
+
+ Requests pro Sekunde fallen pro Tag 
+\begin_inset Formula $1\,036\,800\cdot n_{r}$
+\end_inset
+
+ Byte an.
+ Ein Anonymisierer, der pro Sekunde 50 Requests erhält, muss also knapp
+ 9 Gigabyte über einen Zeitraum von sechs Monaten aufbewahren.
+\end_layout
+
+\begin_layout Standard
+Auch bei dieser Methode lässt sich keine eindeutige Zuordnung gewährleisten.
+ Bei einer minutengenauen Anfrage der Strafverfolgungsbehörden gibt es im
+ Durchschnitt 
+\begin_inset Formula $120\cdot n_{r}$
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+120? 
+\end_layout
+
+\end_inset
+
+mögliche HTTP-Requests, die in Frage kommen.
+ Allerdings ist zu beachten, dass diese Anfragen üblicherweise nicht von
+ ebenso vielen unterschiedlichen Benutzern kommen, dementsprechend ist die
+ Anzahl der in Frage kommenden Eingangskennungen geringer.
+ Im Vergleich zur Speicherung der Verbindungsaufbau- und Endezeiten (s.
+ Abschnitt 
+\begin_inset LatexCommand ref
+reference "sub:Speicherung-pro-Verbindung"
+
+\end_inset
+
+) ermöglicht diese Methode also eine etwas genauere Zuordnung, da Teilnehmer,
+ die zum angefragten Zeitpunkt zwar zum Dienst verbunden waren, jedoch gar
+ keine HTTP-Requests gestellt haben, nicht in der Ergebnismenge vorkommen.
+ 
+\end_layout
+
+\begin_layout Standard
+Der Speicheraufwand dieser Methode ist allerdings nicht unerheblich.
+ Gerade bei Webseitenaufrufen mit vielen nachgeladenen Objekten ergibt sich
+ einiges an Optimierungspotential.
+ Sofern über dieselbe Verbindung bzw.
+ über dieselbe Nutzerkennung abgerufene Objekte innerhalb der durch die
+ Genauigkeit der Bedarfsträger-Anfrage tolerierten zeitlichen Aulösung von
+ etwa einer Minute geladen werden, muss für diese kein gesonderter Datensatz
+ angelegt werden.
+ Stattdessen genügt ein einziger Datensatz mit dem Anfangs- und Endzeitpunkt
+ der Datenübertragung.
+\end_layout
+
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Die Protokollierung der einzelnen HTTP-Requests ist zur Erfüllung der gesetzlich
+en Anforderungen besser geeignet als die bloße Speicherung der Verbindungsdaten.
+ Eine eindeutige Rückverfolgbarkeit lässt sich hierbei allerdings auch nicht
+ gewährleisten, da die Ergebnismenge bei Anfragen -- selbst bei schwach
+ genutzten Anonymisierungsservern -- in vielen Fällen größer als 1 ist.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+Die HTTP-Requests können deshalb auch bei der gesetzeskonformer Speicherung
+ praktisch nie eindeutig auf einen Teilnehmer zurückverfolgt werden.
+ - ist es _sicher_ gesetzeskonform? das sollen lieber andere klären; würde
+ den Satz streichen.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Verbesserung der zeitlichen Auflösung
+\end_layout
+
+\begin_layout Standard
+In den obigen Abschnitten wurde deutlich, dass die zeitliche Auflösung,
+ die die Strafverfolgungsbehörden derzeit in Deutschland bei ihren Anfragen
+ verwenden, erheblich zur Unschärfe und damit zur Größe der Ergebnismenge
+ beiträgt.
+ Es ist zu untersuchen, inwiefern eindeutige Ergebnismengen erzielt werden
+ können, wenn die Anfragen der Strafverfolgungsbehörden präziser formuliert
+ würden.
+\end_layout
+
+\begin_layout Standard
+Das deutsche Gesetz macht allerdings keine Aussagen bezüglich der verlangten
+ Genauigkeit bei der Abspeicherung der Transformationszeitpunkte.
+ Zwar können heute verfügbare Proxy-Applikationen eingehende HTTP-Requests
+ durchaus mit einer Auflösung im Millisekundenbereich protokollieren, eine
+ so hohe Präzision ist jedoch nicht zielführend.
+ Denn selbst bei täglicher Synchronisierung ist die Uhren-Drift im Laufe
+ eines Tages häufig nicht zu vernachlässigen (wir haben Abweichungen von
+ etwa 1 Sekunde innerhalb von 24 Stunden beobachtet).
+ Strafverfolgungsbehörden ziehen also auch unter idealen Bedingungen keinerlei
+ Nutzen aus einer höheren Auflösung als 1 Sekunde.
+\end_layout
+
+\begin_layout Standard
+Geht man davon aus, dass alle Uhren regelmäßig synchronisiert werden (was
+ im Gesetz nicht gefordert wird) und 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+ vernachlässigbar klein ist, kommen bei einer Anfrage 
+\begin_inset Quotes gld
+\end_inset
+
+um 09:43:10 Uhr
+\begin_inset Quotes grd
+\end_inset
+
+ immer noch durchschnittlich 
+\begin_inset Formula $n_{r}$
+\end_inset
+
+ Requests (und 
+\begin_inset Formula $n_{a_{\mathrm{in}}}\le n_{r}$
+\end_inset
+
+ Eingangskennungen) als Urheber eines HTTP-Requests in Frage.
+ Eine eindeutige Zuordnung ist also auch bei derart präziser Anfragen unter
+ idealen Bedingungen nicht immer möglich.Darüber hinaus kann es zu erheblichen
+ Schwankungen bei der Übertragungszeit 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+ kommen, die ebenfalls im Bereich von einigen Sekunden liegen können.
+ Zusammen mit den Fehlern durch mangelhafte Uhrzeit-Synchronisation ergibt
+ sich also auch bei extrem präzisen Anfragen ein Zeitfenster von einigen
+ Sekunden für den Zeitpunkt 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+.
+ Bei Anfragen zur Herausgabe von gespeicherten Verbindungsdaten bringt eine
+ höhere zeitliche Auflösung als eine Minute also aus physikalischen Gründen
+ nur einen geringen Genauigkeitsgewinn.
+\end_layout
+
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Wenn Anonymisierdienste, wie im Gesetz gefordert, ausschließlich Eingangskennung
+en, transformierte Ausgangskennungen und den Zeitpunkt der Transformation
+ speichern müssen, ist -- bei lediglich einer einzigen Beobachtung -- eine
+ Aufdeckung von Kommunikationsbeziehungen in den meisten Fällen nicht möglich.
+ Dies ist bedingt durch die Gleichzeitigkeit von Datenverbindungen, indeterminis
+tische Übertragungszeiten und Uhrzeitabweichungen im Internet.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Schnittmengenbildung-über-mehrere"
+
+\end_inset
+
+Schnittmengenbildung über mehrere Beobachtungen
+\end_layout
+
+\begin_layout Standard
+Um die Ergebnisqualität ihrer Anfragen zu verbessern, könnten sich Strafverfolgu
+ngsbehörden gängiger Techniken bedienen, die zum Angriff auf starke Anonymisieru
+ngsverfahren vorgeschlagen werden.
+ Ausgehend von den genannten Vorratsdaten bietet sich die zeitliche Korrelation
+ über einen sogenannten Schnittmengenangriff an:
+\end_layout
+
+\begin_layout Standard
+Sofern 
+\begin_inset Quotes gld
+\end_inset
+
+Wiederholungstäter
+\begin_inset Quotes grd
+\end_inset
+
+ mehrmals auf die gleiche Internetadresse zugreifen, und im Idealfall vom
+ Bedarfsträger jeweils als dieselbe Person identifiziert werden können (etwa
+ anhand eines bestimmten Benutzernamens), kann die behördliche Anfrage wie
+ folgt erweitert werden:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $q=$
+\end_inset
+
+ 
+\begin_inset Quotes gld
+\end_inset
+
+Welche identische Nutzerkennung 
+\begin_inset Formula $a_{\mathrm{in}}$
+\end_inset
+
+ verbarg sich am 08.02.2008 um 9:43 Uhr GMT, am 08.02.2008 um 9:50 Uhr GMT und
+ am 09.02.2008 um 14:13 Uhr GMT hinter der IP-Adresse 
+\begin_inset Formula $a_{\mathrm{out}}$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Standard
+Wenn sich die Zugangskennung oder die IP-Adresse des aufzudeckenden Teilnehmers
+ innerhalb dieser Zeit nicht geändert hat, ist bei Single-Hop-Anonymisierern
+ mit dieser Methode eine präzisere Rückverfolgung der Zugriffe möglich als
+ bei einzelnen Beobachtungen.
+ Bei Diensten ohne Nutzerkennung, typisch für kostenlose Angebote, genügt
+ es allerdings, sich von einem anderen Ort bzw.
+ über einen anderen Provider einzuwählen, um eine andere IP zu erhalten
+ und dadurch vom Anonymisierdienst nicht mehr als die gleiche Person erkannt
+ zu werden.
+ Aktuell verfügbare Dienste, die gegen Bezahlung genutzt werden, setzen
+ aber immer eine Benutzerkennung voraus.
+ Diese verbesserte Form des Aufdeckungsverfahrens ist deshalb besonders
+ wirksam bei kostenpflichtigen single-hop-Diensten.
+ 
+\end_layout
+
+\begin_layout Standard
+Der Betreiber eines kostenpflichtigen Dienstes kann seine Nutzer vor einer
+ solchen Aufdeckung mittels Schnittmengenbildung weitestgehend schützen,
+ indem er die Bezahlung über anonyme Micropayments, also digitale Münzen,
+ ermöglicht.
+ Dadurch wären die Anmeldeinformationen im Idealfall nur wenige Sekunden
+ oder Minuten lang verkettbar.
+ Die Absicherung, Geschwindigkeitsoptimierung und Einführung eines solchen
+ Verfahrens ist jedoch aufwändig, und deshalb außerhalb des Themenbereichs
+ dieses Artikels.
+ Auch ist es unwahrscheinlich, dass solche aufwendigen Verfahren in einfachen
+ Single-Hop-Proxies integriert werden.
+\end_layout
+
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Sofern Straftäter mehr als einmal den gleichen Anonymisierdienstleister
+ nutzen, und dabei jeweils von Bedarfsträgern wiedererkannt und zurückverfolgt
+ werden, liefert die zeitlich versetzte Schnittmengenbildung eine deutlich
+ höhere Wahrscheinlichkeit für eine eindeutige Aufdeckung als die einmalige
+ Beobachtung.
+ Gerade bei kostenpflichtigen Single-Hop-Anonymisierdiensten ermöglicht
+ diese Methode in vielen Fällen eine Deanonymisierung.
+ Die gesetzlichen Vorgaben müssen dafür nicht angepasst werden, lediglich
+ der Inhalt der behördlichen Anfragen ist leicht zu ergänzen.
+\end_layout
+
+\begin_layout Subsection
+Speicherung von Ziel-IP-Adressen oder URLs
+\end_layout
+
+\begin_layout Standard
+Zur Verbesserung der Rückverfolgbarkeit bis zum Urheber der Verbindung könnte
+ der Betreiber eines Anonymisierers verpflichtet werden, zusätzlich auch
+ die IP-Adresse des Ziel-Servers oder sogar die gesamte URL speichern.
+ Er muss dazu für jeden HTTP-Request das Tupel 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}},a_{\mathrm{destination}})$
+\end_inset
+
+ protokollieren.
+ Bei der Speicherung der Ziel-IP-Adresse fallen dann pro Request 16 Byte
+ an, was bei einer durchschnittlichen Anzahl von 
+\begin_inset Formula $n_{r}$
+\end_inset
+
+ Requests pro Sekunde eine Datenmenge von 
+\begin_inset Formula $1\,382\,400\cdot n_{r}$
+\end_inset
+
+ Byte pro Tag ergibt.
+\end_layout
+
+\begin_layout Standard
+Allerdings ist die Speicherung von Zieladressen derzeit verboten.
+ Zudem geben die Strafverfolgungsbehörden in ihren Anfragen derzeit die
+ Zieladresse gar nicht an (vgl.
+ die eingangs präsentierte Anfrage 
+\begin_inset Formula $q$
+\end_inset
+
+).
+ Zur Erhöhung der Genauigkeit müssten die Behörden diese zusätzlich in die
+ Anfrage aufnehmen, und die Speicherung der Zieladresse müsste vorgeschrieben
+ oder zumindest zulässig sein.
+\end_layout
+
+\begin_layout Standard
+Die eindeutige Rückverfolgbarkeit kann allerdings auch bei dieser Methode
+ nicht garantiert werden, da nicht ausgeschlossen ist, dass mehrere Benutzer
+ die fragliche Webseite im zu durchsuchenden Zeitfenster abgerufen haben.
+ Zudem ist eine IP-Adresse nicht immer ein identifizierendes Merkmal für
+ eine Webseite (etwa bei virtuellen Webservern, die mehrere Internet-Domains
+ über eine IP-Adresse anbieten).
+\end_layout
+
+\begin_layout Standard
+Der nächste Schritt auf dem Weg zur Vorratsdatenspeicherung, die Rückverfolgbark
+eit tatsächlich gewährleisten kann, ist daher die Speicherung der vollständigen
+ URLs, die die Benutzer über den Anonymisierer abgerufen haben (anstelle
+ der Ziel-IP-Adresse).
+ Bei einer angenommenen Durchschnittslänge von 50 Zeichen pro URL <Quellen>
+ werden pro Request dann 62 Byte benötigt, was 
+\begin_inset Formula $5\,356\,800\cdot n_{r}$
+\end_inset
+
+ Byte pro Tag entspricht.
+ Bei einem Anonymisierer mit durchschnittlich 50 Requests pro Sekunde (z.\InsetSpace \thinspace{}
+B.
+ Anonymouse <Quellen>) fallen im Zeitraum von 6 Monaten etwa 45 Gigabyte
+ an Vorratsdaten an.
+ Dieser Speicherbedarf lässt sich allerdings durch Kompression der URLs
+ etwas reduzieren.
+ Obwohl es immer noch passieren kann, dass zwei Benutzer im fraglichen Zeitfenst
+er exakt die gleiche URL abgerufen haben, wird bei dieser Methode im Normalfall
+ eine eindeutige Zuordnung gelingen.
+ Bei über HTTPS verschlüsselten Verbindungen ist die Speicherung allerdings
+ ungenauer und kann nicht die im Einzelnen aufgerufenen Webseiten erfassen.
+\end_layout
+
+\begin_layout Standard
+Inhalte der Kommunikation und Informationen über abgerufene Internetseiten
+ dürfen auf Grund des TKG bisher allerdings nicht gespeichert werden.
+ Insbesondere URLs enthalten häufig personenbezogene Daten oder Inhalte
+ der Kommunikation (z.\InsetSpace \thinspace{}
+B.
+ Suchanfragen, Passwörter oder Sitzungsinformationen, die mit der GET-Methode
+ übertragen werden).
+ Datenschutzrechtlich wäre eine massenhafte Speicherung dieser Information
+ daher äußerst problematisch und schwer durchzusetzen.
+ Sofern eine Speicherung von URLs dennoch vorgeschrieben werden sollte müsste
+ dies in Diensten, die nicht speziell zur Anonymisierung von HTTP entwickelt
+ wurden (z.\InsetSpace \thinspace{}
+B.
+ Tor oder VPNs), aufwändig implementiert werden.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Die Speicherung von Ziel-IPs und URLs ermöglicht meist eien sehr wirksame
+ Aufdeckung von Verbindungen, ist aber im Hinblick auf die damit einhergehende
+ Speicherung personenbezogener Daten der Nutzer als bedenklich einzustufen.
+ Zudem ist die zur Speicherung erforderliche Datenmenge etwa fünf Mal höher
+ als bei bloßer Speicherung der Request-Zeitpunkte.
+ Die Vorhaltung solcher Datenmengen kann für Betreiber kleiner Server zum
+ Problem werden.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Einführung-protokollabhängiger-Kennungen"
+
+\end_inset
+
+Einführung protokollabhängiger Kennungen
+\end_layout
+
+\begin_layout Standard
+Die im vorigen Abschnitt beschriebene Speicherung von URLs geht mit einer
+ Reihe von Nachteilen einher.
+ Im folgenden wird ein Verfahren vorgestellt, das zum einen eine eindeutige
+ Verkettung der Ausgangskennung mit der Eingangskennung ermöglicht und zum
+ Anderen die Privatsphäre der Nutzer besser schützt.
+ Es muss jedoch für jedes Protokoll separat implementiert werden.
+ Das Verfahren soll am Beispiel von HTTP erläutert werden.
+\end_layout
+
+\begin_layout Standard
+Der Anonymisierungsdienst fügt in die HTTP-Requests des Nutzers vor der
+ Weiterleitung an die Ziel-Server eine eindeutige Kennung ein.
+ Bei HTTP-Requests bietet sich hierzu einen zusätzlicher HTTP-Header (etwa
+ 
+\emph on
+X-Data-Retention-Tag
+\emph default
+: 
+\begin_inset Formula $\mathrm{tag}_{i}$
+\end_inset
+
+) an.
+ Diese neue Kennung speichert der Anonymisierungsdienst im Tupel 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}},\mathrm{tag_{i}})$
+\end_inset
+
+ ab, was eine eindeutige Ermittlung der Eingangskennung ermöglicht.
+\end_layout
+
+\begin_layout Standard
+Die Eingangskennung soll dabei weiterhin vor dem Ziel-Server verborgen bleiben.
+ Für 
+\begin_inset Formula $\mathrm{tag}_{i}$
+\end_inset
+
+ kann also nicht die Eingangskennung selbst verwendet werden.
+ Auch das Ergebnis der Hashfunktion 
+\begin_inset Formula $\mathrm{h(}a_{\mathrm{in_{i}}})$
+\end_inset
+
+ ist ungeeignet, da Requests, die die selbe Eingangskennung haben, dann
+ das gleiche Data-Retention-Tag hätten und der Zielserver dadurch Benutzeraktion
+en verketten könnte bzw.
+ durch einen Wörterbuchangriff sogar die Eingangskennung ermitteln könnte.
+ Eine mögliche Implementierung könnte 
+\begin_inset Formula $\mathrm{h(}a_{\mathrm{in_{i}}}+r)$
+\end_inset
+
+ verwenden, wobei 
+\begin_inset Formula $r$
+\end_inset
+
+ eine Zufallszahl ist.
+ Es ist dann lediglich sicherzustellen, dass in einem gewissen Zeitraum
+ keine Kollisionen auftreten.
+\end_layout
+
+\begin_layout Standard
+Zur eindeutigen Bestimmung der Eingangskennung müssten die Strafverfolgungsbehör
+den jedoch das Data-Retention-Tag ermitteln und bei einer Anfrage angeben.
+ Im Gegensatz zu IP-Adressen werden HTTP-Header jedoch von Webservern nicht
+ protokolliert (wobei schon die Speicherung der IP-Adressen umstritten und
+ in Deutschland sogar offiziell verboten ist -- wobei sich allerdings nur
+ sehr wenige Serverbetreiber an dieses Verbot halten), so dass das Data-Retentio
+n-Tag nicht im Nachhinein aus Webserver-Log-Dateien ermittelt werden kann.
+ Bei einer Echtzeit-Protokollierung des Netzwerkverkehrs ließe es sich hingegen
+ herausfiltern.
+\end_layout
+
+\begin_layout Standard
+Diese Methode verlangt von den Betreibern von Anonymisierern, dass sie für
+ die Vorratsdatenspeicherung zusätzliche Daten generieren -- was gemäß der
+ Rechtslage nicht von ihnen verlangt werden kann.
+ Demzufolge müssen lediglich Daten gespeichert werden, die bei der Übermittlung
+ ohnehin anfallen.
+ Ferner macht es wenig Sinn, standardisierte Internetprotokolle alleine
+ zum Zweck der Strafverfolgung zu ändern, sofern dies nicht durch internationale
+ Standards geschieht.
+ 
+\end_layout
+
+\begin_layout Standard
+Die verbreiteten Kommunikationsprotokolle im Internet enthalten keine expliziten
+ Vorkehrungen für die strafrechtliche Rückverfolgung.
+ Allerdings kann, zumindest bei TCP, die Portnummer dazu 
+\begin_inset Quotes gld
+\end_inset
+
+missbraucht
+\begin_inset Quotes grd
+\end_inset
+
+ werden: Würde der Proxy-Server den Source-Port bei jeder ausgehenden Verbindung
+ speichern wäre zum Zeitpunkt der Verbindungsaufnahme eine eindeutige Zuordnung
+ möglich -- von einem Source-Port können zu einem gegebenen Zeitpunkt nicht
+ zwei Verbindungen gleichzeitig ausgehen.
+ Der Source-Port ist auch für den Ziel-Server sichtbar.
+ Allerdings stehen Source-Ports nach dem Beenden einer Verbindung unmittelbar
+ wieder für neue Verbindungen zur Verfügung.
+ Im aktuellen Linux-Kernel stehen einem Server standardmäßig 28\InsetSpace \thinspace{}
+232 Source-Ports
+ zur Verfügung (von 32768 bis 61000).
+ Im Extremfall wird der gesamte Bereich zyklisch durchlaufen, so dass es
+ bei einem Anonymisierer mit 
+\begin_inset Formula $n_{r}$
+\end_inset
+
+ Requests (für die jeweils eine neue Verbindung aufgebaut wird) pro Sekunde
+ 
+\begin_inset Formula $\frac{28232}{n_{r}}$
+\end_inset
+
+ Sekunden dauert, bis ein Port wiederverwendet wird -- bei 50 Requests pro
+ Sekunde also knapp 10 Minuten.
+ Dies genügt, um in einem minutengenauen Zeitraster eine eindeutige Aufdeckung
+ von Verbindungen zu ermöglichen.
+ Die Speicherung der Source-Ports stellt damit einen Kompromiss zwischen
+ der Erzeugung langlebiger Kennungen und dem ausschließlichen Speichern
+ von IP-Adressen dar.
+\end_layout
+
+\begin_layout Paragraph
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Protokollabhängige Kennungen ermöglichen eine eindeutige Aufdeckung von
+ Verbindungen bei gleichzeitiger Einhaltung des Gebots der Datensparsamkeit.
+ Optimal wären Internetstandards für protokollspezifische Kennungen zum
+ Zweck der Strafverfolgung.
+ Zumindest bei TCP ist derzeit schon die Speicherung von Quell-Ports als
+ Kompromisslösung möglich.
+\end_layout
+
+\begin_layout Section
+\begin_inset LatexCommand label
+name "sec:multi-hop"
+
+\end_inset
+
+Implementierung für Multi-Hop-Anonymisierer
+\end_layout
+
+\begin_layout Standard
+Im Rahmen dieses Beitrags werden Dienste, welche die Daten zur Anonymisierung
+ über mehrere Zwischenstationen weiterleiten, als Multi-Hop-Anonymisierer
+ bezeichnet.
+ Hierzu zählen insbesondere Tor (Onion-Routing mit prinzipiell freier Wahl
+ der Zwischenstationen) und JonDonym
+\begin_inset Foot
+status open
+
+\begin_layout Standard
+vormals AN.ON bzw.
+ JAP
+\end_layout
+
+\end_inset
+
+ (statische Mixkaskaden).
+ In Abbildung 
+\begin_inset LatexCommand ref
+reference "fig:Modell-eines-Multi-Hop-Anonymisierers"
+
+\end_inset
+
+ ist ein solcher Multi-Hop-Anonymisierer schematisch dargestellt, wobei
+ zur Veranschaulichung drei Zwischenstationen abgebildet sind.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename figures/multi-hop-anonymizer.eps
+	width 80text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+\begin_inset LatexCommand label
+name "fig:Modell-eines-Multi-Hop-Anonymisierers"
+
+\end_inset
+
+Modell eines Multi-Hop-Anonymisierers mit drei Zwischenstationen
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die einzelnen Router in einem Mix-Netz müssen -- genau wie ein Single-Hop-Anonym
+isierer -- das Tupel 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}})$
+\end_inset
+
+ speichern.
+ Bei Mixkaskaden werden immer die gleichen Knoten in derselben Reihenfolge
+ verwendet.
+ Lediglich der erste Knoten muss 
+\begin_inset Formula $a_{in}$
+\end_inset
+
+ speichern, die 
+\begin_inset Quotes gld
+\end_inset
+
+hinteren
+\begin_inset Quotes grd
+\end_inset
+
+ Knoten können auf die Speicherung der Eingangsadressen verzichten, da der
+ jeweilige Vorgänger ohnehin statisch festgelegt ist.
+ Während bei Mix-Netzen zur Rückverfolgung die Vorratsdaten aller Knoten
+ ausgewertet werden müssen, reicht es bei Mix-Kaskaden aus, nur beim ersten
+ Mix anzufragen.
+ Bei Mixkaskaden erscheint die Rückverfolgung daher leichter als bei Mix-Netzen.
+ Allerdings ist der Zeitpunkt, an dem der Request am ersten Mix einer Kaskade
+ bearbeitet wurde, für Strafverfolger nicht genau bestimmbar.
+\end_layout
+
+\begin_layout Standard
+Die ausschließliche Speicherung der Eingangs-IPs und der Request-Zeitpunkte
+ ist bei Multi-Hop-Anonymisierern allerdings zur Gewährleistung der Rückverfolgb
+arkeit grundsätzlich nicht ausreichend (vgl.
+ die Erläuterungen zu Single-Hop-Anonymisierern in Abschnitt 
+\begin_inset LatexCommand ref
+reference "sec:single-hop"
+
+\end_inset
+
+).
+ Jeder weitere Knoten, über den die Nachricht weitergeleitet wird, erhöht
+ dabei im Vergleich zu Single-Hop-Anonymisierern die Unschärfe: Beträgt
+ die Unschärfe für 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ beim letzten Knoten 
+\begin_inset Formula $\delta$
+\end_inset
+
+ Sekunden, beträgt sie beim vorherigen Knoten etwa 
+\begin_inset Formula $2\delta$
+\end_inset
+
+ Sekunden, so dass die Anzahl der in Frage kommenden HTTP-Requests am ersten
+ Knoten in der Kette im allgemeinen Fall 
+\begin_inset Formula $n_{\mathrm{Knoten}}\cdot\delta\cdot n_{r}$
+\end_inset
+
+ beträgt.
+\end_layout
+
+\begin_layout Standard
+Eine bessere Rückverfolgbarkeit erfordert die Speicherung weiterer Verbindungske
+nnungen, mit denen der Weg einer Nachricht durch den Anonymisierer bei Bedarf
+ aufgedeckt werden kann -- und zwar wenn die Betreiber aller Knoten ihre
+ auf Vorrat gespeicherten Daten zusammenführen.
+ Hierzu verwenden jeweils zwei benachbarte Knoten für jeden Request eine
+ eindeutige Kennung.
+ Die Vorgehensweise wird anhand des in Abbildung 
+\begin_inset LatexCommand ref
+reference "fig:Modell-eines-Multi-Hop-Anonymisierers"
+
+\end_inset
+
+ dargestellten Multi-Hop-Anonymisierers erläutert.
+ Der erste Knoten erzeugt eine eindeutige Kennung 
+\begin_inset Formula $x_{1}$
+\end_inset
+
+ und speichert sie im Tupel 
+\begin_inset Formula $(t_{\mathrm{transform}_{1}},a_{\mathrm{in}},x_{1})$
+\end_inset
+
+.
+ Er übermittelt 
+\begin_inset Formula $x_{1}$
+\end_inset
+
+ an den zweiten Knoten.
+ Dieser erzeugt eine weitere Kennung -- im Beispiel mit 
+\begin_inset Formula $x_{2}$
+\end_inset
+
+ bezeichnet.
+ Der zweite Knoten speichert das Tupel 
+\begin_inset Formula $(t_{\mathrm{transform}_{2}},x_{1},x_{2})$
+\end_inset
+
+ und übermittelt 
+\begin_inset Formula $x_{2}$
+\end_inset
+
+ an den dritten Knoten.
+ Dieser speichert schließlich das Tupel 
+\begin_inset Formula $(t_{\mathrm{transform}_{3}},x_{2},a_{\mathrm{out}})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Die in Abschnitt 
+\begin_inset LatexCommand ref
+reference "sub:Schnittmengenbildung-über-mehrere"
+
+\end_inset
+
+ beschriebene Schnittmengenbildung ist bei Multi-Hop-Anonymisierern trotz
+ der eingeführten Kennungen wirkungslos: die Kennungen sind nur für einzelne
+ Requests gültig, und können deshalb von den Mixen nicht verwendet werden,
+ um die gleichen Teilnehmer bei späteren Requests wiederzuerkennen.
+ Zur Gewährleistung der eindeutigen Zuordnung muss deshalb der letzte Knoten
+ wie der in Abschnitt 
+\begin_inset LatexCommand ref
+reference "sec:single-hop"
+
+\end_inset
+
+ beschriebene Single-Hop-Anonymisierer die Ziel-IP-Adresse oder die abgerufene
+ URL für alle HTTP-Anfragen protokollieren, oder eine zusätzliche protokollabhän
+gige Kennung speichern (wie in Abschnitt 
+\begin_inset LatexCommand ref
+reference "sub:Einführung-protokollabhängiger-Kennungen"
+
+\end_inset
+
+ vorgeschlagen).
+ Auch eine Optimierung des Speicherverbrauchst ist, ähnlich wie bei Single-Hop-A
+nonymisierern, möglich: ein hinter die Kaskade geschalteter Burst-Proxy
+ könnte abgerufene Webseiten parsen und eingebettete Objekte selbständig
+ nachladen.
+ Für die nachgeladenen Objekte ist dann kein separater Datensatz mehr nötigt,
+ da klar ist, dass sie vom selben Teilnehmer stammen.
+\end_layout
+
+\begin_layout Standard
+Die erzeugten Verbindungskennungen ermöglichen eine eindeutige Rückverfolgung
+ jedes Requests bis zum ersten Mix, der die zugehörige Eingangsadresse abgespeic
+hert hat.
+ Die am Beispiel erläuterte Vorgehensweise lässt sich sowohl bei Mix-Netzen
+ und Mix-Kaskaden gleichermaßen implementieren.
+ Im allgemeinen müssen diese Kennungen außerdem nicht neu in die Systeme
+ eingeführt werden, da sie implizit bereits vorhanden sein müssen, um die
+ Kommunikation der Teilnehmer mit den einzelnen Servern des Netzes bzw.
+ der Kaskade zu ermöglichen.
+ 
+\end_layout
+
+\begin_layout Section
+URL-basierter Multi-Hop-Anonymisierer
+\end_layout
+
+\begin_layout Standard
+Falls Multi-Hop-Anonymisierer gesetzlich verpflichtet werden, den Weg einer
+ Verbindung durch ihr System mit eindeutigen Kennungen nachvollziehbar zu
+ machen, bieten sie gegenüber einem 
+\begin_inset Quotes gld
+\end_inset
+
+staatlichen Angreifer
+\begin_inset Quotes grd
+\end_inset
+
+ nur einen geringen Sicherheitsgewinn verglichen mit einem nicht-kommerziellen
+ Single-Hop-Anonymisierer.
+ Die Unschärfe der Ergebnismenge bei einer Anfrage 
+\begin_inset Formula $q$
+\end_inset
+
+ ist für beide Architekturen etwa gleich groß.
+ Ihre eigentliche Stärke liegt jedoch darin, dass einzelne 
+\begin_inset Quotes gld
+\end_inset
+
+Hops
+\begin_inset Quotes grd
+\end_inset
+
+ in einer Kette nicht im Einflussbereich des speicherpflichtigen Staates
+ liegen, und deshalb keine Daten an ihn herausgeben bzw.
+ erheben müssen.
+ Ferner erlaubt die Benutzerkennung bei kommerziellen Single-Hop-Anonymisierern
+ sehr effektive Schnittmengenangriffe auf die Vorratsdaten, die bei Multi-Hop-An
+onymisierern so nicht möglich sind.
+\end_layout
+
+\begin_layout Standard
+§\InsetSpace \thinspace{}
+113a Abs.
+ 8 TKG schließt 
+\begin_inset Quotes gld
+\end_inset
+
+Inhalt und Daten über abgerufene Internetseiten
+\begin_inset Quotes grd
+\end_inset
+
+ von der Vorratsdatenspeicherung aus.
+ Hierzu zählen wie bereits erläutert insbesondere die URLs der abgerufenen
+ Webseiten.
+ In Abschnitt 
+\begin_inset LatexCommand ref
+reference "sec:single-hop"
+
+\end_inset
+
+ wurde gezeigt, dass schon bei einem Single-Hop-Anonymisierer eine eindeutige
+ Rückverfolgung nicht gewährleistet ist, wenn ausschließlich Eingangs- und
+ Ausgangs-IP-Adressen, nicht jedoch URLs bzw.
+ IP-Adressen der Ziel-Server gespeichert werden.
+ Dieser Umstand lässt sich zur Konstruktion eines Multi-Hop-Anonymisierungsdiens
+tes ausnutzen, der den Weg der Nachrichten durch sein System nicht mit eindeutig
+en Kennungen protokollieren muss.
+\end_layout
+
+\begin_layout Standard
+Vorausgesetzt wird dabei ein loser Verbund von web-basierten Proxy-Servern,
+ die ausschließlich über (von der Speicherungspflicht ausgeschlossene) URLs
+ kommunizieren.
+ Dabei kommen mehrfach verschlüsselte und verschachtelte URLs zum Einsatz,
+ die in ähnlicher Form für den Rewebber-Dienst vorgeschlagen wurden 
+\begin_inset LatexCommand cite
+key "GoWa98"
+
+\end_inset
+
+.
+ Ein Benutzer, der über drei Knoten anonymisiert zur Adresse 
+\begin_inset LatexCommand url
+target "http://www.url.com"
+
+\end_inset
+
+ surfen will, bildet 
+\begin_inset Formula \[
+\mathrm{URL=http://www.node1.com/}E_{1}(\mathrm{www.node2.com/}E_{2}(\mathrm{www.node3.com/}E_{3}(\mathrm{http://www.url.com})))\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+wobei 
+\begin_inset Formula $E_{i}$
+\end_inset
+
+ eine Verschlüsselungsoperation ist, die lediglich von Knoten 
+\begin_inset Formula $i$
+\end_inset
+
+ rückgängig gemacht werden kann.
+ Ähnlich wie bei existierenden Muti-Hop-Anonymisierern kann ein lokaler
+ Angreifer bzw.
+ der Betreiber eines Knotens die Beziehung zwischen Benutzer und aufgerufener
+ Webseite nicht aufdecken.
+ 
+\end_layout
+
+\begin_layout Standard
+<<Problem: Was ist mit der HTTP-Response? Die muss ja auch mehrfach verschlüssel
+t werden - hier bräichte man so etwas wie die Reply-Onions von Tor...>
+\end_layout
+
+\begin_layout Standard
+<<Argumenationsproblem: Da HTTP-Request und -Response hier aber in 
+\begin_inset Quotes gld
+\end_inset
+
+stehenden
+\begin_inset Quotes grd
+\end_inset
+
+ TCP-Verbindung übertragen werden, wäre bei verpflichteter Abspeicherung
+ von TCP-Port-Nummern zwischen den einzelnen Systemen eine relativ gute
+ Zuordnung möglich (vgl.
+ Abschnitt 3.5>>
+\end_layout
+
+\begin_layout Section
+Zusammenfassung
+\end_layout
+
+\begin_layout Standard
+Implementiert man eine minimale VDS wie sie vom deutschen Gesetz verlangt
+ wird, ist eine Rückverfolgung nur im Idealfall möglich, sie kann aber vom
+ Dienstanbieter nicht gewährleistet werden.
+\end_layout
+
+\begin_layout Standard
+Für eine wirkungsvolle VDS müssen zusätzliche Kennungen eingeführt werden,
+ die bis zum Ziel-Webserver gesendet werden müssen.
+\end_layout
+
+\begin_layout Standard
+Das Gesetz bietet genug Interpretationsspielraum, um Anonymisierungssysteme
+ zu konstruieren, die der Vorratsdatenspeicherung entgehen.
+\end_layout
+
+\begin_layout Section*
+<Ideensammlung>
+\end_layout
+
+\begin_layout Itemize
+Speicherung von URLs bei Diensten, die Anwendungsprotokoll-unabhängig sind
+ (VPNs, Tor) nicht im Dienst vorgesehen, Implementierung u.U.
+ aufwändig bzw.
+ gar nicht möglich
+\end_layout
+
+\begin_layout Itemize
+Müssen Verbindungen oder Requests gespeichert werden; 1:n Beziehung zw.
+ V.
+ und R.
+ bei HTTP-Proxy-Servern!
+\end_layout
+
+\begin_layout Itemize
+Da die Regelung jedoch lediglich von 
+\emph on
+Internetseiten
+\emph default
+ spricht, bezieht sich dieses Verbot möglicherweise ausschließlich auf Internets
+e -iten im WWW und nicht auf andere Protokolle (die etwa mit Tor anonymisiert
+ - werden können), bei denen eine Protokollierung von Ziel-IP-Adressen zur
+ - Erhöhung der Wirksamkeit der Vorratsdatenspeicherung durchaus erlaubt
+ wäre.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "Kairaven"
+
+\end_inset
+
+http://blog.kairaven.de/archives/1428-We-are-fucked-individually!.html
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "ULD07"
+
+\end_inset
+
+https://www.datenschutzzentrum.de/projekte/anon/20070316-rechtliche-grundlagen.htm
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "Raa03"
+
+\end_inset
+
+Raabe, Oliver: Computer und Recht (CR) 2003, Heft 04, Seite 268 Aufsatz:
+ Abgrenzungsprobleme bei der rechtlichen Einordnung von Anonymisierungsdiensten
+ im Internet (Unbedingt nachlesen! Möglicherweise ist es möglich sein, Datenströ
+me gezielt zu filtern/zu verändern, und damit dann als Teledienst zu gelten!
+ Dummerweise kann das nur der letzte Betreiber, die ersten nicht...)
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "JonDonym"
+
+\end_inset
+
+http://www.jondos.de
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "Tor"
+
+\end_inset
+
+http://tor.eff.org
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "KoeWeFe06"
+
+\end_inset
+
+Stefan Köpsell, Rolf Wendolsky, Hannes Federrath: Revocable Anonymity.
+ in: Günter Müller (Ed.): Proc.
+ Emerging Trends in Information and Communication Security: International
+ Conference, ETRICS 2006, Freiburg, Germany, June 6-9, 2006, LNCS 3995,
+ Springer-Verlag, Heidelberg 2006, 206-220.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "GoWa98"
+
+\end_inset
+
+Ian Goldberg, David Wagner: TAZ Servers and the Rewebber Network: Enabling
+ Anonymous Publishing on the World Wide Web.
+ First Monday 3, 4 (August 1998).
+\end_layout
+
+\begin_layout Section*
+\start_of_appendix
+Anhang: Auszüge aus der EU-Richtlinie und dem TKG
+\end_layout
+
+\begin_layout Paragraph
+EU-Richtlinie 2006/24/EG vom 15.03.2006
+\end_layout
+
+\begin_layout Itemize
+Laut EU-Richtlinie sind 
+\begin_inset Quotes gld
+\end_inset
+
+Anbieter öffentlich zugänglicher elektronischer Kommunikationsdienste oder
+ Betreibern eines öffentlichen Kommunikatinsnetzes
+\begin_inset Quotes grd
+\end_inset
+
+ (Artikel 3 Absatz 1) betroffen.
+\end_layout
+
+\begin_layout Standard
+Kategorien von auf Vorrat zu speichernden Daten: betreffend Internetzugang,
+ Internet-E-Mail und Internet-Telefonie:
+\end_layout
+
+\begin_layout Itemize
+zur Rückverfolgung und Identifizierung der Quelle einer Nachricht benötigte
+ Daten [...] die zugewiesene(n) Benutzerkennung(en), die Benutzerkennung und
+ die Rufnummer, die jeder Nachricht im öffentlichen Telefonnnetz zugewiesen
+ werden, der Name und die Anschrift des registrierten Benutzers, dem eine
+ Internetprotokolladresse (IP-Adresse), Benutzerkennung oder Rufnummer zum
+ Zeitpunkt der Nachricht zugewiesen war, 
+\end_layout
+
+\begin_layout Itemize
+zur Identifizierung des Adressaten einer Nachricht benötigte Daten [...] die
+ Namen und Anschriften der Teilnehmer oder registrierten Benutzer und die
+ Benutzerkennung des vorgesehenen Empfängers einer Nachricht
+\end_layout
+
+\begin_layout Itemize
+zur Bestimmung von Datum, Uhrzeit und Dauer einer Nachrichtenübermittlung
+ benötigte Daten [...] Datum und Uhrzeit der An- und Abmeldung beim Internetzugangs
+dienst auf der Grundlage einer bestimmten Zeitzone, zusammen mit der vom
+ Internetzugangsanbieter einer Verbindung zugewiesenen dynamischen oder
+ statischen IP-Adresse und die Benutzerkennung des Teilnehmers oder des
+ registrierten Benutzers, Datum und Uhrzeit der An- und Abmeldung beim Internet-
+E-Mail-Dienst oder Internet- Telefonie-Dienst auf der Grundlage einer bestimm-
+ ten Zeitzone
+\end_layout
+
+\begin_layout Itemize
+zur Bestimmung der Art einer Nachrichtenübermittlung benötigte Daten [...]
+ der in Anspruch genommene Internetdienst
+\end_layout
+
+\begin_layout Itemize
+zur Bestimmung der Endeinrichtung oder der vorgeblichen Endeinrichtung von
+ Benutzern benötigte Daten [...] der digitale Teilnehmeranschluss (DSL) oder
+ ein anderer Endpunkt des Urhebers des Kommunikationsvorgangs
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes gld
+\end_inset
+
+Nach dieser Richtlinie dürfen keinerlei Daten, die Auf- schluss über den
+ Inhalt einer Kommunikation geben, auf Vorrat gespeichert werden.
+\begin_inset Quotes grd
+\end_inset
+
+ (Artikel 5 Absatz 2)
+\end_layout
+
+\begin_layout Paragraph
+Deutsches Gesetz zur Neuregelung der Telekommunikationsüberwachung und anderer
+ verdeckter Ermittlungsmaßnahmen sowie zur Umsetzung der Richtlinie 2006/24/EG
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes gld
+\end_inset
+
+Wer öffentlichzugängliche Telekommunikationsdienste für Endnutzer erbringt,
+ ist verpflichtet, von ihm bei der Nutzung seines Dienstes erzeugte oder
+ verarbeitete Verkehrsdaten [...] sechs Monate im Inland oder in einem anderen
+ Mitgliedstaat der Europäischen Union zu speichern [...].
+\begin_inset Quotes grd
+\end_inset
+
+ (§\InsetSpace \thinspace{}
+113a Absatz\InsetSpace ~
+1)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes gld
+\end_inset
+
+Die Anbieter von Internetzugangsdiensten speichern: die dem Teilnehmer für
+ eine Internetnutzung zugewiesene Internetprotokoll-Adresse, eine eindeutige
+ Kennung des Anschlusses, über den die Internetnutzung erfolgt, den Beginn
+ und das Ende der Internetnutzung unter der zugewiesenen Internetprotokoll-Adres
+se nach Datum und Uhrzeit unter Angabeder zugrundeliegenden Zeitzone.
+\begin_inset Quotes grd
+\end_inset
+
+ (§\InsetSpace \thinspace{}
+113a Absatz\InsetSpace ~
+4)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes gld
+\end_inset
+
+Wer Telekommunikationsdienste erbringt und hierbei die nach Maßgabe dieser
+ Vorschrift zu speichernden Angaben verändert, ist zur Speicherung der ursprüngl
+ichen und der neuen Angabe sowie des Zeitpunktes der Umschreibung dieser
+ Angaben nach Datum und Uhrzeit unter Angabe der zugrunde liegenden Zeitzone
+ verpflichtet.
+\begin_inset Quotes grd
+\end_inset
+
+ (§\InsetSpace \thinspace{}
+113a Absatz\InsetSpace ~
+6)
+\newline
+
+\begin_inset Quotes gld
+\end_inset
+
+Absatz 6 bestimmt, dass diejenigen Diensteanbieter, die bei der Erbringung
+ ihres Telekommunikationsdienstes solche Angaben verändern, die nach Maßgabe
+ der Absätze 2 bis 4 zu speichern sind, sowohl die ursprüngliche Angabe
+ als auch die neue Angabe und den Zeit- punkt der Umschreibung der Angaben
+ zu speichern haben.
+ Hierdurch wird etwa die Fallgestaltung erfasst, dass ein Diensteanbieter
+ ohne eigene Endnutzerbeziehung lediglich die technische Einrichtung zur
+ Weiterleitung für eine von anderen Diensteanbietern initiierte Telekommunikatio
+n zur Verfügung stellt und hierbei die von den anderen Diensteanbietern
+ erzeugten oder verarbeiteten – und nach Maßgabe der Absätze 2 bis 4 zu
+ speichernden – Verkehrsdaten verändert.
+ Die Vorgabe des Absatzes 6 ist erforderlich, um einerseits die grundsätzliche
+ Speicherungsverpflichtung nach Absatz 1 auf die Diensteanbieter mit Endnutzerbe
+ziehung beschränken zu können und andererseits gleichwohl eine Rückverfolgbarkei
+t der Telekommunikation auch im Falle einer Änderung der relevanten Daten
+ durch einen zwischengeschalteten Diensteanbieter ohne Endnutzerbeziehung
+ sicherzustellen.
+ In welcher Weise das ursprüngliche Datum verändert wird, ist hierbei gleichgült
+ig.
+ Regelmäßig wird das Verändern darin bestehen, dass das ursprüngliche Datum
+ gelöscht und durch ein anderes ersetzt wird (vgl.
+ Dammann, in: Simitis, Bundesdatenschutzgesetz, 6.
+ Aufl., 2006, § 3, Rn.
+ 141).
+\begin_inset Quotes grd
+\end_inset
+
+ (Gesetzesbegründung, zu Absatz 6)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes gld
+\end_inset
+
+Der Inhalt der Kommunikation und Daten über aufgerufene Internetseiten dürfen
+ auf Grund dieser Vorschrift nicht gespeichert werden.
+\begin_inset Quotes grd
+\end_inset
+
+ (§\InsetSpace \thinspace{}
+113a Absatz\InsetSpace ~
+8).
+\newline
+
+\begin_inset Quotes gld
+\end_inset
+
+Absatz 8 setzt die Vorgabe des Artikels 5 Abs.
+ 2 der Richtlinie 2006/24/EG um und stellt klar, dass weder der Kommunikationsin
+halt noch Daten über aufgerufene Internetseiten nach dieser Vorschrift nicht
+ gespeichert werden dürfen.
+\newline
+Hierbei kommt es auch nicht darauf an, ob die
+ Zwischenschaltung des Diensteanbieters et- wa aus technischen oder wirtschaftli
+chen Gründen durch die an der Erbringung der Telekommunikationsdienste beteiligt
+en Diensteanbieter geschieht oder ob die Zwischenschaltung auf Veranlassung
+ des Endnutzers gezielt zur Veränderung der nach Maßgabe der Absätze 2 bis
+ 4 zu speichernden Daten erfolgt, wie dies etwa bei der Nutzung von Anonymisieru
+ngs- diensten der Fall ist.
+ In beiden Fällen besteht die Speicherungsverpflichtung nach Absatz 6, wenn
+ die maßgeblichen Daten bei der Erbringung des Telekommunikationsdienstes
+ verän- dert werden.
+\newline
+Soweit eine Speicherungsverpflichtung danach auch für
+ die Anbieter von Anonymisierungsdiensten begründet wird, ist zu berücksichtigen
+, dass auch diese Anbieter öffentlich zugängliche Telekommunikationsdienste
+ erbringen.
+ Öffentlich zugängliche Telekommunikationsdienste sind alle Telekommunikationsdi
+enste im Sinne von § 3 Nr.
+ 24 TKG, die jedermann zugänglich sind.
+ Nach § 3 Nr.
+ 24 TKG fallen darunter die 
+\begin_inset Quotes gld
+\end_inset
+
+reinen
+\begin_inset Quotes grd
+\end_inset
+
+ Telekommunikationsdienste (also Dienste, die ausschließlich in der Übertragung
+ von Signalen über Telekommunikationsnetze bestehen) sowie Dienste mit Doppelnat
+ur, die zwar auch unter den Rechtsrahmen für Telemedien fallen, aber zugleich
+ Telekommunikationsdienste nach § 3 Nr.
+ 24 TKG sind, weil sie überwiegend in der Übertragung von Signalen über
+ Telekommunikationsnetze be- stehen.
+ Dies sind in erster Linie diejenigen Dienste, die sowohl der Bereitstellung
+ eines Internetzugangs als auch der Übertragung elektronischer Post dienen.
+ Auch Anonymisierungsdienste weisen allerdings eine solche Doppelnatur auf,
+ da ihre Tätigkeit sowohl in der Durchleitung der Nachricht als auch in
+ der Ersetzung der Ausgangskennung des Telekommunikationsnutzers besteht.
+ Diese Dienste sind daher sowohl Telemedien als auch – im Hinblick auf ihre
+ Transportfunktion – Telekommunikationsdienste für die Öffentlichkeit (vgl.
+ hierzu jetzt auch § 11 Abs.
+ 3 Telemediengesetz [TMG], ferner Schmitz, in: Spindler/Schmitz/Geis, TDG-Kommen
+tar, 2004, § 1 TDDSG, Rn.
+ 16).
+\begin_inset Quotes grd
+\end_inset
+
+ (Gesetzesbegründung, zu Absatz 8)
+\end_layout
+
+\begin_layout Paragraph
+§ 96 Verkehrsdaten TKG 
+\end_layout
+
+\begin_layout Enumerate
+Der Diensteanbieter darf folgende Verkehrsdaten erheben und verwenden, soweit
+ dies für die in diesem Abschnitt genannten Zwecke erforderlich ist: 1.
+ die Nummer oder Kennung der beteiligten Anschlüsse oder der Endeinrichtung,
+ personenbezogene Berechtigungskennungen, bei Verwendung von Kundenkarten
+ auch die Kartennummer, bei mobilen Anschlüssen auch die Standortdaten,
+ 2.
+ den Beginn und das Ende der jeweiligen Verbindung nach Datum und Uhrzeit
+ und, soweit die Entgelte davon abhängen, die übermittelten Datenmengen,
+ 3.
+ den vom Nutzer in Anspruch genommenen Telekommunikationsdienst, 4.
+ die Endpunkte von festgeschalteten Verbindungen, ihren Beginn und ihr Ende
+ nach Datum und Uhrzeit und, soweit die Entgelte davon abhängen, die übermittelt
+en Datenmengen, 5.
+ sonstige zum Aufbau und zur Aufrechterhaltung der Telekommunikation sowie
+ zur Entgeltabrechnung notwendige Verkehrsdaten.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Die gespeicherten Verkehrsdaten dürfen über das Ende der Verbindung hinaus
+ nur verwendet werden, soweit sie zum Aufbau weiterer Verbindungen oder
+ für die in den §§ 97, 99, 100 und 101 genannten oder für die durch andere
+ gesetzliche Vorschriften begründeten Zwecke erforderlich sind.
+ Im Übrigen sind Verkehrsdaten vom Diensteanbieter nach Beendigung der Verbindun
+g unverzüglich zu löschen.
+\end_layout
+
+\begin_layout Enumerate
+Der Diensteanbieter darf teilnehmerbezogene Verkehrsdaten, die vom Anbieter
+ eines Telekommunikationsdienstes für die Öffentlichkeit verwendet werden,
+ zum Zwecke der Vermarktung von Telekommunikationsdiensten, zur bedarfsgerechten
+ Gestaltung von Telekommunikationsdiensten oder zur Bereitstellung von Diensten
+ mit Zusatznutzen im dazu erforderlichen Zeitraum nur verwenden, sofern
+ der Betroffene in diese Verwendung eingewilligt hat.
+ Die Daten der Angerufenen sind unverzüglich zu anonymisieren.
+ Eine zielnummernbezogene Verwendung der Verkehrsdaten durch den Diensteanbieter
+ zu den in Satz 1 genannten Zwecken ist nur mit Einwilligung der Angerufenen
+ zulässig.
+ Hierbei sind die Daten der Anrufenden unverzüglich zu anonymisieren.
+\end_layout
+
+\begin_layout Enumerate
+Bei der Einholung der Einwilligung ist dem Teilnehmer mitzuteilen, welche
+ Datenarten für die in Absatz 3 Satz 1 genannten Zwecke verarbeitet werden
+ sollen und wie lange sie gespeichert werden sollen.
+ Außerdem ist der Teilnehmer darauf hinzuweisen, dass er die Einwilligung
+ jederzeit widerrufen kann.
+\end_layout
+
+\end_body
+\end_document
