@@ -628,7 +628,7 @@ Allerdings wäre die Einführung einer Pflicht zur bijektiven Abbildung denkbar:
  teilen dürfen.
  Anonymisierdienste müssten dann eine bijektive oder injektive Abbildung
  vornehmen, d.h.
- jedem Teilnehmer entweder imemr die gleiche, oder bei jeder neue aufgebauten
+ jedem Teilnehmer entweder immer die gleiche, oder bei jeder neue aufgebauten
  Verbindung jeweils eine neue Ausgangs-IP-Adresse zuweisen, niemals jedoch
  gleichzeitig die gleiche IP wie einem anderen Teilnehmer.
  Dadurch dass die IP-Adresse laufend wechselt wäre immer noch sichergestellt,
@@ -1283,6 +1283,10 @@ Sofern Straftäter mehr als einmal den gleichen Anonymisierdienstleister
 Speicherung von Ziel-IP-Adressen oder URLs
 \end_layout
 
+\begin_layout Subsubsection*
+Ziel-IP-Adressen
+\end_layout
+
 \begin_layout Standard
 Zur Verbesserung der Rückverfolgbarkeit bis zum Urheber der Verbindung könnte
  der Betreiber eines Anonymisierers verpflichtet werden, zusätzlich auch
@@ -1325,6 +1329,10 @@ Die eindeutige Rückverfolgbarkeit kann allerdings auch bei dieser Methode
  Zudem ist eine IP-Adresse nicht immer ein identifizierendes Merkmal für
  eine Webseite (etwa bei virtuellen Webservern, die mehrere Internet-Domains
  über eine IP-Adresse anbieten).
+\end_layout
+
+\begin_layout Subsubsection*
+URLs von Webseiten
 \end_layout
 
 \begin_layout Standard
@@ -1826,32 +1834,22 @@ reference "sec:single-hop"
  Rückverfolgung nicht gewährleistet ist, wenn ausschließlich Eingangs- und
  Ausgangs-IP-Adressen, nicht jedoch URLs bzw.
  IP-Adressen der Ziel-Server gespeichert werden.
- Dieser Umstand lässt sich zur Konstruktion eines Multi-Hop-Anonymisierungsdiens
-tes ausnutzen, der den Weg der Nachrichten durch sein System nicht mit eindeutig
-en Kennungen protokollieren muss.
+ Dieser Umstand lässt sich zur Konstruktion eines sehr speziellen Multi-Hop-Dien
+stes ausnutzen, der, selbst wenn er unter das genannte Gesetz fällt, keinerlei
+ Verbindungsmerkmale protokollieren muss.
 \end_layout
 
 \begin_layout Standard
-Vorausgesetzt wird dabei ein loser Verbund von web-basierten Proxy-Servern,
- die ausschließlich über (von der Speicherungspflicht ausgeschlossene) URLs
- kommunizieren.
- Dabei kommen mehrfach verschlüsselte und verschachtelte URLs zum Einsatz,
- die in ähnlicher Form für den Rewebber-Dienst vorgeschlagen wurden 
-\begin_inset LatexCommand cite
-key "GoWa98"
-
-\end_inset
-
-.
- Ein Benutzer, der über drei Knoten anonymisiert zur Adresse 
-\begin_inset LatexCommand url
-target "http://www.url.com"
-
-\end_inset
-
- surfen will, bildet 
+Dieser hypothetische Dienst besteht aus einem losen Netzwerk von formularbasiert
+en Proxy-Servern die ausschließlich auf Basis von HTTP-Requests arbeiten
+ (wie CGI-Proxies).
+ Jeder dieser Server kann vollständig alleine arbeiten und zum indirekten
+ Aufrufen von Webseiten verwendet werden.
+ Nutzer können jeweils aber auch einen anderen formularbasierten Proxy indirekt
+ über sie aufrufen, and dadurch lose Ketten von formularbasierten Proxies
+ wie folgt bilden: 
 \begin_inset Formula \[
-\mathrm{URL=http://www.node1.com/}E_{1}(\mathrm{www.node2.com/}E_{2}(\mathrm{www.node3.com/}E_{3}(\mathrm{http://www.url.com})))\]
+\mathrm{URL=http://www.node1.com/}\mathrm{www.node2.com/}\mathrm{www.node3.com/}\mathrm{http://www.url.com}\]
 
 \end_inset
 
@@ -1860,39 +1858,20 @@ target "http://www.url.com"
 
 \begin_layout Standard
 wobei 
-\begin_inset Formula $E_{i}$
+\begin_inset LatexCommand url
+target "www.url.com"
+
 \end_inset
 
- eine Verschlüsselungsoperation ist, die lediglich von Knoten 
-\begin_inset Formula $i$
-\end_inset
-
- rückgängig gemacht werden kann.
- Ähnlich wie bei existierenden Muti-Hop-Anonymisierern kann ein lokaler
- Angreifer bzw.
- der Betreiber eines Knotens die Beziehung zwischen Benutzer und aufgerufener
- Webseite nicht aufdecken.
- 
-\end_layout
-
-\begin_layout Standard
-<<Problem: Was ist mit der HTTP-Response? Die muss ja auch mehrfach verschlüssel
-t werden - hier bräichte man so etwas wie die Reply-Onions von Tor...>
-\end_layout
-
-\begin_layout Standard
-<<Argumenationsproblem: Da HTTP-Request und -Response hier aber in 
-\begin_inset Quotes gld
-\end_inset
-
-stehenden
-\begin_inset Quotes grd
-\end_inset
-
- TCP-Verbindung übertragen werden, wäre bei verpflichteter Abspeicherung
- von TCP-Port-Nummern zwischen den einzelnen Systemen eine relativ gute
- Zuordnung möglich (vgl.
- Abschnitt 3.5>>
+die von Nutzer aufgerufene Webseite ist.
+ Diese Methode führt zu einem recht guten Schutz gegen eine beliebige Verordnung
+ zur Vorratsdatenspeicherung, da keine direkten oder indirekten Merkmale
+ zwischen den Proxies vorliegen um Verbindungen identifizieren zu können.
+ Da die aufgerufenen URLs dürfen nicht gespeichert werden, also auch nicht
+ die URLs von aufgerufenen anderen Proxies, ist es kaum möglich eine solche
+ Kette zum ersten Server zurückzuverfolgen, geschweige denn einzelne Verbindunge
+n zu enttarnen.
+ Auch Schnittmengenangriffe laufen dadurch ins Leere.
 \end_layout
 
 \begin_layout Section
@@ -1900,49 +1879,50 @@ Zusammenfassung
 \end_layout
 
 \begin_layout Standard
-Implementiert man eine minimale VDS wie sie vom deutschen Gesetz verlangt
- wird, ist eine Rückverfolgung nur im Idealfall möglich, sie kann aber vom
- Dienstanbieter nicht gewährleistet werden.
+Wir haben gezeigt dass, Ansätze zur Vorratsdatenspeicherung in Anonymisierungssy
+stemen meist keine eindeutige Aufdeckung von Zugriffen ermöglichen.
+ Speziell die in Deutschland geltenden gesetzlichen Regelungen erlauben,
+ sofern sie überhaupt aus Anonymisiersysteme anwendbar sind, praktisch nie
+ eine Rückverfolgung anonymer Zugriffe, sondern schaffen nur nutzlose Datenhalde
+n.
+ Es wäre sogar möglich, einen Anonymisierdienst zu bauen, der, selbst wenn
+ er utner das TKG fällt, keinerlei Daten speichern muss.
+ Dienstanbieter könnten eine Rückverfolgbarkeit gewährleisten, indem sie
+ zusätzliche Identifikationsmerkmale in die Standard-Internet-Protokolle
+ einführen, aber diese Implementierungen wären größtenteils proprietär and
+ daher im Internet kaum flächendeckend umzusetzen.
+ Eine weitere Möglichkeit wäre, Zieladressen oder sogar ganze URLs auf Vorrat
+ zu speichern, aber dies hätte gravierende Auswirkungen sowohl auf das zu
+ speichernde Datenvolumen und die Servicequalität (Performance) als auch
+ auf die Vertraulichkeit der Nutzer, was mit dem neuen 
+\begin_inset Quotes gld
+\end_inset
+
+Grundrecht auf Gewährleistung der Vertraulichkeit und Integrität informationstec
+hnischer Systeme
+\begin_inset Quotes grd
+\end_inset
+
+ wohl nicht vereinbar wäre.
+\begin_inset LatexCommand cite
+key "BVGOnline"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Für eine wirkungsvolle VDS müssen zusätzliche Kennungen eingeführt werden,
- die bis zum Ziel-Webserver gesendet werden müssen.
-\end_layout
-
-\begin_layout Standard
-Das Gesetz bietet genug Interpretationsspielraum, um Anonymisierungssysteme
- zu konstruieren, die der Vorratsdatenspeicherung entgehen.
-\end_layout
-
-\begin_layout Section*
-<Ideensammlung>
-\end_layout
-
-\begin_layout Itemize
-Speicherung von URLs bei Diensten, die Anwendungsprotokoll-unabhängig sind
- (VPNs, Tor) nicht im Dienst vorgesehen, Implementierung u.U.
- aufwändig bzw.
- gar nicht möglich
-\end_layout
-
-\begin_layout Itemize
-Müssen Verbindungen oder Requests gespeichert werden; 1:n Beziehung zw.
- V.
- und R.
- bei HTTP-Proxy-Servern!
-\end_layout
-
-\begin_layout Itemize
-Da die Regelung jedoch lediglich von 
-\emph on
-Internetseiten
-\emph default
- spricht, bezieht sich dieses Verbot möglicherweise ausschließlich auf Internets
-e -iten im WWW und nicht auf andere Protokolle (die etwa mit Tor anonymisiert
- - werden können), bei denen eine Protokollierung von Ziel-IP-Adressen zur
- - Erhöhung der Wirksamkeit der Vorratsdatenspeicherung durchaus erlaubt
- wäre.
+Mittels in Zukunft verfügbarer technischer Möglichkeiten könnten Anonymisierdien
+ste allerdings tatsächlich gesetzlich verpflichtet werden, die Rückverfolgbarkei
+t ihrer Nutzer zu gewährleisten -- wie ISPs in der EU es heute bereits tun
+ müssen.
+ Dazu wäre ein eindeutiger Zusammenhang zwischen den pseudonymen IP-Adressen
+ des Dienstes und den ursprünglichen IP-Adressen der Nutzer notwendig.
+ Dies ist freilich nur dann möglich, wenn diese Dienste über eine ausreichend
+ große Menge von IP-Adressen verfügen können.
+ Während diese Voraussetzung nicht mit IPv4 vereinbar zu sein scheint, wäre
+ sie im IPv6-Adressraum zumindest denkbar.
 \end_layout
 
 \begin_layout Bibliography
@@ -2016,6 +1996,15 @@ key "GoWa98"
 Ian Goldberg, David Wagner: TAZ Servers and the Rewebber Network: Enabling
  Anonymous Publishing on the World Wide Web.
  First Monday 3, 4 (August 1998).
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "BVGOnline"
+
+\end_inset
+
+Urteil des Budnesverfassungsgerichts zur Online-Durchsuchung, 27.02.2008
 \end_layout
 
 \begin_layout Section*
