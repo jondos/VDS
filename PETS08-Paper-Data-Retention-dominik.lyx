@@ -1,0 +1,1780 @@
+#LyX 1.5.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
+\begin_document
+\begin_header
+\textclass llncs
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize 11
+\spacing single
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Implications of Data Retention Measures for Anonymisation Services
+\end_layout
+
+\begin_layout Author
+Anonymous Author
+\end_layout
+
+\begin_layout Institute
+Anonymous Institute
+\end_layout
+
+\begin_layout Abstract
+In an effort to regulate the data retention obligations of ISPs, data retention
+ policies have been legislated.
+ Anonymisation services undermine data retention efforts, as they provide
+ users with a means to masquerade their IP address.
+ In this paper we analyse the obligations specified by the German bill on
+ data retention and present various approaches for implementing data retention
+ measures at single-hop and multi-hop anonymisation services.
+ We determine the amount of storage needed and analyse traceability of users.
+ We show that the obligations in the bill are insufficient to guarantee
+ traceability.
+ Finally, we propose a protocol-dependent data retention tag which ensures
+ traceability while protecting users' privacy.
+\end_layout
+
+\begin_layout Section
+\begin_inset LatexCommand label
+name "sec:Introduction"
+
+\end_inset
+
+Introduction
+\end_layout
+
+\begin_layout Standard
+For the purpose of law enforcement Internet service providers may be required
+ to uncover the identity of a user given an IP address and a timestamp.
+ In an effort to regulate the data retention obligations of ISPs, data retention
+ policies have been legislated.
+ Anonymisation services undermine data retention efforts, as they provide
+ users with a means to masquerade their IP address.
+ With increasing awareness and usage of the anonymizers, their providers
+ become a target for data retention regulation.
+ During an investigation, law enforcement authorities may approach a provider
+ of an anonymiser with a query 
+\emph on
+q
+\emph default
+ = 
+\begin_inset Quotes eld
+\end_inset
+
+Please determine the identity of the user who used your anonymisation service
+ with IP address 
+\emph on
+a.b.c.d 
+\emph default
+on 2008-02-10 at 9:43\InsetSpace \thinspace{}
+am GMT
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The anonymiser can only answer this query if the provider has stored detailed
+ records of all served requests -- a duty which he will not carry out voluntaril
+y.
+\end_layout
+
+\begin_layout Standard
+The basis for this paper are the ongoing data retention efforts in the European
+ Union.
+ in In 2006 the EU adopted a Directive on data retention (2006/24/EG).
+ Article 1 outlines its purpose as follows
+\end_layout
+
+\begin_layout Quote
+1.
+ This Directive aims to harmonise Member States' provisions concerning the
+ obligations of the providers of publicly available electronic communications
+ services or of public communications networks with respect to the retention
+ of certain data which are generated or processed by them, in order to ensure
+ that the data are available for the purpose of the investigation, detection
+ and prosecution of serious crime, as defined by each Member State in its
+ national law.
+ 2.
+ This Directive shall apply to traffic and location data on both legal entities
+ and natural persons and to the related data necessary to identify the subscribe
+r or registered user.
+ It shall not apply to the content of electronic communications, including
+ information consulted using an electronic communications network.
+\end_layout
+
+\begin_layout Standard
+The implementation of the Directive regarding internet access can be postponed
+ by member states until March 15th, 2009.
+ The Directive provides only a framework for data retention measures.
+ It is rather generic and does not mention anonymisation services at all.
+ Member states may concretise data retention obligations on a state level,
+ though.
+ The German implementation for Internet access, which is expected to go
+ into force on January 1st, 2009, was designed with anonymisation services
+ in mind.
+ Providers of telecommunication services will have to retain transformation
+ data for a time period of six months.
+ It is well worth studying its implications for anonymisation providers,
+ which is the purpose of this paper.
+ Although our findings are based on a German bill, they are of generic nature
+ and may be applicable to countries with similar regulations throughout
+ the world.
+\end_layout
+
+\begin_layout Standard
+The main purpose of data retention measures in the context of anonymisation
+ services is 
+\emph on
+traceability
+\emph default
+, i.\InsetSpace \thinspace{}
+e.
+ to allow law enforcement authorities to uncover the true identity of a
+ suspect, who may have used the anonymisation service to perpetrate illegal
+ actions.
+ Many people consider traceability a good thing and necessary for crime
+ prevention.
+ On the other hand, data retention measures are questionable from a privacy
+ point of view.
+ Consequently, the challenge is to devise data retention mechanisms which
+ are able to allow for traceability while preserving users' privacy.
+ We found that the data retention obligations specified in the German bill
+ are not sufficient to guarantee traceability of users of anonymisation
+ services.
+ Therefore, the purpose of these obligations is questionable.
+\end_layout
+
+\begin_layout Standard
+In the interest of conciseness we limit our analysis to the anonymisation
+ of HTTP traffic.
+ Our results can be applied to all kinds of anonymisation services, e.\InsetSpace \thinspace{}
+g.
+ CGI-Proxies based on HTML forms, VPN solutions, Mix cascades and Onion
+ Routing.
+ For clarity we will consider single-hop systems (requests are relayed at
+ a single node) and multi-hop systems (which relay traffic over multiple
+ nodes) separately.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+TODO: The introduction should give some background and summarize the contributio
+ns of the paper at a level appropriate for a non-specialist reader.
+ Den nächsten Abschnitt umschreiben und die Outline separat schreiben.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This paper is structed as follows.
+ In section 
+\begin_inset LatexCommand ref
+reference "sec:Data-Retention-Obligations"
+
+\end_inset
+
+ we will summarise the legal obligations specified by the German bill on
+ data retention to ensure a common understanding.
+ The main part of the paper presents various approaches and their implications
+ for the implementation of data retention measures for anonymisation services.
+ First, we will consider simple single-hop anonymizers in section 
+\begin_inset LatexCommand ref
+reference "sec:single-hop"
+
+\end_inset
+
+ in order to illustrate (1) which level of detail is required by law and
+ (2) which level of detail would be required for guaranteed tracability
+ of users.
+ We will then apply our findings to multi-hop anonymisers in section 
+\begin_inset LatexCommand ref
+reference "sec:multi-hop"
+
+\end_inset
+
+.
+ In section 
+\begin_inset LatexCommand ref
+reference "sec:URL-Anonymiser"
+
+\end_inset
+
+ we will show that it is possible to tailor an anonymiser which complies
+ with all legal obligations, but cannot be forced to trace its users based
+ on data retention measures.
+ We summarise our findings in section 
+\begin_inset LatexCommand ref
+reference "sec:Summary"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Die EU-Richtlinie liefert ein Rahmenwerk, das durch die Gesetzgebung der
+ einzelnen Mitgliedsstaaten implementiert und konkretisiert werden muss.
+ In Deutschland wird die Vorratsdatenspeicherung durch das 
+\begin_inset Quotes gld
+\end_inset
+
+Gesetz zur Neuregelung der Telekommunikationsüberwachung und anderer verdeckter
+ Ermittlungsmaßnahmen sowie zur Umsetzung der Richtlinie 2006/24/EG
+\begin_inset Quotes grd
+\end_inset
+
+ vom 21.12.2007 mittels Ergänzungen zum Telekommunikationsgesetz (TKG) legitimiert.
+ Das deutsche Gesetz geht stellenweise auch auf die Implementierung von
+ Vorratsdatenspeicherung bei Anonymisierungssystemen ein.
+\end_layout
+
+\begin_layout Standard
+Elektronische Telekommunikationsdienste müssen nach der aktuellen Rechtslage
+ ab dem 01.01.2008 Verbindungsdaten auf Vorrat speichern, vorbehaltlich Übergangsf
+risten bis zum 01.01.2009.
+ Derzeit herrscht eine gewisse Unsicherheit hinsichtlich des Betriebs von
+ Anonymisierungssystemen vor.
+ Es wird gemutmaßt, dass der Betrieb eines Anonymisierers wegen Haftungsrisiken
+ unmöglich oder sogar illegal wird, und dass Anonymisierungsdienste keine
+ Anonymität mehr gewährleisten, sobald bereits ein einziger Knoten in Deutschlan
+d bzw.
+ in einem Mitgliedsland der EU steht 
+\begin_inset LatexCommand cite
+key "Kairaven"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Betroffen sind sowohl privat betriebene Anonymisierungsdienste, z.\InsetSpace \thinspace{}
+B.
+ Betreiber von Tor-Knoten 
+\begin_inset LatexCommand cite
+key "Tor"
+
+\end_inset
+
+, als auch kommerzielle Systeme, z.\InsetSpace \thinspace{}
+B.
+ JonDonym 
+\begin_inset LatexCommand cite
+key "JonDonym"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
+Ziele dieses Beitrags
+\end_layout
+
+\begin_layout Standard
+In diesem Beitrag werden wir die Speicherpflichten, denen die Betreiber
+ von Anonymisierungsdiensten unterliegen, anhand der deutschen Gesetzgebung
+ erläutern.
+ Darüber hinaus werden wir verschiedene Implementierungsmöglichkeiten der
+ Vorratsdatenspeicherung für Single- und und Multi-Hop-Anonymisierungsdienste
+ diskutieren.
+ Zur Veranschaulichung schlagen wir -- unabhängig von der Rechtslage --
+ Konzepte für eine möglichst wirksame Vorratsdatenspeicherung bei Anonymisierdie
+nsten vor und gehen auf die dabei möglichen Implikationen für den Schutz
+ der Nutzerdaten ein.
+ Schließlich präsentieren wir die Architektur eines Multi-Hop-Anonymisierungsdie
+nstes, der zwar gesetzeskonform arbeitet, jedoch die Rückverfolgung praktisch
+ unmöglich macht.
+\end_layout
+
+\begin_layout Standard
+Im Fokus dieses Beitrags stehen Anonymisierungsdienste für den Abruf von
+ Internetseiten aus dem WWW, welche über Web-Formulare, VPNs oder HTTP-
+ bzw.
+ SOCKS-Proxy erreichbar sind.
+ Auf die Besonderheiten von Mail-Anonymisierern (Remailer) sowie die Anonymisier
+ung anderer Protokolle wird aus Gründen der Übersichtlichkeit nicht eingegangen.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+\begin_inset LatexCommand label
+name "sec:Data-Retention-Obligations"
+
+\end_inset
+
+Legal Basis for Data Retention
+\end_layout
+
+\begin_layout Standard
+From the viewpoint of law enforcement authorities anonymisation services
+ are some kind of public telecommunication service, and, as such, have to
+ meet legal obligations for data retention.
+ Although there are similarities to 
+\begin_inset Quotes eld
+\end_inset
+
+classical
+\begin_inset Quotes erd
+\end_inset
+
+ ISPs, there are a number of differences: 
+\end_layout
+
+\begin_layout Itemize
+anonymisation services hide the original user IP and replace it by their
+ own IP
+\end_layout
+
+\begin_layout Itemize
+there is no physical data link to identify users, but only their originating
+ IP
+\end_layout
+
+\begin_layout Itemize
+there are usually no user databases, but anonymous users only
+\end_layout
+
+\begin_layout Itemize
+free services cannot provide name and address of a user, but only IP addresses
+ as identifiers
+\end_layout
+
+\begin_layout Itemize
+only paid anonymisation services can provide personal data of users
+\end_layout
+
+\begin_layout Standard
+The bill on data retention tries to cover the above differences by treating
+ proxies and anonymisation systems as transformation systems (§\InsetSpace \thinspace{}
+113 Telekommunika
+tionsgesetz/TKG).
+ While anonymisation systems cannot be expected to store identifying information
+, which is usually held by the providers only, they carry valuable transformatio
+n information.
+ They are therefore obliged to store
+\end_layout
+
+\begin_layout Itemize
+the original ID of the user
+\end_layout
+
+\begin_layout Itemize
+the transformed ID of the user and
+\end_layout
+
+\begin_layout Itemize
+the timestamp of this transformation.
+\end_layout
+
+\begin_layout Standard
+However, most anonymisation services provide a non-bijective transformation
+ for IP adresses.
+ This means, the users of such systems are sharing a few or even only one
+ common IP address.
+ This is different from regular ISPs, where each user gets an individual
+ IP address.
+ For uncovering certain requests, it would therefore, in most cases, not
+ suffice to store IP address and timestamp of the request.
+ This is an issue that some legislation in various countries, like currently
+ in Germany, might not address correctly.
+\end_layout
+
+\begin_layout Standard
+Information about visited web sites is not allowed to be stored according
+ to German law, neither by anonymisation systems nor by other telecommunication
+ providers.
+ Furthermore, the law does not clearly state whether the data has to be
+ stored for each session (connection to the anonymisation system) or for
+ each request (connection to target server through the anonymisation system).
+ These restrictions and unclarities, as described in the following sections,
+ make it very difficult and almost impossible to implement data retention
+ techniques that would allow to uncover connections unambiguously.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+\begin_inset LatexCommand label
+name "sec:single-hop"
+
+\end_inset
+
+Data Retention for Single-Hop Anonymisers
+\end_layout
+
+\begin_layout Standard
+Single-hop anonymisation services replace the IP addresses of their users
+ by different ones, i.\InsetSpace \thinspace{}
+e.
+ their own IP addresses.
+ Consequently, providers of such services have to record their usage according
+ to data retention regulations.
+ Concretely, they are obliged to store the input ID and the output ID together
+ with the timestamp of the transformation of the IDs.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename Paper-VDS-Repo/figures/single-hop-anonymizer.eps
+	width 80text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+\begin_inset LatexCommand label
+name "fig:Modell-eines-Single-Hop-Anonymisierers"
+
+\end_inset
+
+Model of a single-hop anonymisation service
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the purpose of our analysis we assume that a single-hop system receives
+ HTTP requests on one (or multiple) hosts which act as proxy servers, among
+ them are regular HTTP Proxies, CGI-Proxies (e.\InsetSpace \thinspace{}
+g.
+ PHProxy) and VPNs (e.\InsetSpace \thinspace{}
+g.
+ anonymizer.com or Cyberghost).
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset LatexCommand ref
+reference "fig:Modell-eines-Single-Hop-Anonymisierers"
+
+\end_inset
+
+ illustrates the single-hop setup.
+ From the viewpoint of the system there are 
+\begin_inset Formula $n$
+\end_inset
+
+ users with IP addresses 
+\begin_inset Formula $a_{\mathrm{in}_{i}}$
+\end_inset
+
+, which send their requests to the proxies.
+ The proxies transmit the requests to the destination servers and forward
+ the corresponding HTTP responses back to the users.
+ From the viewpoint of the destination server, the request originates from
+ an IP address 
+\begin_inset Formula $a_{out_{i}}$
+\end_inset
+
+.
+ Note that 
+\begin_inset Formula $A_{in}>A_{out}$
+\end_inset
+
+ in most cases, i.\InsetSpace \thinspace{}
+e.
+ the number of unique input addresses exceeds the number of IP addresses
+ of the proxy.
+\end_layout
+
+\begin_layout Standard
+Usually, the requests spend some (indeterministic) processing time 
+\begin_inset Formula $\tau_{\mathrm{process}}$
+\end_inset
+
+ within the proxy and on the wire towards their destination 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+.
+ Therefore, there is an unknown delay between the transformation at 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ and the logging of a request at the destination server at 
+\begin_inset Formula $t_{\mathrm{logged}_{i}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Abbildung 
+\begin_inset LatexCommand ref
+reference "fig:Modell-eines-Single-Hop-Anonymisierers"
+
+\end_inset
+
+ zeigt ein Modell dieser Architektur.
+ Nutzer bauen zum Zeitpunkt 
+\begin_inset Formula $t_{\mathrm{start}}$
+\end_inset
+
+ eine Verbindung mit dem Dienst auf.
+ Dann übermitteln sie eine oder mehrere Anfragen (
+\begin_inset Formula $\mathrm{request}_{i}$
+\end_inset
+
+).
+ Der Anonymisierer benötigt die (möglicherweise indeterministische) Zeit
+ 
+\begin_inset Formula $\tau_{\mathrm{process}}$
+\end_inset
+
+ zur Verarbeitung der HTTP-Anfragen und sendet sie an die Ziel-Server (
+\begin_inset Formula $t_{\mathrm{out}_{i}}$
+\end_inset
+
+).
+ Bei den Ziel-Servern werden die HTTP-Anfragen des Anonymisierers kurze
+ Zeit später (
+\begin_inset Formula $ $
+\end_inset
+
+
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+) empfangen bzw.
+ aufgezeichnet (
+\begin_inset Formula $t_{\mathrm{logged}_{i}}$
+\end_inset
+
+).
+ Der Client beendet die Verbindung mit dem Anonymisierer zum Zeitpunkt 
+\begin_inset Formula $t_{\mathrm{end}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Im folgenden werden verschiedene Varianten der Vorratsdatenspeicherung vorgestel
+lt, wobei der dabei entstehende Aufwand abgeschätzt wird.
+ Darüber hinaus wird untersucht, ob die Vorratsdatenspeicherung dann eine
+ Rückverfolgung zum Urheber der Kommunikation ermöglicht.
+ Dabei wird zwischen der Speicherung von einzelnen HTTP-Anfragen und TCP-Verbind
+ungen unterschieden.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Speicherung-pro-Verbindung"
+
+\end_inset
+
+Recording Input Addresses on Session Level
+\end_layout
+
+\begin_layout Standard
+For session-oriented services (e.\InsetSpace \thinspace{}
+g.
+ HTTP proxies which support request pipelining or VPN based anonymisation
+ services), there is a minimalistic and lightweight data retention solution:
+ just record the relevant session-level information.
+ A session may last anything from a few seconds (for HTTP proxies) up to
+ several hours (for VPNs), depending on the individual system setup and
+ user behaviour.
+ If 
+\begin_inset Formula $t_{\mathrm{start}}$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{\mathrm{end}}$
+\end_inset
+
+ denote begin and end timestamps of a user session with the anonymisation
+ service, the provider will store the tuple 
+\begin_inset Formula $(t_{\mathrm{start}},t_{\mathrm{end}},a_{\mathrm{in}},a_{\mathrm{out}}$
+\end_inset
+
+)
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+The applicable time zone information can be stored globally, outside of
+ the session log, as it changes only seldomly.
+ 
+\end_layout
+
+\end_inset
+
+ for each session, meeting the legal data retention obligations (storing
+ input ID and corresponding output IDs together with timestamps).
+ In this scenario, the system does not have to consider the individual HTTP
+ requests, which are relayed during a session.
+ Note that this approach is very similar to the data retention carried out
+ by ISPs.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Ist der Dienst ohne Anmeldung zu verwenden, steht außer der Eingangs-IP-Adresse
+ eines Nutzers keine weitere Kennung zur Speicherung zur Verfügung.
+ Der Dienst muss die eingehende IP-Adresse 
+\begin_inset Formula $a_{\mathrm{in}}$
+\end_inset
+
+ zusammen mit der IP-Adresse 
+\begin_inset Formula $a_{\mathrm{out}}$
+\end_inset
+
+ des Netzwerk-Interfaces, das zur Weitervermittlung der Verbindung genutzt
+ wurde, speichern.
+ Verfügt der Dienst lediglich über eine einzige Ausgangs-IP-Adresse kann
+ die Speicherung der Ausgangs-IP-Adresse unter Umständen entfallen, wenn
+ sichergestellt ist, dass die Ausgangskennung für jede Verbindung eindeutig
+ ermittelbar ist.
+ Die IP-Adressen der Ziel-Server werden nicht gespeichert.
+ Die Anfrage der Strafverfolger lautet formal also: 
+\begin_inset Formula $q=$
+\end_inset
+
+ 
+\begin_inset Quotes gld
+\end_inset
+
+Welche Nutzerkennung 
+\begin_inset Formula $a_{\mathrm{in}}$
+\end_inset
+
+ verbarg sich am 08.02.2008 um 9:43 Uhr GMT hinter der IP-Adresse 
+\begin_inset Formula $a_{\mathrm{out}}$
+\end_inset
+
+?
+\begin_inset Quotes grd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The storage requirements for this approach are pretty low.
+ Assuming that each of the Unix timestamps and IP(v4) addresses consumes
+ 4\InsetSpace ~
+bytes, each log entry requires 16\InsetSpace ~
+bytes of storage.
+ Given an average of 
+\begin_inset Formula $n_{s}$
+\end_inset
+
+ newly created sessions per second, the service has to provide storage capacity
+ of 
+\begin_inset Formula $16\cdot3600\cdot24\cdot n_{s}=1\,382\,400\cdot n_{s}$
+\end_inset
+
+ bytes per day.
+ For a service with a daily total of 10.000 sessions this amounts to only
+ 156 kilobytes per day or 27 megabytes in 26 weeks.
+\end_layout
+
+\begin_layout Standard
+From a privacy point of view this solution is the most desirable form of
+ data retention.
+ Only a bare minimum of information is recorded.
+ Personal information -- apart from the usage time -- is not stored.
+\end_layout
+
+\begin_layout Standard
+While a similar approach is adequate for ISPs, it ultimately fails to meet
+ the purpose of data retention: traceability of the users of the anonymisation
+ service.
+ Faced with the query 
+\begin_inset Formula $q=(t_{\mathrm{query}},a_{\mathrm{out,query}})=(\textrm{2008-10-10 9:43am GMT, a.b.c.d})$
+\end_inset
+
+ from section 
+\begin_inset LatexCommand ref
+reference "sec:Introduction"
+
+\end_inset
+
+, the service provider is not able to uniquely identify one of its users
+ as requested -- it can only provide a result of all sessions which match
+ the query.
+ The result set consists of the IP addresses 
+\begin_inset Formula $a_{\mathrm{in}_{i}}$
+\end_inset
+
+ of all sessions which were in established state at 
+\begin_inset Formula $t_{\mathrm{query}}$
+\end_inset
+
+ and relayed over 
+\begin_inset Formula $a_{\mathrm{out,query}}$
+\end_inset
+
+ -- regardless of users' (in-)activity at a given point in time.
+ Alas, even inactive users contribute to the anonymity group.
+ For increased security, anonymisation services will make sure that outbound
+ traffic uses only a single IP address.
+ Consequently, tracing a request back to its originator is only possible
+ if the number of users at the queried point in time equals one.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+Bei mehreren Duzend oder gar mehreren Hundert Teilnehmern, die alle gleichzeitig
+ mit dem Dienst verbunden sind, kann mit dieser Methode allerdings keine
+ einzelner HTTP-Request zu seinem Sender zurückverfolgt werden.
+ Die Wirksamkeit einer Vorratsdatenspeicherung nach dieser Methode ist so
+ gering, dass der Zweck des Gesetzes zur Vorratsdatenspeicherung deshalb
+ nicht erfüllt werden.
+ Es ist deshalb zu erwarten, dass -- z.\InsetSpace \thinspace{}
+B.
+ per amtlicher Verordnung -- die Protokollierung einzelner HTTP-Requests
+ vorgeschrieben wird, auch wenn eine dauerhafte Verbindung zum Dienst besteht
+ (vgl.
+ Abschnitt 
+\begin_inset LatexCommand ref
+reference "sub:Eingangs-IP-Adressen-pro-Request"
+
+\end_inset
+
+).
+ Dies ist gegebenenfalls leicht zu begründen, da die eigentliche 
+\begin_inset Quotes gld
+\end_inset
+
+Transformationsleistung
+\begin_inset Quotes grd
+\end_inset
+
+ jeweils in dem Moment stattfindet, in dem der Teilnehmer über den Anonymisierer
+ mit Dritten kommuniziert.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Although this approach technically meets the legal obligations, its effectivity
+ is too low to satisfy the needs of law enforcement.
+ Consequently, it is expected that service providers will be forced to store
+ data on a more detailed level.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Eingangs-IP-Adressen-pro-Request"
+
+\end_inset
+
+Recording Input Addresses on Request Level
+\end_layout
+
+\begin_layout Standard
+There are anonymisation services which operate on a request level by design,
+ e.\InsetSpace \thinspace{}
+g.
+ CGI-Proxies, where each address has to be entered in a web form.
+ Data retention on the session level (cf.
+ section 
+\begin_inset LatexCommand ref
+reference "sub:Speicherung-pro-Verbindung"
+
+\end_inset
+
+) is not an option for them for obvious reasons, instead they have to log
+ information on a request level.
+ As mentioned earlier, session-oriented services may also be required to
+ store records on a more detailed level.
+\end_layout
+
+\begin_layout Standard
+For this approach an anonymisation service stores the tuple 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}})$
+\end_inset
+
+, where 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ is the point in time when the input address is transformed into the output
+ address.
+ The storage requirements amount to 
+\begin_inset Formula $1\,036\,800\cdot n_{r}$
+\end_inset
+
+ bytes per day, with 
+\begin_inset Formula $n_{r}$
+\end_inset
+
+ denoting the number of requests per seconds.
+ In comparison to session-level data retention, the required amount of storage
+ is a lot higher as usually multiple requests are relayed during one session
+ (
+\begin_inset Formula $n_{r}\gg n_{s}$
+\end_inset
+
+).
+ An anonymisation service with an average of 50 requests per second has
+ to provide storage for 9 gigabytes of retained log files over a period
+ of 26 weeks.
+\end_layout
+
+\begin_layout Standard
+For session-oriented services this approach leads to smaller and thus more
+ precise result sets, because inactive users who are still connected to
+ the service are not included in the result.
+ Nevertheless, this approach is not able to guarantee traceability of all
+ requests.
+ Given the resolution of one minute in a query 
+\begin_inset Formula $q$
+\end_inset
+
+ (which is standing operating procedure in Germany at the moment), there
+ is a set 
+\begin_inset Formula $R_{\mathrm{matching}}$
+\end_inset
+
+ of 
+\begin_inset Formula $120\cdot n_{r}$
+\end_inset
+
+ matching HTTP requests on average (the requests whose 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ is included within the two minute interval 
+\begin_inset Formula $[\textrm{09:42:30};\textrm{09:44:30}[$
+\end_inset
+
+).
+ The result 
+\begin_inset Formula $ $
+\end_inset
+
+set 
+\begin_inset Formula $A_{\mathrm{result,in}}$
+\end_inset
+
+ consists of all distinct addresses 
+\begin_inset Formula $a_{\mathrm{in}}$
+\end_inset
+
+ which were logged for those requests (where usually 
+\begin_inset Formula $|A_{\mathrm{result,in}}|<|R_{\mathrm{matching}}|$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+The storage requirements of this approach can be further optimised.
+ A typical web browser retrieves a large number of objects via individual
+ HTTP requests.
+ Given the expected time resolution 
+\begin_inset Formula $\delta$
+\end_inset
+
+ of queries it is enough to store one record for a given input address within
+ each time interval 
+\begin_inset Formula $\delta$
+\end_inset
+
+, i.\InsetSpace \thinspace{}
+e.
+ for each given minute only the first request originating from a given IP
+ address is stored.
+\end_layout
+
+\begin_layout Standard
+We have shown that data retention on the request level is feasible.
+ It comes with the cost of storing slightly more information about personal
+ habits of users, though.
+ As long as more than one client is using a single-hop anonymiser concurrently,
+ this approach is not able to trace back a request to its originator.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Increasing-Time-Resolution"
+
+\end_inset
+
+Increasing Time Resolution
+\end_layout
+
+\begin_layout Standard
+Apparently, the described ineffectivity of data retention on the request
+ level is mainly due to the poor time resolution used by law enforcement
+ authorities.
+ We will now discuss the expected benefits incurred by increasing the time
+ resolution.
+ Note that the German bill doesn't mention explicit precision requirements
+ for the timestamps at the moment.
+ We have identified two influences on the precision of timestamps, namely
+ clock drift and varying transmission times 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Currently deployed proxy servers are able to log individual requests with
+ sub-second precision.
+ For such high resolutions the drift of the hardware clock becomes an issue.
+ We have observed deviations of up to 1 second within a 24 hour interval.
+ In case authorities investigated the IP address 
+\begin_inset Formula $a_{\mathrm{out}}$
+\end_inset
+
+ of the proxy by analysing log files of the destination server, they have
+ either to make sure that the clock of this server is synchronised, too,
+ or they have to determine the deviation of its clock from the universal
+ time and correct the supplied value of 
+\begin_inset Formula $t_{\mathrm{query}}$
+\end_inset
+
+.
+ Therefore, even with daily clock synchronisation on proxy servers (which
+ is currently not compulsory to the best of our knowledge), using timestamps
+ with sub-second precision does not make sense.
+\end_layout
+
+\begin_layout Standard
+Furthermore, the transmission time 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+ between the host of the anonymisation service and the destination server
+ may introduce indeterministic timing deviations.
+ For highly loaded anonymisation services or networks transmission times
+ may become non-negligible, i.\InsetSpace \thinspace{}
+e.
+ up to several seconds.
+\end_layout
+
+\begin_layout Standard
+Even if it was possible to provide a timestamp with a precision of one second,
+ there would still be 
+\begin_inset Formula $n_{r}$
+\end_inset
+
+ requests to consider on average.
+ Although increasing the resolution of timestamps helps to reduce the size
+ of the result set, it still cannot guarantee traceability.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Schnittmengenbildung-über-mehrere"
+
+\end_inset
+
+Utilising Result Set Intersections 
+\end_layout
+
+\begin_layout Standard
+Law enforcement authorities can also make use of advanced techniques which
+ are considered 
+\begin_inset Quotes eld
+\end_inset
+
+attacks
+\begin_inset Quotes erd
+\end_inset
+
+ from the perspective of privacy researchers.
+ As an example of such an attack, we will describe how they can utilise
+ intersection attacks to reduce the result set.
+\end_layout
+
+\begin_layout Standard
+This approach only works in case an offender visits a given page several
+ times using an anonymisation service.
+ Furthermore, multiple actions of the offender have to be identifiable at
+ the destination server (e.\InsetSpace \thinspace{}
+g.
+ because he uses pseudonym or account credentials several times).
+ Authorities could then issue an extended query 
+\emph on
+
+\begin_inset Formula $q_{\mathrm{intersect}}$
+\end_inset
+
+
+\emph default
+ = 
+\begin_inset Quotes eld
+\end_inset
+
+Please determine the identity of the user who used your anonymisation service
+ with IP address 
+\emph on
+a.b.c.d 
+\emph default
+on 2008-02-10 at 9:43\InsetSpace \thinspace{}
+am GMT, at 11:05\InsetSpace \thinspace{}
+am GMT and at 3:43\InsetSpace \thinspace{}
+pm GMT
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+If the offender used the same IP address for multiple requests, the result
+ sets 
+\begin_inset Formula $A_{\mathrm{result,in}_{i}}$
+\end_inset
+
+ for the provided timestamps 
+\begin_inset Formula $t_{\mathrm{query_{i}}}$
+\end_inset
+
+ can be intersected to obtain the final result, which contains only addresses,
+ which were active at all given points in time.
+ Users can prevent this attack by frequently changing their IP address,
+ which prevents linking the individual requests.
+ Anonymisation services which can only be accessed via invariant (pseudonymous)
+ user accounts may be forced to link individual actions using the account
+ IDs instead of IP addresses.
+ Therefore, intersection attacks are especially effective when used against
+ commercial single-hop anonymisation services.
+ Commercial providers can protect their users by accepting anonymous micropaymen
+ts (i.\InsetSpace \thinspace{}
+e.
+ anonymous e-cash).
+\end_layout
+
+\begin_layout Standard
+We have shown that authorities can increase the chance of identifying the
+ originator of a request by linking various information sources.
+ Cautious users can guard themselves against this kind of attacks, though.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Recording-Destination-Addresses"
+
+\end_inset
+
+Recording Destination Addresses and URLs
+\end_layout
+
+\begin_layout Standard
+In the previous sections we have excluded destination addresses from data
+ retention.
+ In the following we will discuss the implications of recording them.
+\end_layout
+
+\begin_layout Subsubsection*
+Destination IP addresses
+\end_layout
+
+\begin_layout Standard
+For increased traceability, anonymisation services may be forced to store
+ the IP addresses of the destination servers.
+ Therefore, they store 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}},a_{\mathrm{destination}})$
+\end_inset
+
+ for each request, which requires 
+\begin_inset Formula $1\,382\,400\cdot n_{r}$
+\end_inset
+
+ bytes of storage per day (without optimisation).
+ In this case, the earlier mentioned hypothetical anonymisation service
+ with an average of 50 requests per second has to provide storage for 12
+ gigabytes of retained log files over a period of 26 weeks.
+\end_layout
+
+\begin_layout Standard
+There are organisational and legal issues with this approach, tough: Currently,
+ law enforcement authorities do not provide the destination address in their
+ queries, though.
+ They will have to include this information in their Furthermore, recording
+ destination addresses has been explicitly forbidden in Germany's bill on
+ data retention because of privacy concerns.
+\end_layout
+
+\begin_layout Standard
+This approach is able to considerably reduce the size of the result set.
+ Now, only IP addresses of users requesting an object from 
+\begin_inset Formula $a_{\mathrm{destination}}$
+\end_inset
+
+ are included.
+ It can be argued, though, that there is still a possibility that several
+ users are accessing different objects on the same destination server, which
+ may frequently happen when various sites are (virtually) hosted on the
+ same physical server.
+\end_layout
+
+\begin_layout Subsubsection*
+URLs of web sites
+\end_layout
+
+\begin_layout Standard
+An extension of the previouly mentioned concept is the recording of destination
+ URLs in order to further reduce the size of the result set.
+ Note again, that recording URLs is currently not allowed for data retention
+ purposes at the moment in Germany.
+\end_layout
+
+\begin_layout Standard
+URLs require considerable more space than IP addresses.
+ With a conservative assumption of an average length of 50 characters per
+ URL, storage requirements amount to 
+\begin_inset Formula $5\,356\,800\cdot n_{r}$
+\end_inset
+
+ bytes per day.
+ The previously mentioned anonymisation service with 
+\begin_inset Formula $n_{r}=50$
+\end_inset
+
+ requests per second has to provide a storage capacity of 45 gigabytes for
+ the period of 26 weeks (without regarding savings by compression and optimisati
+ons) in this case.
+\end_layout
+
+\begin_layout Standard
+The result set will then only contain IP addresses of users which have accessed
+ the same web site within the query time window, which will allow for an
+ exact match in most cases.
+ Traceability is limited for encrpyted web sites (HTTPS), though, where
+ only the host name and port is visible -- here the chances of concurrent
+ accesses increase again.
+\end_layout
+
+\begin_layout Standard
+The effectiveness of this approach comes at a high cost.
+ Many URLs contain personal information or sensitive contents (such as search
+ engine queries, session IDs, unencrypted credentials).
+ Storing information of this kind on the hosts of anonymisation services
+ over a period of six months -- only for replying to potential law enforcement
+ queries -- seems disproportionate and is therefore highly questionable
+ from a privacy point of view.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Einführung-protokollabhängiger-Kennungen"
+
+\end_inset
+
+Adding Protocol-Dependent IDs
+\end_layout
+
+\begin_layout Standard
+The previous section suggests that high traceability comes only at the cost
+ of impacts on users' privacy.
+ In this section we present an approach to guarantee traceability without
+ the need to store personal information of the users.
+ The only drawback of this solution: it depends on the application protocol.
+ We will demonstrate a possible implementation for HTTP.
+\end_layout
+
+\begin_layout Standard
+The poor effectivity of the already mentioned solutions is due to the missing
+ one-to-one-correspondence between input addresses on the one hand and output
+ adresses, destination addresses or even URLs on the other hand.
+ The proposed solution re-establishes this correspondence by creating a
+ (unique) ID for each request.
+ This ID is included in the HTTP request sent to the destination server,
+ e.\InsetSpace \thinspace{}
+g.
+ by means of an additional header 
+\family typewriter
+X-Data-Retention-Tag:
+\emph on
+ 
+\emph default
+<ID>
+\family default
+.
+ The anonymisation service stores the tuple 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}},\mathrm{ID})$
+\end_inset
+
+, which establishes an unambiguous link between ID and 
+\begin_inset Formula $a_{\mathrm{in}}$
+\end_inset
+
+.
+ ID might be generated by determining 
+\begin_inset Formula $ID=\mathrm{h(}a_{\mathrm{in_{i}}}+r)$
+\end_inset
+
+, where 
+\begin_inset Formula $h$
+\end_inset
+
+ is a hash function like SHA1 and 
+\begin_inset Formula $r$
+\end_inset
+
+ is a random number to ensure that the destination server cannot link individual
+ requests of the user.
+ As the data retention tag is not logged by the destination server it can
+ only be observed 
+\begin_inset Quotes eld
+\end_inset
+
+on the wire
+\begin_inset Quotes erd
+\end_inset
+
+ with traffic analysis.
+ While this method is able to guarantee perfect traceability, its voluntary
+ adoption cannot be expected due to its limited use and high complexity.
+\end_layout
+
+\begin_layout Standard
+Instead of proprietary IDs on application level, TCP 
+\emph on
+source port numbers
+\emph default
+ might be considered to reduce the size of the result set.
+ They are visible for the destination server and can be used to (at least
+ temporarily) identify requests, because no two requests can originate from
+ the same source port at the same time.
+ Source port numbers are usually incremented and not reused for consecutive
+ connections, which makes it possible to distinguish requests from each
+ other based on them.
+ In contrast to proprietary data retention tags which can be used to uniquely
+ identify a request over long periods of time, source port numbers are ephemeral
+, though.
+\end_layout
+
+\begin_layout Standard
+Storing additional IDs helps to reduce the size of the result set considerably.
+ With the the proposed proprietary data retention tag perfect traceability
+ can be achieved -- at least theoretically.
+\end_layout
+
+\begin_layout Section
+\begin_inset LatexCommand label
+name "sec:multi-hop"
+
+\end_inset
+
+Implementation for Multi-Hop-Anonymisers
+\end_layout
+
+\begin_layout Standard
+Services which relay data for anonymisation over various intermediate nodes
+ are called multi-hop anonymisation services in the scope of this article.
+ This especially includes Tor (onion routing with -- in principal -- free
+ choice of intermediate nodes) and JonDonym
+\begin_inset Foot
+status open
+
+\begin_layout Standard
+formerly AN.ON or JAP, respectively
+\end_layout
+
+\end_inset
+
+ (static mix cascades).
+ Figure 
+\begin_inset LatexCommand ref
+reference "fig:Modell-eines-Multi-Hop-Anonymisierers"
+
+\end_inset
+
+ schematically depicts such a multi-hop service with three intermediate
+ nodes.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename Paper-VDS-Repo/figures/multi-hop-anonymizer.eps
+	width 80text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+\begin_inset LatexCommand label
+name "fig:Modell-eines-Multi-Hop-Anonymisierers"
+
+\end_inset
+
+Model of a Multi-Hop-Anonymisierer with three intermediate nodes
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Like single-hop services, the individual routers in a mix network have to
+ store the tuple 
+\begin_inset Formula $(t_{\mathrm{transform}},a_{\mathrm{in}},a_{\mathrm{out}})$
+\end_inset
+
+.
+ Mix cascades always provide the same nodes in the same order.
+ Only the first node has to store 
+\begin_inset Formula $a_{in}$
+\end_inset
+
+, the 
+\begin_inset Quotes eld
+\end_inset
+
+latter
+\begin_inset Quotes erd
+\end_inset
+
+ nodes may to refrain from storing source addresses, as the respective predecess
+or is statically determined anyway.
+ While in mix networks the retention data of all nodes has to be analysed
+ for tracing, it is sufficient for mix cascades to ask the first node.
+ In mix cacades, tracing therefore seems to be easier as in mix networks.
+\end_layout
+
+\begin_layout Standard
+However, for multi-hop services, the exclusive storage of source IPs and
+ request timestamps is generally not sufficient for tracing (cf.
+ the explanations about single-hop services in section 
+\begin_inset LatexCommand ref
+reference "sec:single-hop"
+
+\end_inset
+
+).
+ Each proceeding node that forwards the message increases the fuzziness
+ compared to single-hop services: While the fuzziness for 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+ counts 
+\begin_inset Formula $\delta$
+\end_inset
+
+ seconds in the last node, it counts about 
+\begin_inset Formula $2\delta$
+\end_inset
+
+ seconds in the preceeding node, so that the number of HTTP requests in
+ question, generally spoken, counts 
+\begin_inset Formula $n_{\mathrm{nodes}}\cdot\delta\cdot n_{r}$
+\end_inset
+
+ in the first node of a chain.
+\end_layout
+
+\begin_layout Standard
+A better traceability requires the storage of connection IDs that make it
+ possible to uncover the way of a message through the anonymisation service
+ on demand -- that is if and only if the operators of all nodes combine
+ their retained data.
+ For this purpose, each two neighbouring nodes use a common ID for each
+ request.
+ The approach is explained using the multi-hop anonymisierers depicted in
+ figure 
+\begin_inset LatexCommand ref
+reference "fig:Modell-eines-Multi-Hop-Anonymisierers"
+
+\end_inset
+
+.
+ The first node creates an ID 
+\begin_inset Formula $x_{1}$
+\end_inset
+
+ and stores it into the tuple 
+\begin_inset Formula $(t_{\mathrm{transform}_{1}},a_{\mathrm{in}},x_{1})$
+\end_inset
+
+.
+ It transmits 
+\begin_inset Formula $x_{1}$
+\end_inset
+
+ to the second node together with the request.
+ This one creates another ID -- named 
+\begin_inset Formula $x_{2}$
+\end_inset
+
+ in the example.
+ The second node then stores the tuple 
+\begin_inset Formula $(t_{\mathrm{transform}_{2}},x_{1},x_{2})$
+\end_inset
+
+ and transmits 
+\begin_inset Formula $x_{2}$
+\end_inset
+
+ to the third node which, finally, stores the tuple 
+\begin_inset Formula $(t_{\mathrm{transform}_{3}},x_{2},a_{\mathrm{out}})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The intersection explained in section 
+\begin_inset LatexCommand ref
+reference "sub:Schnittmengenbildung-über-mehrere"
+
+\end_inset
+
+ is useless concerning multi-hop services, even when newly introduced IDs
+ are used: the IDs are valid for single requests only, and may therefore
+ not be use by mixes to recognize users at later requests.
+ In order to provide an unambiguous link, the last node therefore has to
+ log the destination IP or the reqested URL for all HTTP requests (like
+ proposed in section 
+\begin_inset LatexCommand ref
+reference "sub:Einführung-protokollabhängiger-Kennungen"
+
+\end_inset
+
+).
+ Even an optimisation of memory usage is possible, similar to single-hop
+ services: a burst proxy switched 
+\begin_inset Quotes eld
+\end_inset
+
+behind
+\begin_inset Quotes erd
+\end_inset
+
+ the cascade or circuit could parse requested web sites and automatically
+ reload embedded objects.
+ No separate data record is needed for these objects any more, as it is
+ clear that they are downloaded from the same user.
+\end_layout
+
+\begin_layout Standard
+The connection IDs allow for an unambiguous tracing of each request up to
+ the first mix, which has stored the corresponding source address.
+ This procedure may be equally well implemented into mix nets and mix casades.
+ In general, these IDs do not have to be newly introduced into systems,
+ as they already implicitly exist in order to allow for the communication
+ of users with the individual servers of the net or the cascade, respective.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+\begin_inset LatexCommand label
+name "sec:URL-Anonymiser"
+
+\end_inset
+
+Compliant Anonymiser with no Traceability
+\end_layout
+
+\begin_layout Standard
+If multi-hop anonymisation services are legally obliged to make the way
+ through their system traceable by using IDs, they, at the first glance,
+ provide only a small security gain compared to single-hop aonymisers against
+ 
+\begin_inset Quotes eld
+\end_inset
+
+law enforcement attackers
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The fuzziness in the result set of a request, 
+\begin_inset Formula $q$
+\end_inset
+
+, is comparable for both architechtures.
+ But the true strength of these systems lies in their distribution, that
+ means that single hops in a chain may be outside the influence of a state
+ enforcing data retention.
+ They then do not have to create or provide any recorded data.
+ Moreover, the user ID in commercial single-hop services allows for very
+ effective intersection attacks on the stored data, which are, in this form
+ and comparable effectiveness, not possible in multi-hop systems.
+\end_layout
+
+\begin_layout Standard
+It is worth to mention that the german law excludes 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+Content and data about requested internet sites
+\begin_inset Quotes erd
+\end_inset
+
+ from retention (§\InsetSpace \thinspace{}
+113a Abs.
+ 8 TKG).
+ This specifically includes URLs of requested web sites.
+ In section 
+\begin_inset LatexCommand ref
+reference "sec:single-hop"
+
+\end_inset
+
+ we have shown that even with a Single-Hop-Anonymiser, an unambiguous tracing
+ is not possible, if only source and destination IP addresses, but not URLs
+ or IP addresses of destination servers are stored.
+ We now may 
+\begin_inset Quotes eld
+\end_inset
+
+abuse
+\begin_inset Quotes erd
+\end_inset
+
+ this fact to create a very special multi-hop service based on URLs that
+ falls under the mentioned law, but anyhow does not need to store connection
+ IDs.
+\end_layout
+
+\begin_layout Standard
+This hypothetical service consists of a loose network of web-form-based
+ proxy servers that solely act on HTTP requests, (similar to CGI proxies).
+ Each of these servers may work all alone, but users may also call another
+ form-based proxy through them, and thereby build chains of form-based proxies
+ like this: 
+\begin_inset Formula \[
+\mathrm{URL=http://www.node1.com/}\mathrm{www.node2.com/}\mathrm{www.node3.com}/\mathrm{http://www.url.com}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset LatexCommand url
+target "www.url.com"
+
+\end_inset
+
+ is the web page requested by the user.
+ This method may lead to quite a high protection against data retention,
+ as, with the lack of ID chains, the proxy servers cannot uncover the way
+ through the network.
+ They cannot be forced to exchange connection IDs, as there are no implicit
+ IDs between the servers.
+ Unfortunately, the servers itself can log the whole user traffic if they
+ like to, and the first server can see request, response and the user IP.
+ However, the difficulty for law enforcement agencies is to uncover the
+ first server in the chain.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+\begin_inset LatexCommand label
+name "sec:Summary"
+
+\end_inset
+
+Summary and Outlook
+\end_layout
+
+\begin_layout Standard
+We have shown that a minimalistic approach to implementing data retention
+ in anonymisation services is not sufficient to guarantee traceability in
+ all cases.
+ Service providers can guarantee traceability by introducing additional
+ IDs, but implementations are mostly proprietary and therefore difficult
+ to deploy.
+ Another option is to store destination IP addresses or even URLs, but this
+ has dire consequences for users' privacy.
+\end_layout
+
+\begin_layout Standard
+Furthermore, we have demonstrated that the obligations specified in the
+ German bill are so imprecise that it is still possible to design and deploy
+ anonymisation services which comply with the law but protect their users'
+ identity.
+\end_layout
+
+\begin_layout Standard
+In the future, anonymisation services might be obliged by law to ensure
+ traceability for their users -- as ISPs in the EU are required already
+ today.
+ This would force anonymisation services to ensure a one-to-one-correspondence
+ between the IP addresses of their users and their own IP addresses.
+ Obviously, this is only possible if such services have a large enough pool
+ of IP addresses.
+ While this requirement seems impossible to meet with IPv4, it might be
+ feasible with the IPv6 address space.
+\end_layout
+
+\begin_layout Standard
+
+\clearpage
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "JonDonym"
+
+\end_inset
+
+http://www.jondos.de
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "Tor"
+
+\end_inset
+
+http://tor.eff.org
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "KoeWeFe06"
+
+\end_inset
+
+Stefan Köpsell, Rolf Wendolsky, Hannes Federrath: Revocable Anonymity.
+ in: Günter Müller (Ed.): Proc.
+ Emerging Trends in Information and Communication Security: International
+ Conference, ETRICS 2006, Freiburg, Germany, June 6-9, 2006, LNCS 3995,
+ Springer-Verlag, Heidelberg 2006, 206-220.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "GoWa98"
+
+\end_inset
+
+Ian Goldberg, David Wagner: TAZ Servers and the Rewebber Network: Enabling
+ Anonymous Publishing on the World Wide Web.
+ First Monday 3, 4 (August 1998).
+\end_layout
+
+\end_body
+\end_document
