@@ -1697,9 +1697,9 @@ Protokollabhängige Kennungen ermöglichen eine eindeutige Aufdeckung von
  nicht speichern werden.
  Übergangsweise kann zumindest für HTTP durch die Kodierung der Kennung
  in den User-Agent-Header eine Verfolgbarkeit der Zugriffe erreicht werden.
- Einschränkend ist zu bemerken, dass dies nur bei unverschlüsselten Verbindugnen
- möglich ist, in welche der Anonymisierdienst Daten einfügen kann, also
- nicht bei HTTPS.
+ Einschränkend ist zu bemerken, dass dies nur bei unverschlüsselten Verbindungen
+ möglich ist, also nicht beim HTTPS-Protokoll, bei dem der Anonymisierdienst
+ keine Daten einfügen oder verändern kann.
 \end_layout
 
 \begin_layout Section
@@ -1716,9 +1716,9 @@ Im Rahmen dieses Beitrags werden Dienste, welche die Daten zur Anonymisierung
  über mehrere Zwischenstationen weiterleiten, als Multi-Hop-Anonymisierdienst
  bezeichnet.
  Hierzu zählen insbesondere Tor (Onion-Routing mit prinzipiell freier Wahl
- der Zwischenstationen) und JonDonym
+ der Zwischenstationen) und JonDonym 
 \begin_inset Foot
-status open
+status collapsed
 
 \begin_layout Standard
 vormals AN.ON bzw.
@@ -1803,25 +1803,16 @@ hinteren
  Während bei Mix-Netzen zur Rückverfolgung die Vorratsdaten aller Knoten
  ausgewertet werden müssen, reicht es bei Mix-Kaskaden aus, nur beim ersten
  Mix anzufragen.
- Bei Mixkaskaden erscheint die Rückverfolgung daher leichter als bei Mix-Netzen.
- Allerdings ist der Zeitpunkt, an dem der Request am ersten Mix einer Kaskade
- bearbeitet wurde, für Strafverfolger nicht genau bestimmbar.
+ 
 \end_layout
 
 \begin_layout Standard
-Die ausschließliche Speicherung der Eingangs-IPs und der Request-Zeitpunkte
- ist bei Multi-Hop-Anonymisierdiensten allerdings zur Gewährleistung der
- Rückverfolgbarkeit grundsätzlich nicht ausreichend (vgl.
- die Erläuterungen zu Single-Hop-Anonymisierdiensten in Abschnitt 
-\begin_inset LatexCommand ref
-reference "sec:single-hop"
-
-\end_inset
-
-).
- Jeder weitere Knoten, über den die Nachricht weitergeleitet wird, erhöht
- dabei im Vergleich zu Single-Hop-Anonymisierdiensten die Unschärfe: Beträgt
- die Unschärfe für 
+Bei Mixkaskaden ist die Rückverfolgung unter den gegebenen rechtlichen Rahmenbed
+ingungen daher leichter als bei Mix-Netzen.
+ Allerdings ist der Zeitpunkt, an dem der Request am ersten Mix einer Kaskade
+ bearbeitet wurde, für Strafverfolger nicht genau bestimmbar, da die Multi-Hop-Ü
+bertragungsstrecke zumindest zu einer höheren Varianz der Übertragungszeit
+ beiträgt: Beträgt die Varianz 
 \begin_inset Formula $t_{\mathrm{transform}}$
 \end_inset
 
@@ -1839,6 +1830,17 @@ reference "sec:single-hop"
 \end_inset
 
  beträgt.
+ Die ausschließliche Speicherung der Eingangs-IPs und der Request-Zeitpunkte
+ ist deshalb bei Multi-Hop-Anonymisierdiensten, ebenso wie bei Single-Hop-Anonym
+isierdiensten (vgl.
+ Abschnitt 
+\begin_inset LatexCommand ref
+reference "sec:single-hop"
+
+\end_inset
+
+) zur Gewährleistung der Rückverfolgbarkeit grundsätzlich nicht ausreichend
+ .
 \end_layout
 
 \begin_layout Standard
@@ -1919,7 +1921,14 @@ reference "sub:Einführung-protokollabhängiger-Kennungen"
 
  vorgeschlagen).
  Auch eine Optimierung des Speicherverbrauchst ist, ähnlich wie bei Single-Hop-A
-nonymisierdiensten, möglich: ein hinter die Kaskade geschalteter Burst-Proxy
+nonymisierdiensten, möglich: ein hinter die Kaskade geschalteter 
+\begin_inset Quotes gld
+\end_inset
+
+Prefetching-Proxy
+\begin_inset Quotes grd
+\end_inset
+
  könnte abgerufene Webseiten parsen und eingebettete Objekte selbständig
  nachladen.
  Für die nachgeladenen Objekte ist dann kein separater Datensatz mehr nötigt,
