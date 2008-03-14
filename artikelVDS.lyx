@@ -2111,12 +2111,22 @@ Zusammenfassung
 \begin_layout Standard
 Wir haben gezeigt, dass Ansätze zur Vorratsdatenspeicherung in Anonymisiersystem
 en meist keine eindeutige Aufdeckung von Zugriffen ermöglichen.
- Speziell die in Deutschland geltenden gesetzlichen Regelungen erlauben,
- sofern sie überhaupt aus Anonymisiersysteme anwendbar sind, praktisch nie
- eine Rückverfolgung anonymer Zugriffe, sondern schaffen nur nutzlose Datenhalde
-n.
+ Speziell wenn die zeitliche Auflösung zu gering ist, werden sogar die falschen
+ Teilnehmer zu Verdächtigen - ein Umstand, der oft die bürgerliche Existenz
+ dieser Personen vernichtet.
+\begin_inset LatexCommand cite
+key "HeiseKiPo"
+
+\end_inset
+
+ Eine Verfahren zur Deanonymisierung muss deshalb so eindeutig sein, und
+ darf unter keinen Umständen einen falschen Verdacht auf Dritte lenken.
+ Die momentan in Deutschland geltenden gesetzlichen Regelungen erlauben
+ jedoch praktisch nie eine Rückverfolgung anonymer Zugriffe, sondern schaffen
+ nur nutzlose Datenhalden, sofern sie überhaupt aus Anonymisiersysteme anwendbar
+ sind.
  Es wäre sogar möglich, einen Anonymisierdienst zu bauen, der, selbst wenn
- er utner das TKG fällt, keinerlei Daten speichern muss.
+ er rechtlich unter das TKG fällt, keinerlei Daten speichern muss.
 \end_layout
 
 \begin_layout Standard
@@ -2142,7 +2152,7 @@ key "BVGOnline"
 
 \end_inset
 
-
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2229,6 +2239,16 @@ key "GoWa98"
 Ian Goldberg, David Wagner: TAZ Servers and the Rewebber Network: Enabling
  Anonymous Publishing on the World Wide Web.
  First Monday 3, 4 (August 1998).
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset LatexCommand bibitem
+key "HeiseKiPo"
+
+\end_inset
+
+http://www.heise.de/newsticker/IP-Verwechslung-fuehrt-zu-falschem-Kinderporno-Verd
+acht--/meldung/105094
 \end_layout
 
 \begin_layout Bibliography
