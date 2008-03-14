@@ -1236,26 +1236,58 @@ In den obigen Abschnitten wurde deutlich, dass die zeitliche Auflösung,
  häufig verwenden, erheblich zur Unschärfe und damit zur Größe der Ergebnismenge
  beiträgt.
  Es ist zu untersuchen, inwiefern eindeutige Ergebnismengen erzielt werden
- können, wenn die Anfragen der Strafverfolgungsbehörden präziser formuliert
- würden.
+ können, wenn die Anfragen der Strafverfolgungsbehörden grundsätzlich sekundenge
+nau formuliert würden.
 \end_layout
 
 \begin_layout Standard
-Das deutsche Gesetz macht allerdings keine Aussagen bezüglich der verlangten
- Genauigkeit bei der Abspeicherung der Transformationszeitpunkte.
+Das deutsche Gesetz macht keine Aussagen bezüglich der verlangten Genauigkeit
+ bei der Abspeicherung der Transformationszeitpunkte.
  Zwar können heute verfügbare Proxy-Applikationen eingehende HTTP-Requests
- durchaus mit einer Auflösung im Millisekundenbereich protokollieren, eine
- so hohe Präzision ist jedoch nicht zielführend.
- Denn selbst bei täglicher Synchronisierung ist die Uhren-Drift im Laufe
- eines Tages häufig nicht zu vernachlässigen (wir haben Abweichungen von
- etwa 1 Sekunde innerhalb von 24 Stunden beobachtet).
- Strafverfolgungsbehörden ziehen also auch unter idealen Bedingungen keinerlei
- Nutzen aus einer höheren Auflösung als 1 Sekunde.
+ durchaus mit einer Auflösung im Millisekundenbereich protokollieren, aber
+ selbst bei täglicher Synchronisierung mittels NTP ist die Uhren-Drift im
+ Laufe eines Tages häufig nicht zu vernachlässigen (wir haben Abweichungen
+ von etwa 1 Sekunde innerhalb von 24 Stunden beobachtet).
+ Mittels speziell eingebauten Funkuhren ist zwar lokal auch eine höhere
+ Genauigkeit erreichbar, nur ist es sehr warhscheinlich, dass die 
+\begin_inset Quotes gld
+\end_inset
+
+Gegenseite
+\begin_inset Quotes grd
+\end_inset
+
+ -- Webseiten, auf denen der zu verfolgende Zugriff geloggt wurde -- nicht
+ mit dieser Genauigkeit arbeitet, und deshalb mehrere Sekunden Differenz
+ zur lokalen zeit aufweist.
+ Darüber hinaus kann es zu erheblichen Schwankungen bei der Übertragungszeit
+ 
+\begin_inset Formula $\tau_{\mathrm{transmission}}$
+\end_inset
+
+ kommen, die ebenfalls im Bereich von einigen Sekunden liegen können.
+ Zusammen mit den Fehlern durch mangelhafte Uhrzeit-Synchronisation ergibt
+ sich also auch bei extrem präzisen Anfragen ein Zeitfenster von einigen
+ Sekunden für den Zeitpunkt 
+\begin_inset Formula $t_{\mathrm{transform}}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Selbst wenn eine Aufdeckung aller Teilnehmer innerhalb der angegeben Sekunde
+ lokaler Zeit des Anonymisierservers möglich wäre, wäre die eigentlich gesuchte
+ Person in den meisten fällen aufgrund der zeitlichen Abweichung nicht unter
+ diesen Teilnehmern.
+ 
 \end_layout
 
 \begin_layout Standard
 Geht man davon aus, dass alle Uhren regelmäßig synchronisiert werden (was
- im Gesetz nicht gefordert wird) und 
+ im Gesetz nicht gefordert wird), die IP-speichernden Webserver exakt die
+ gleiche Zeitbasis haben und 
 \begin_inset Formula $\tau_{\mathrm{transmission}}$
 \end_inset
 
@@ -1276,24 +1308,9 @@ um 09:43:10 Uhr
 \end_inset
 
  Eingangskennungen) als Urheber eines HTTP-Requests in Frage.
- Eine eindeutige Zuordnung ist also auch bei derart präziser Anfragen nur
- unter idealen Bedingungen möglich.
- Darüber hinaus kann es zu erheblichen Schwankungen bei der Übertragungszeit
+ Eine eindeutige Zuordnung ist also auch bei derart präzisen Anfragen nicht
+ immer möglich.
  
-\begin_inset Formula $\tau_{\mathrm{transmission}}$
-\end_inset
-
- kommen, die ebenfalls im Bereich von einigen Sekunden liegen können.
- Zusammen mit den Fehlern durch mangelhafte Uhrzeit-Synchronisation ergibt
- sich also auch bei extrem präzisen Anfragen ein Zeitfenster von einigen
- Sekunden für den Zeitpunkt 
-\begin_inset Formula $t_{\mathrm{transform}}$
-\end_inset
-
-.
- Bei Anfragen zur Herausgabe von gespeicherten Verbindungsdaten bringt eine
- höhere zeitliche Auflösung als eine Minute nur einen geringen Genauigkeitsgewin
-n.
 \end_layout
 
 \begin_layout Subsection*
@@ -1307,6 +1324,27 @@ en, transformierte Ausgangskennungen und den Zeitpunkt der Transformation
  Aufdeckung von Kommunikationsbeziehungen in den meisten Fällen nicht möglich.
  Dies ist bedingt durch die Gleichzeitigkeit von Datenverbindungen, indeterminis
 tische Übertragungszeiten und Uhrzeitabweichungen im Internet.
+ Wird die zeitliche Auflösung von Anfragen sekundengenau gewählt erhalten
+ die Strafverfolger in den meisten Fällen zudem ausschließlich die Daten
+ von 
+\begin_inset Quotes gld
+\end_inset
+
+Unschuldigen
+\begin_inset Quotes grd
+\end_inset
+
+.
+ Bei einer minutengenauen Auflösung dagegen ist die Wahrscheinlichkeit,
+ auch den 
+\begin_inset Quotes gld
+\end_inset
+
+Gesuchten
+\begin_inset Quotes grd
+\end_inset
+
+ zusammen mit anderen Teilnehmern zu erfassen, relativ hoch.
 \end_layout
 
 \begin_layout Subsection
