@@ -55,7 +55,21 @@ nd
 \end_layout
 
 \begin_layout Abstract
-Zusammenfassung.
+Der Artikel analysiert das deutsche Telekommunikationsgesetz (TKG) hinsichtlich
+ der technischen Anwendbarkeit der dort beschriebenen Vorratsdatenspeicherung
+ von Telekommunikationsdaten auf sogenannte Anonymisierungssysteme im Internet.
+ Während unklar bleibt, ob die entspechende Gesetzgebung überhaupt auf Anonymisi
+erdienste anwendbar ist, wird klar, dass in der Regel keine nach dem derzeitigen
+ Gesetz zulässige technische Maßnahme zur Deanonymisierung von gesuchten
+ Teilnehmern führen wird.
+ Bei den momentan im Internet genutzten Protokollen könnte zudem auch eine
+ Verschärfung der Gesetzgebung keine wesentliche Verbesserung bei der Rückverfol
+gbarkeit erreichen.
+ Erst mit der Einfühung von IPv6 wird eine nachträgliche Rückverfolgung
+ von Teilnehmern bei manchen, aber nicht allen, Anonymisierdiensten möglich.
+ Sinnvoll wäre eine Neuformulierung des Gesetzes mit Ausnahmeregelungen
+ für jene Dienste, bei denen eine Vorratsdatenspeicherung technisch sinnlos
+ ist, um eine unnötige Kostenbelastung der Betreiber zu vermeiden.
 \end_layout
 
 \begin_layout Section
@@ -120,7 +134,7 @@ Gesetz zur Neuregelung der Telekommunikationsüberwachung und anderer verdeckter
 
  vom 21.12.2007 mittels Ergänzungen zum Telekommunikationsgesetz (TKG) legitimiert.
  Die Gesetzesbegründung geht stellenweise auch auf die Implementierung von
- Vorratsdatenspeicherung bei Anonymisiersystemen ein.
+ Vorratsdatenspeicherung bei Anonymisierungssystemen ein.
 \end_layout
 
 \begin_layout Standard
@@ -128,7 +142,7 @@ Elektronische Telekommunikationsdienste müssen nach der aktuellen Rechtslage
  ab dem 01.01.2008 Verbindungsdaten auf Vorrat speichern, vorbehaltlich Übergangsf
 risten bis zum 01.01.2009.
  Derzeit herrscht eine gewisse Unsicherheit hinsichtlich des Betriebs von
- Anonymisiersystemen vor.
+ Anonymisierungssystemen vor.
  Es wird gemutmaßt, dass der Betrieb eines Anonymisierdienstes wegen Haftungsris
 iken unmöglich oder sogar illegal wird, und dass Anonymisierdienste keine
  Anonymität mehr gewährleisten, sobald bereits ein einziger Knoten in Deutschlan
@@ -695,7 +709,7 @@ n.
 \begin_layout Standard
 Diese Vorstellung mag auf einige -- aber längst nicht alle -- VPN-Dienste
  zutreffen, allerdings deckt sie sich nicht mit der Realität aktueller Anonymisi
-ersysteme.
+erungssysteme.
  Bei diesen Systemen teilen sich viele Teilnehmer jeweils dieselbe IP-Adresse,
  damit keine Verkettung von Zugriffen derselben Teilnehmer möglich wird.
  Die Abbildung der anonymisierten IP-Adresse ist also surjektiv und nicht
@@ -2109,8 +2123,8 @@ Zusammenfassung
 \end_layout
 
 \begin_layout Standard
-Wir haben gezeigt, dass Ansätze zur Vorratsdatenspeicherung in Anonymisiersystem
-en meist keine eindeutige Aufdeckung von Zugriffen ermöglichen.
+Wir haben gezeigt, dass Ansätze zur Vorratsdatenspeicherung in Anonymisierungssy
+stemen meist keine eindeutige Aufdeckung von Zugriffen ermöglichen.
  Speziell wenn die zeitliche Auflösung zu gering ist, werden sogar die falschen
  Teilnehmer zu Verdächtigen - ein Umstand, der oft die bürgerliche Existenz
  dieser Personen vernichtet.
@@ -2123,10 +2137,11 @@ key "HeiseKiPo"
  unter keinen Umständen einen falschen Verdacht auf Dritte lenken.
  Die momentan in Deutschland geltenden gesetzlichen Regelungen erlauben
  jedoch praktisch nie eine Rückverfolgung anonymer Zugriffe, sondern schaffen
- nur nutzlose Datenhalden, sofern sie überhaupt aus Anonymisiersysteme anwendbar
- sind.
- Es wäre sogar möglich, einen Anonymisierdienst zu bauen, der, selbst wenn
- er rechtlich unter das TKG fällt, keinerlei Daten speichern muss.
+ nur nutzlose Datenhalden, sofern sie überhaupt auf Anonymisierungssysteme
+ anwendbar sind.
+ Es wäre sogar möglich, einen Anonymisierdienst zu bauen, der unter der
+ geltenden Rechtslage keinerlei Daten speichern muss, selbst wenn er rechtlich
+ unter das TKG fällt.
 \end_layout
 
 \begin_layout Standard
@@ -2135,9 +2150,9 @@ Dienstanbieter könnten zwar eine Rückverfolgbarkeit gewährleisten, indem
  einführen, aber diese Implementierungen wären größtenteils proprietär,
  und daher im Internet kaum flächendeckend umzusetzen.
  Eine weitere Möglichkeit bestünde darin, Zieladressen oder sogar URLs auf
- Vorrat zu speichern, aber dies hätte gravierende Auswirkungen sowohl auf
- das zu speichernde Datenvolumen und die Servicequalität (Performance) als
- auch auf die Vertraulichkeit der Nutzerdaten, was mit dem neuen 
+ Vorrat zu speichern.
+ Dies aber hätte teils gravierende Auswirkungen auf die Vertraulichkeit
+ der Nutzerdaten, was mit dem neuen 
 \begin_inset Quotes gld
 \end_inset
 
@@ -2156,16 +2171,36 @@ key "BVGOnline"
 \end_layout
 
 \begin_layout Standard
-Mittels in Zukunft verfügbarer technischer Möglichkeiten könnten Anonymisierdien
-ste allerdings tatsächlich gesetzlich verpflichtet werden, die Rückverfolgbarkei
-t ihrer Nutzer zu gewährleisten -- wozu ISPs in der EU heute bereits verpflichte
-t sind.
- Dazu wäre ein eindeutiger Zusammenhang zwischen den pseudonymen IP-Adressen
- des Dienstes und den ursprünglichen IP-Adressen der Nutzer notwendig.
- Dies ist freilich nur dann möglich, wenn diese Dienste über eine ausreichend
- große Menge von IP-Adressen verfügen können.
- Während sich diese Voraussetzung mit IPv4 kaum zu erfüllen ist, wäre sie
- im IPv6-Adressraum zumindest denkbar.
+Während ISPs in der EU heute bereits dazu verpflichtet sind, gibt es bei
+ Anonymisierdiensten momentan keine Möglichkeit, eine nachträgliche Rückverfolgu
+ng der Teilnehmer mittels einer Vorratsdatenspeicherung durchzuführen.
+ Alle denkbaren Optionen stoßen bereits technisch an eine unüberwindbare
+ Grenze.
+ Notwendig wäre ein eindeutiger Zusammenhang zwischen den pseudonymen IP-Adresse
+n des Dienstes und den ursprünglichen IP-Adressen der Nutzer, der durch
+ eine temporäre Neuzordnung von IP-Adressen zu jedem einzelnen Request erreicht
+ werden könnte.
+ Dies ist freilich nur dann möglich, wenn diese Dienste über eine so große
+ Menge von IP-Adressen verfügen, dass die gleiche IP nicht innerhalb weniger
+ Sekunden von verschiedenen Teilnehmern verwendet wird.
+ Während diese Voraussetzung mit IPv4 nicht zu erfüllen ist, wäre sie im
+ IPv6-Adressraum zumindest denkbar, welcher aber erst in einigen Jahren
+ verfügbar sein wird.
+ 
+\end_layout
+
+\begin_layout Standard
+Die Empfehlung an die Bundesnetzagentur und die Politik lautet dewegen,
+ die Speicherpflicht für Anonymisierdiesnte generell auszusetzen, bis IPv6
+ flächendeckend verfügbar ist.
+ Damit werden nutzlose und für die Dienstbetreiber kostspielige Datenhalten
+ vermieden.
+ Und selbst dann sollte ein neues Gesetz verteilte Anonymisierdienste entspreche
+nd berücksichtigen, um weiteren Datenmüll zu verhindern: denn ist auch nur
+ ein einzelner Rechner in einem verteilten System, wie in Tor und JonDonym,
+ nicht zur Speicherung verpflichtet, sind sämtliche Daten nutzlos.
+ Auch die übrigen Rechner sollten dann prinzipiell nicht zur Speicherung
+ gezwungen werden.
 \end_layout
 
 \begin_layout Bibliography
