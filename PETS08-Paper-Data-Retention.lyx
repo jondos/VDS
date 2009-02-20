@@ -82,37 +82,15 @@ For the purpose of law enforcement Internet service providers may be required
  policies have been legislated.
  Anonymisation services undermine data retention efforts, as they provide
  users with a means to masquerade their IP address.
- With increasing awareness and usage of the anonymizers, their providers
+ With increasing awareness and usage of anonymisation services, their operators
  become a target for data retention regulation.
- During an investigation, law enforcement authorities may approach a provider
- of an anonymiser with a query 
-\emph on
-q
-\emph default
- = 
-\begin_inset Quotes eld
-\end_inset
-
-Please determine the identity of the user who used your anonymisation service
- with IP address 
-\emph on
-a.b.c.d 
-\emph default
-on 2008-02-10 at 9:43\InsetSpace \thinspace{}
-am GMT
-\begin_inset Quotes erd
-\end_inset
-
-.
- The anonymiser can only answer this query if the provider has stored detailed
- records of all served requests -- a duty which he will not carry out voluntaril
-y.
+ 
 \end_layout
 
 \begin_layout Standard
 The basis for this paper are the ongoing data retention efforts in the European
  Union.
- in In 2006 the EU adopted a Directive on data retention (2006/24/EG).
+ In 2006, the EU adopted a Directive on data retention (2006/24/EG).
  Article 1 outlines its purpose as follows
 \end_layout
 
@@ -147,22 +125,19 @@ The implementation of the Directive regarding internet access can be postponed
  data for a time period of six months.
  It is well worth studying its implications for anonymisation providers,
  which is the purpose of this paper.
- Although our findings are based on a German bill, they are of generic nature
- and may be applicable to countries with similar regulations throughout
- the world.
+ Although our findings are based on a German bill, they technical conclusions
+ are of generic nature and may be applicable to countries with similar regulatio
+ns throughout the world.
 \end_layout
 
 \begin_layout Standard
-The main purpose of data retention measures in the context of anonymisation
- services is 
+The main purpose of data retention measures in the context of internet anonymisa
+tion services is 
 \emph on
 traceability
 \emph default
-, i.\InsetSpace \thinspace{}
-e.
- to allow law enforcement authorities to uncover the true identity of a
- suspect, who may have used the anonymisation service to perpetrate illegal
- actions.
+: law enforcement authorities would like to uncover the real-life identity
+ of a suspicious internet connection's originator.
  Many people consider traceability a good thing and necessary for crime
  prevention.
  On the other hand, data retention measures are questionable from a privacy
@@ -171,8 +146,8 @@ e.
  are able to allow for traceability while preserving users' privacy.
  We found that the data retention obligations specified in the German bill
  are not sufficient to guarantee traceability of users of anonymisation
- services.
- Therefore, the purpose of these obligations is questionable.
+ services, but nevertheless may harming the user's privacy.
+ Therefore, the suitability of these obligations is questionable.
 \end_layout
 
 \begin_layout Standard
@@ -220,7 +195,8 @@ reference "sec:single-hop"
 
 \end_inset
 
- in order to illustrate (1) which level of detail is required by law and
+.
+ This section illustrates (1) which level of detail is required by law and
  (2) which level of detail would be required for guaranteed tracability
  of users.
  We will then apply our findings to multi-hop anonymisers in section 
@@ -356,9 +332,9 @@ Legal Basis for Data Retention
 \end_layout
 
 \begin_layout Standard
-From the viewpoint of law enforcement authorities anonymisation services
- are some kind of public telecommunication service, and, as such, have to
- meet legal obligations for data retention.
+From the viewpoint of some legislators and law enforcement authorities,
+ anonymisation services are some kind of public telecommunication service.
+ As such, they would have to meet legal obligations for data retention.
  Although there are similarities to 
 \begin_inset Quotes eld
 \end_inset
@@ -371,26 +347,18 @@ classical
 \end_layout
 
 \begin_layout Itemize
-anonymisation services hide the original user IP and replace it by their
- own IP
+there is no physical data link like a telephone jack to identify users,
+ but only their originating IP
 \end_layout
 
 \begin_layout Itemize
-there is no physical data link to identify users, but only their originating
- IP
+for most free and some commercial services, there are no user databases
+ but anonymous users only
 \end_layout
 
 \begin_layout Itemize
-there are usually no user databases, but anonymous users only
-\end_layout
-
-\begin_layout Itemize
-free services cannot provide name and address of a user, but only IP addresses
- as identifiers
-\end_layout
-
-\begin_layout Itemize
-only paid anonymisation services can provide personal data of users
+anonymisation services hide the original user IP, allocated by the user's
+ telecommunication provider, and replace it by their own IP(s)
 \end_layout
 
 \begin_layout Standard
@@ -401,15 +369,15 @@ tionsgesetz/TKG).
  While anonymisation systems cannot be expected to store identifying information
 , which is usually held by the providers only, they carry valuable transformatio
 n information.
- They are therefore obliged to store
+ They might therefore be obliged to store
 \end_layout
 
 \begin_layout Itemize
-the original ID of the user
+the original IP of the user
 \end_layout
 
 \begin_layout Itemize
-the transformed ID of the user and
+the transformed IP of the user and
 \end_layout
 
 \begin_layout Itemize
@@ -417,16 +385,33 @@ the timestamp of this transformation.
 \end_layout
 
 \begin_layout Standard
-However, most anonymisation services provide a non-bijective transformation
- for IP adresses.
- This means, the users of such systems are sharing a few or even only one
- common IP address.
- This is different from regular ISPs, where each user gets an individual
- IP address.
- For uncovering certain requests, it would therefore, in most cases, not
- suffice to store IP address and timestamp of the request.
- This is an issue that some legislation in various countries, like currently
+By introducing data retention, legislators and law enorcement agencies expect
+ the operator of such services to answer questions like 
+\begin_inset Quotes eld
+\end_inset
+
+Please determine the identity of the user who used your anonymisation service
+ with IP address 
+\emph on
+a.b.c.d 
+\emph default
+on 2008-02-10 at 9:43\InsetSpace \thinspace{}
+am GMT
+\begin_inset Quotes erd
+\end_inset
+
+ upon request.
+ While normal ISPs only need to store IP address, login and logout time
+ of a certain user in order to answer such a question, anonymisation services
+ provide a non-bijective transformation for IP adresses.
+ This means that the users of such systems are sharing a few or even only
+ one common IP address.
+ If there are enough users on such a service who are - within a some-seconds-int
+erval - concurrently creating many connections, it is not sufficient to
+ store IP address and timestamp of the request for uncovering certain requests.
+ This is an issue that some legislators in various countries, like currently
  in Germany, might not address correctly.
+ 
 \end_layout
 
 \begin_layout Standard
