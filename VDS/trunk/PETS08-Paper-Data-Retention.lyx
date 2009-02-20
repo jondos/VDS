@@ -426,10 +426,6 @@ Information about visited web sites is not allowed to be stored according
  techniques that would allow to uncover connections unambiguously.
 \end_layout
 
-\begin_layout Standard
-
-\end_layout
-
 \begin_layout Section
 \begin_inset LatexCommand label
 name "sec:single-hop"
@@ -446,8 +442,8 @@ e.
  their own IP addresses.
  Consequently, providers of such services have to record their usage according
  to data retention regulations.
- Concretely, they are obliged to store the input ID and the output ID together
- with the timestamp of the transformation of the IDs.
+ Concretely, they are obliged to store the input IP and the output IP together
+ with the timestamp of the transformation of the IPs.
 \end_layout
 
 \begin_layout Standard
@@ -496,11 +492,7 @@ Model of a single-hop anonymisation service
 \begin_layout Standard
 For the purpose of our analysis we assume that a single-hop system receives
  HTTP requests on one (or multiple) hosts which act as proxy servers, among
- them are regular HTTP Proxies, CGI-Proxies (e.\InsetSpace \thinspace{}
-g.
- PHProxy) and VPNs (e.\InsetSpace \thinspace{}
-g.
- anonymizer.com or Cyberghost).
+ them are regular HTTP Proxies, CGI/WWW-Proxies and VPNs.
 \end_layout
 
 \begin_layout Standard
@@ -557,6 +549,9 @@ Usually, the requests spend some (indeterministic) processing time
 \end_inset
 
 .
+ On contemporary real-time services, even on slow ones, this delay is not
+ more than about 0,5 to 2 seconds.
+ (TODO cite performance article)
 \end_layout
 
 \begin_layout Standard
@@ -637,11 +632,9 @@ Recording Input Addresses on Session Level
 \end_layout
 
 \begin_layout Standard
-For session-oriented services (e.\InsetSpace \thinspace{}
-g.
- HTTP proxies which support request pipelining or VPN based anonymisation
- services), there is a minimalistic and lightweight data retention solution:
- just record the relevant session-level information.
+For session-oriented services like HTTP proxies which support request pipelining
+ or VPN based anonymisation services, there is a minimalistic and lightweight
+ data retention solution: just record the relevant session-level information.
  A session may last anything from a few seconds (for HTTP proxies) up to
  several hours (for VPNs), depending on the individual system setup and
  user behaviour.
@@ -729,7 +722,8 @@ Welche Nutzerkennung
 \end_layout
 
 \begin_layout Standard
-The storage requirements for this approach are pretty low.
+The storage and implementation requirements for this approach are pretty
+ low.
  Assuming that each of the Unix timestamps and IP(v4) addresses consumes
  4\InsetSpace ~
 bytes, each log entry requires 16\InsetSpace ~
@@ -785,7 +779,7 @@ reference "sec:Introduction"
 \end_inset
 
  -- regardless of users' (in-)activity at a given point in time.
- Alas, even inactive users contribute to the anonymity group.
+ Thereby even inactive users contribute to the anonymity group.
  For increased security, anonymisation services will make sure that outbound
  traffic uses only a single IP address.
  Consequently, tracing a request back to its originator is only possible
@@ -909,7 +903,7 @@ For session-oriented services this approach leads to smaller and thus more
 \begin_inset Formula $q$
 \end_inset
 
- (which is standing operating procedure in Germany at the moment), there
+ (which is a frequent operating procedure in Germany at the moment), there
  is a set 
 \begin_inset Formula $R_{\mathrm{matching}}$
 \end_inset
